@@ -114,6 +114,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_extend__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var flarum_components_Page__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Page */ "flarum/components/Page");
 /* harmony import */ var flarum_components_Page__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Page__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/LinkButton */ "flarum/components/LinkButton");
+/* harmony import */ var flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/SessionDropdown */ "flarum/components/SessionDropdown");
+/* harmony import */ var flarum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_3__);
+
+
 
 
 app.initializers.add('askvortsov/flarum-pwa', function () {
@@ -129,7 +135,44 @@ app.initializers.add('askvortsov/flarum-pwa', function () {
       }
     }
   });
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_3___default.a.prototype, 'items', function (items) {
+    var isInStandaloneMode = function isInStandaloneMode() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+    };
+
+    console.log(isInStandaloneMode());
+
+    if (isInStandaloneMode() && items.has('administration')) {
+      items.replace('administration', flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_2___default.a.component({
+        icon: 'fas fa-wrench',
+        children: app.translator.trans('core.forum.header.admin_button'),
+        href: app.forum.attribute('adminUrl'),
+        config: function config(element, isInitialized) {
+          var _arguments = arguments,
+              _this = this;
+
+          if (isInitialized) return;
+          $(element).on('click', function (e) {
+            e.stopPropagation();
+            m.route.apply(_this, _arguments);
+            window.location.reload();
+          });
+        }
+      }));
+    }
+  });
 });
+
+/***/ }),
+
+/***/ "flarum/components/LinkButton":
+/*!**************************************************************!*\
+  !*** external "flarum.core.compat['components/LinkButton']" ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/LinkButton'];
 
 /***/ }),
 
@@ -141,6 +184,17 @@ app.initializers.add('askvortsov/flarum-pwa', function () {
 /***/ (function(module, exports) {
 
 module.exports = flarum.core.compat['components/Page'];
+
+/***/ }),
+
+/***/ "flarum/components/SessionDropdown":
+/*!*******************************************************************!*\
+  !*** external "flarum.core.compat['components/SessionDropdown']" ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/SessionDropdown'];
 
 /***/ }),
 
