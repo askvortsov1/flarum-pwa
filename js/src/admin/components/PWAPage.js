@@ -123,7 +123,7 @@ export default class PWAPage extends Page {
                                 <div className="helpText">
                                     {app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}
                                 </div>
-                                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.values['askvortsov-pwa.backgroundColor']()} />
+                                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.values['askvortsov-pwa.backgroundColor']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])} />
                             </fieldset>
                         </fieldset>
 
@@ -158,7 +158,7 @@ export default class PWAPage extends Page {
         const hex = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
 
         if (!hex.test(this.values['askvortsov-pwa.backgroundColor']())) {
-            alert(app.translator.trans('core.admin.about.enter_hex_message'));
+            alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
             return;
         }
         // this.values['askvortsov-pwa.categories'](this.values['askvortsov-pwa.categories']().split(',').map(function (item) {
