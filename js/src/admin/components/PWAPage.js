@@ -25,7 +25,7 @@ export default class PWAPage extends Page {
         this.values = {};
 
         this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
-        this.fields.forEach(key => this.values[key] = m.prop(settings[key]));
+        this.fields.forEach(key => this.values[key] = m.prop(settings[key] ? settings[key] : ''));
 
         // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
         //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
@@ -127,6 +127,12 @@ export default class PWAPage extends Page {
                             </fieldset>
                         </fieldset>
 
+                        {Button.component({
+                            type: 'submit',
+                            className: 'Button Button--primary',
+                            children: app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')
+                        })}
+
                         <fieldset>
                             <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')}</legend>
                             <div className="helpText">
@@ -141,12 +147,6 @@ export default class PWAPage extends Page {
                                 </fieldset>
                             })}
                         </fieldset>
-
-                        {Button.component({
-                            type: 'submit',
-                            className: 'Button Button--primary',
-                            children: app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')
-                        })}
                     </form>
                 </div>
             </div>

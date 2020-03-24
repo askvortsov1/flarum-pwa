@@ -368,7 +368,7 @@ var PWAPage = /*#__PURE__*/function (_Page) {
     this.values = {};
     this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
     this.fields.forEach(function (key) {
-      return _this.values[key] = m.prop(settings[key]);
+      return _this.values[key] = m.prop(settings[key] ? settings[key] : '');
     }); // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
     //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
     // }
@@ -453,7 +453,11 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       placeholder: "#aaaaaa",
       value: this.values['askvortsov-pwa.backgroundColor'](),
       oninput: m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])
-    }))), m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')), m("div", {
+    }))), flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default.a.component({
+      type: 'submit',
+      className: 'Button Button--primary',
+      children: app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')
+    }), m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')), m("div", {
       className: "helpText"
     }, app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')), this.sizes.map(function (size) {
       return m("fieldset", {
@@ -465,11 +469,7 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       }, app.translator.trans('askvortsov-pwa.admin.pwa.logo_size_text', {
         size: size
       })));
-    })), flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default.a.component({
-      type: 'submit',
-      className: 'Button Button--primary',
-      children: app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')
-    }))));
+    })))));
   };
 
   _proto.onsubmit = function onsubmit(e) {
