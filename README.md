@@ -12,23 +12,16 @@ Thank you to Billy Wilcosky (https://github.com/zerosonesfun) for starting PWA s
 
 His original Discuss thread has been linked here: <https://discuss.flarum.org/d/21487-pwa-progressive-web-app>
 
-## TODO:
-
-### v0.2.0
+## TODO
 
 - Push Notifications Support (Android only due to PWA limitations)
 - Verify Support for subdirectory installations
-- Bugfixes and minor improvements
-
-### v0.3.0
-
 - Caching and expanded offline support
 - Support configuration of ALL webmanifest attributes, especially:
   - Related Applications
   - Categories
   - Language
 - Bugfixes and minor improvements
-
 
 ### Installation
 
