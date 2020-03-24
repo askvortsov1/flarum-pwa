@@ -29,6 +29,17 @@ return [
         ->css(__DIR__.'/resources/less/forum.less')
         ->content(function (Document $document) {
             $document->head[] = "<link rel='manifest' id='manifest'>";
+            $document->head[] = '<meta name="apple-mobile-web-app-capable" content="yes">';
+            $document->head[] = '<meta id="apple-style" name="apple-mobile-web-app-status-bar-style" content="default">';
+            $document->head[] = '<meta id="apple-title" name="apple-mobile-web-app-title" content="Forum">';
+
+            $document->head[] = '<link id="apple-icon-48" rel="apple-touch-icon" href="/assets/pwa-icon-48x48.png">';
+            $document->head[] = '<link id="apple-icon-72" rel="apple-touch-icon" sizes="72x72" href="/assets/pwa-icon-72x72.png">';
+            $document->head[] = '<link id="apple-icon-96" rel="apple-touch-icon" sizes="96x96" href="/assets/pwa-icon-96x96.png">';
+            $document->head[] = '<link id="apple-icon-144" rel="apple-touch-icon" sizes="144x144" href="/assets/pwa-icon-144x144.png">';
+            $document->head[] = '<link id="apple-icon-192" rel="apple-touch-icon" sizes="192x192" href="/assets/pwa-icon-192x192.png">';
+            $document->head[] = '<link id="apple-icon-256" rel="apple-touch-icon" sizes="256x256" href="/assets/pwa-icon-256x256.png">';
+            $document->head[] = '<link id="apple-icon-512" rel="apple-touch-icon" sizes="512x512" href="/assets/pwa-icon-512x512.png">';
         }),
 
     (new Extend\Frontend('admin'))

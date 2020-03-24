@@ -126,6 +126,7 @@ app.initializers.add('askvortsov/flarum-pwa', function () {
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_Page__WEBPACK_IMPORTED_MODULE_1___default.a.prototype, 'init', function (res) {
     var basePath = app.forum.attribute('basePath').trimRight('/');
     document.querySelector('#manifest').setAttribute('href', basePath + '/webmanifest.json');
+    document.querySelector('#apple-title').setAttribute('content', app.forum.attribute('title'));
 
     if ("serviceWorker" in navigator) {
       if (!navigator.serviceWorker.controller) {
