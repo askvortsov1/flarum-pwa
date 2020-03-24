@@ -451,7 +451,8 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       className: "FormControl",
       type: "text",
       placeholder: "#aaaaaa",
-      value: this.values['askvortsov-pwa.backgroundColor']()
+      value: this.values['askvortsov-pwa.backgroundColor'](),
+      oninput: m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])
     }))), m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')), m("div", {
       className: "helpText"
     }, app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')), this.sizes.map(function (size) {
@@ -476,7 +477,7 @@ var PWAPage = /*#__PURE__*/function (_Page) {
     var hex = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
 
     if (!hex.test(this.values['askvortsov-pwa.backgroundColor']())) {
-      alert(app.translator.trans('core.admin.about.enter_hex_message'));
+      alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
       return;
     } // this.values['askvortsov-pwa.categories'](this.values['askvortsov-pwa.categories']().split(',').map(function (item) {
     //     return item.trim();
@@ -553,7 +554,7 @@ app.initializers.add('askvortsov/flarum-pwa', function () {
   };
 
   app.extensionSettings['askvortsov-pwa'] = function () {
-    return m.route(app.route('tags'));
+    return m.route(app.route('pwa'));
   };
 
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_AdminNav__WEBPACK_IMPORTED_MODULE_1___default.a.prototype, 'items', function (items) {
