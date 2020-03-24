@@ -7,7 +7,7 @@ import PWAPage from './components/PWAPage';
 app.initializers.add('askvortsov/flarum-pwa', () => {
   app.routes.pwa = {path: '/pwa', component: PWAPage.component() };
 
-  app.extensionSettings['askvortsov-pwa'] = () => m.route(app.route('tags'));
+  app.extensionSettings['askvortsov-pwa'] = () => m.route(app.route('pwa'));
 
   extend(AdminNav.prototype, 'items', items => {
     items.add('pwa', AdminLinkButton.component({
