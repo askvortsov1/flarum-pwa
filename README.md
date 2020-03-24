@@ -4,19 +4,16 @@
 
 A [Flarum](http://flarum.org) extension. Progressive Web App support for Flarum. WIP.
 
+### Credit
+
+Thank you to Billy Wilcosky (https://github.com/zerosonesfun) for starting PWA support for Flarum. This extension uses his original ServiceWorker and offline html page code.
+
 ## TODO:
 
 ### v0.1.0
 
-- Status Checks
-  - Add check for at least one icon
-  - Add check for HTTPS
-  - Add check for full name attribute
-  - Add check for sw.js (if enabled)
-  - Add check for webmanifest.json (if enabled)
-- Redo offline page
-- Redo service workers
-- Support for subdirectory installations
+- Verify support for SSO
+- Verify Support for subdirectory installations
 
 ### v0.2.0
 
