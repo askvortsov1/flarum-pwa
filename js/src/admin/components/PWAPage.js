@@ -38,7 +38,6 @@ export default class PWAPage extends Page {
             this.manifest = response['data']['attributes']['manifest'];
             this.sizes = response['data']['attributes']['sizes'];
             this.status_messages = response['data']['attributes']['status_messages'];
-            console.log(this.status_messages)
 
             this.loading = false;
             m.redraw();

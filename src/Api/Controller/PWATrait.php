@@ -13,13 +13,14 @@ trait PWATrait
 
     protected function buildManifest()
     {
+        $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
         $manifest = [
             "name" => $this->settings->get('askvortsov-pwa.longName', $this->settings->get('forum_title')),
             "short_name" => $this->settings->get('forum_title'),
             "description" => $this->settings->get('forum_description', ''),
             //"categories" => $this->settings->get('askvortsov-pwa.categories', []),
-            "start_url" => parse_url($this->app->url(), PHP_URL_PATH) ?: '/',
-            "scope"  => parse_url($this->app->url(), PHP_URL_PATH) ?: '/',
+            "start_url" => $basePath,
+            "scope"  => $basePath,
             "dir" => "auto",
             "theme_color" => $this->settings->get('theme_primary_color'),
             "background_color" => $this->settings->get('askvortsov-pwa.backgroundColor', "#ffffff"),

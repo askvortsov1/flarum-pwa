@@ -380,7 +380,6 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       _this.manifest = response['data']['attributes']['manifest'];
       _this.sizes = response['data']['attributes']['sizes'];
       _this.status_messages = response['data']['attributes']['status_messages'];
-      console.log(_this.status_messages);
       _this.loading = false;
       m.redraw();
     });

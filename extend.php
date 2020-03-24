@@ -12,6 +12,7 @@
 namespace Askvortsov\FlarumPWA;
 
 use Flarum\Extend;
+use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
 
 use Askvortsov\FlarumPWA\Api\Controller;
@@ -27,7 +28,7 @@ return [
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__.'/resources/less/forum.less')
         ->content(function (Document $document) {
-            $document->head[] = '<link rel="manifest" href="/webmanifest.json">';
+            $document->head[] = "<link rel='manifest' id='manifest'>";
         }),
 
     (new Extend\Frontend('admin'))
