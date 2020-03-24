@@ -1,0 +1,30 @@
+askvortsov-pwa:
+  admin:
+    nav:
+      pwa_button: Progressive Web App
+      pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices.
+    pwa:
+      enable_label: Enable?
+      about:
+        description_text: You can set the description on the 'Basics' page in your admin dashboard.
+        name_text: Enter a longer name to be used in your PWA.
+        heading: About
+        short_name_text: You can set the short name on the 'Basics' page in your admin dashboard.
+      colors:
+        heading: Colors
+        background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
+        theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site. You can set this by changing the primary theme in the 'Appearance' page of your admin dashboard.
+      heading: Progressive Web App Configuration
+      text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site.
+      status_check_heading: Status Check
+      logo_heading: Logos and Icons
+      logo_text: |
+        You must upload at least one logo for your progressive web app to be installable. Please note that all logos must be square; if they are not, they will be resized and possibly stretched.
+
+        There are a number of size options available below. I would recommend trying to upload a logo to as many as you can: this supports more devices.
+
+        Please note that you can upload 1 large logo to inputs for smaller logos. For instance, you can upload a 1000px x 1000px logo to ALL the file inputs below. However, if you try to upload a 50px x 50px logo to the 512x512 input, it will be stretched a lot.
+
+      logo_size_text: Upload a logo which will be scaled to {size} pixels by {size} pixels size.
+      submit_button: Save Settings
+      refreshed_message: PWA config refreshed successfully.

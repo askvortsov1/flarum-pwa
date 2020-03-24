@@ -25,9 +25,9 @@
     "flarum-extension": {
       "title": "Flarum Progressive Web App",
       "icon": {
-        "name": "",
-        "backgroundColor": "",
-        "color": ""
+        "name": "fas fa-mobile-alt",
+        "backgroundColor": "#6932D1",
+        "color": "#fff"
       }
     },
     "flagrow": {
