@@ -53,6 +53,8 @@ class ShowPWASettingsController extends AbstractShowController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
+        $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/') . '/' ?: '/';
+
         $status_messages = [];
 
         if (!$this->settings->get('askvortsov-pwa.enable', false)) {
@@ -66,22 +68,12 @@ class ShowPWASettingsController extends AbstractShowController
                     'type' => 'error',
                     'message' => $this->translator->trans('askvortsov-pwa.admin.status.sw_does_not_exist')
                 ];
-            } elseif (!strpos(get_headers(rtrim($this->app->url(), '/') . '/sw.js'), '200')) {
-                $status_messages[] = [
-                    'type' => 'warning',
-                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.sw_not_accessible')
-                ];
             }
 
             if (!$this->mount()->has('public://webmanifest.json')) {
                 $status_messages[] = [
                     'type' => 'error',
                     'message' => $this->translator->trans('askvortsov-pwa.admin.status.manifest_does_not_exist')
-                ];
-            } elseif (!strpos(get_headers(rtrim($this->app->url(), '/') . '/webmanifest.json'), '200')) {
-                $status_messages[] = [
-                    'type' => 'warning',
-                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.manifest_not_accessible')
                 ];
             }
         }
@@ -132,7 +124,8 @@ class ShowPWASettingsController extends AbstractShowController
         return [
             "manifest" => $this->buildManifest(),
             "sizes" => $this->sizes,
-            "status_messages" => $status_messages
+            "status_messages" => $status_messages,
+            "base_path" => $basePath,
         ];
     }
 }

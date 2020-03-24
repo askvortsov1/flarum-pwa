@@ -368,8 +368,9 @@ var PWAPage = /*#__PURE__*/function (_Page) {
     this.values = {};
     this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
     this.fields.forEach(function (key) {
-      return _this.values[key] = m.prop(settings[key] ? settings[key] : '');
-    }); // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
+      return _this.values[key] = m.prop(settings[key] !== undefined ? settings[key] : '');
+    });
+    this.values['askvortsov-pwa.enable'] = m.prop(settings['askvortsov-pwa.enable'] == '1'); // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
     //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
     // }
 
@@ -380,9 +381,32 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       _this.manifest = response['data']['attributes']['manifest'];
       _this.sizes = response['data']['attributes']['sizes'];
       _this.status_messages = response['data']['attributes']['status_messages'];
+      var basePath = response['data']['attributes']['base_path'];
+
+      if (!_this.checkExistence(basePath + 'sw.js')) {
+        _this.status_messages.push({
+          type: error,
+          message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
+        });
+      }
+
+      if (!_this.checkExistence(basePath + 'webmanifest.json')) {
+        _this.status_messages.push({
+          type: error,
+          message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')
+        });
+      }
+
       _this.loading = false;
       m.redraw();
     });
+  };
+
+  _proto.checkExistence = function checkExistence(url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
   };
 
   _proto.view = function view() {

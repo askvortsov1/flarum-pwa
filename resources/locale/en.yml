@@ -29,6 +29,7 @@ askvortsov-pwa:
       submit_button: Save Settings
       refreshed_message: PWA config refreshed successfully.
     status:
+      disabled: You must enable Progressive Web Apps.
       config_no_https: The url in your config.php file isn't using HTTPS. HTTPS is required for Progressive Web Apps to work.
       possible_https_disabled: Your site might not be running on HTTPS. If it is, ignore this. If it isn't keep in mind that HTTPS is required for Progressive Web Apps to work.
       no_logo: You must upload at least one logo for your app to work.

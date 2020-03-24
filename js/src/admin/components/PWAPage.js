@@ -25,7 +25,9 @@ export default class PWAPage extends Page {
         this.values = {};
 
         this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
-        this.fields.forEach(key => this.values[key] = m.prop(settings[key] ? settings[key] : ''));
+        this.fields.forEach(key => this.values[key] = m.prop(settings[key] !== undefined ? settings[key] : ''));
+
+        this.values['askvortsov-pwa.enable'] = m.prop(settings['askvortsov-pwa.enable'] == '1');
 
         // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
         //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
@@ -39,9 +41,34 @@ export default class PWAPage extends Page {
             this.sizes = response['data']['attributes']['sizes'];
             this.status_messages = response['data']['attributes']['status_messages'];
 
+            const basePath = response['data']['attributes']['base_path'];
+
+            if (!this.checkExistence(basePath + 'sw.js')) {
+                this.status_messages.push({
+                    type: error,
+                    message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
+                });
+            }
+
+            if (!this.checkExistence(basePath + 'webmanifest.json')) {
+                this.status_messages.push({
+                    type: error,
+                    message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')
+                });
+            }
+
             this.loading = false;
             m.redraw();
         });
+    }
+
+    checkExistence(url) {
+        let http = new XMLHttpRequest();
+
+        http.open('HEAD', url, false);
+        http.send();
+
+        return http.status != 404;
     }
 
     view() {
