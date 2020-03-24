@@ -1,8 +1,10 @@
-# WIP: Flarum Progressive Web App
+# Flarum Progressive Web App
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/askvortsov/flarum-pwa.svg)](https://packagist.org/packages/askvortsov/flarum-pwa)
 
-A [Flarum](http://flarum.org) extension. Progressive Web App support for Flarum. WIP.
+A [Flarum](http://flarum.org) extension. Progressive Web App support for Flarum. Configure a progressive web app for your flarum installation, all from your admin dashboard!
+
+Please see resources like <https://medium.com/pynk/what-is-a-pwa-and-how-to-install-add-to-home-screen-progressive-web-apps-e6e8087d9ad0> for more information on how to install this.
 
 ### Credit
 
