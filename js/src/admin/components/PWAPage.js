@@ -92,7 +92,7 @@ export default class PWAPage extends Page {
                                 <div className="helpText">
                                     {app.translator.trans('askvortsov-pwa.admin.pwa.about.name_text')}
                                 </div>
-                                <input className="FormControl" value={this.values['askvortsov-pwa.longName']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.longName'])} />
+                                <input className="FormControl" value={this.values['askvortsov-pwa.longName']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.longName'])} required={true} />
                             </fieldset>
                             <fieldset>
                                 <div className="helpText">

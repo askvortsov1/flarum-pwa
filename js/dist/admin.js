@@ -428,7 +428,8 @@ var PWAPage = /*#__PURE__*/function (_Page) {
     }, app.translator.trans('askvortsov-pwa.admin.pwa.about.name_text')), m("input", {
       className: "FormControl",
       value: this.values['askvortsov-pwa.longName'](),
-      oninput: m.withAttr('value', this.values['askvortsov-pwa.longName'])
+      oninput: m.withAttr('value', this.values['askvortsov-pwa.longName']),
+      required: true
     })), m("fieldset", null, m("div", {
       className: "helpText"
     }, app.translator.trans('askvortsov-pwa.admin.pwa.about.description_text')), m("textarea", {

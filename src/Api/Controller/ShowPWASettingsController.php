@@ -55,10 +55,70 @@ class ShowPWASettingsController extends AbstractShowController
 
         $status_messages = [];
 
-        if (! $this->settings->get('askvortsov-pwa.enable', false)) {
+        if (!$this->settings->get('askvortsov-pwa.enable', false)) {
             $status_messages[] = [
                 'type' => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.disabled')
+            ];
+        } else {
+            if (!$this->mount()->has('public://sw.js')) {
+                $status_messages[] = [
+                    'type' => 'error',
+                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.sw_does_not_exist')
+                ];
+            } elseif (!strpos(get_headers(rtrim($this->app->url(), '/') . '/sw.js'), '200')) {
+                $status_messages[] = [
+                    'type' => 'warning',
+                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.sw_not_accessible')
+                ];
+            }
+
+            if (!$this->mount()->has('public://webmanifest.json')) {
+                $status_messages[] = [
+                    'type' => 'error',
+                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.manifest_does_not_exist')
+                ];
+            } elseif (!strpos(get_headers(rtrim($this->app->url(), '/') . '/webmanifest.json'), '200')) {
+                $status_messages[] = [
+                    'type' => 'warning',
+                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.manifest_not_accessible')
+                ];
+            }
+        }
+
+        $logo = false;
+
+        foreach ($this->sizes as $size) {
+            if ($this->settings->get("askvortsov-pwa.icon_${size}_path")) {
+                $logo = true;
+            }
+        }
+
+        if (!$this->settings->get('askvortsov-pwa.longName')) {
+            $status_messages[] = [
+                'type' => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_name')
+            ];
+        }
+
+        if (!$logo) {
+            $status_messages[] = [
+                'type' => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_logo')
+            ];
+        }
+
+        if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') && $_SERVER['SERVER_PORT'] != 443) {
+            $status_messages[] = [
+                'type' => 'warning',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.possible_https_disabled')
+            ];
+        }
+
+        if (parse_url($this->app->url(), PHP_URL_SCHEME) !== 'https') {
+            $status_messages[] = [
+                'type' => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.config_no_https')
             ];
         }
 

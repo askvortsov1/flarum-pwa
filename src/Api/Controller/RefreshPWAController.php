@@ -44,6 +44,12 @@ class RefreshPWAController extends ShowForumController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
+        foreach ($this->sizes as $size) {
+            if (!$this->mount()->has('assets://'.$this->settings->get("askvortsov-pwa.icon_${size}_path"))) {
+                $this->settings->set("askvortsov-pwa.icon_${size}_path", null);
+            }
+        }
+
         if ($this->mount()->has('public://webmanifest.json')) {
             $this->mount()->delete('public://webmanifest.json');
         }
