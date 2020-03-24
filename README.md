@@ -10,14 +10,10 @@ Thank you to Billy Wilcosky (https://github.com/zerosonesfun) for starting PWA s
 
 ## TODO:
 
-### v0.1.0
-
-- Verify support for SSO
-- Verify Support for subdirectory installations
-
 ### v0.2.0
 
 - Push Notifications Support (Android only due to PWA limitations)
+- Verify Support for subdirectory installations
 - Bugfixes and minor improvements
 
 ### v0.3.0
