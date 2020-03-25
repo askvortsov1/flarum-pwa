@@ -258,7 +258,7 @@ var PWALogoUploadButton = /*#__PURE__*/function (_UploadImageButton) {
       this.props.onclick = this.remove.bind(this);
       this.props.children = app.translator.trans('core.admin.upload_image.remove_button');
       return m("div", null, m("p", null, m("img", {
-        src: '/assets/' + app.data.settings['askvortsov-pwa.icon_' + this.props.name + '_path'],
+        src: app.forum.attribute('basePath').trimRight('/') + '/assets/' + app.data.settings['askvortsov-pwa.icon_' + this.props.name + '_path'],
         alt: ""
       })), m("p", null, _UploadImageButton.prototype.view.call(this)));
     } else {

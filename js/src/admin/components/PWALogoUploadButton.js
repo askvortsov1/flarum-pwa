@@ -15,7 +15,7 @@ export default class PWALogoUploadButton extends UploadImageButton {
 
             return (
                 <div>
-                    <p><img src={'/assets/' + app.data.settings['askvortsov-pwa.icon_' + this.props.name + '_path']} alt="" /></p>
+                    <p><img src={app.forum.attribute('basePath').trimRight('/') + '/assets/' + app.data.settings['askvortsov-pwa.icon_' + this.props.name + '_path']} alt="" /></p>
                     <p>{super.view()}</p>
                 </div>
             );
