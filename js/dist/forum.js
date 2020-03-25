@@ -141,8 +141,6 @@ app.initializers.add('askvortsov/flarum-pwa', function () {
       return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
     };
 
-    console.log(isInStandaloneMode());
-
     if (isInStandaloneMode() && items.has('administration')) {
       items.replace('administration', flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_2___default.a.component({
         icon: 'fas fa-wrench',
