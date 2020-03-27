@@ -383,14 +383,14 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       _this.status_messages = response['data']['attributes']['status_messages'];
       var basePath = response['data']['attributes']['base_path'];
 
-      if (!_this.checkExistence(basePath + 'sw.js')) {
+      if (_this.values['askvortsov-pwa.enable']() && !_this.checkExistence(basePath + 'sw.js')) {
         _this.status_messages.push({
           type: error,
           message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
         });
       }
 
-      if (!_this.checkExistence(basePath + 'webmanifest.json')) {
+      if (_this.values['askvortsov-pwa.enable']() && !_this.checkExistence(basePath + 'webmanifest.json')) {
         _this.status_messages.push({
           type: error,
           message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')

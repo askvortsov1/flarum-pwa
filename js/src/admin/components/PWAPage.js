@@ -43,14 +43,14 @@ export default class PWAPage extends Page {
 
             const basePath = response['data']['attributes']['base_path'];
 
-            if (!this.checkExistence(basePath + 'sw.js')) {
+            if (this.values['askvortsov-pwa.enable']() && !this.checkExistence(basePath + 'sw.js')) {
                 this.status_messages.push({
                     type: error,
                     message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
                 });
             }
 
-            if (!this.checkExistence(basePath + 'webmanifest.json')) {
+            if (this.values['askvortsov-pwa.enable']() && !this.checkExistence(basePath + 'webmanifest.json')) {
                 this.status_messages.push({
                     type: error,
                     message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')
