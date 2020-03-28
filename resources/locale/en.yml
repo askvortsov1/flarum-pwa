@@ -35,7 +35,7 @@ askvortsov-pwa:
       no_logo: You must upload at least one logo for your app to work.
       no_name: You must provide a full name for your app to work.
       manifest_does_not_exist: The Web Manifest file does not exist. Try saving settings to refresh configuration.
-      manifest_not_accessible: The Web Manifest file is not accessible over the internet. Please review your web server's configuration. If you are running Flarum in a docker container you can ignore this.
+      manifest_not_accessible: The Web Manifest file is not accessible. It should be at https://YOUR_FLARUM_SITE_URL/webmanifest.json. If it not there, please review your web server's configuration. If not, you can ignore this message.
       sw_does_not_exist: The Service Worker file does not exist. Try saving settings to refresh configuration.
-      sw_not_accessible: The service worker file is not accessible over the internet. Please review your web server's configuration. If you are running Flarum in a docker container you can ignore this.
+      sw_not_accessible: The service worker file is not accessible. It should be at https://YOUR_FLARUM_SITE_URL/sw.js. If it not there, please review your web server's configuration. If not, you can ignore this message.
       success: No Potential Issues Found!
