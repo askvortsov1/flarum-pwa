@@ -2,7 +2,7 @@ askvortsov-pwa:
   admin:
     nav:
       pwa_button: Progressive Web App
-      pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices.
+      pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
     pwa:
       enable_label: Enable?
       about:
