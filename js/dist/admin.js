@@ -273,23 +273,6 @@ var PWALogoUploadButton = /*#__PURE__*/function (_UploadImageButton) {
     return app.forum.attribute('apiUrl') + '/pwa/logo/' + this.props.name;
   };
 
-  _proto.success = function success(response) {
-    var _this = this;
-
-    app.request({
-      method: 'POST',
-      url: app.forum.attribute('apiUrl') + '/pwa/refresh'
-    }).then(function () {
-      app.alerts.show(_this.successAlert = new flarum_components_Alert__WEBPACK_IMPORTED_MODULE_4___default.a({
-        type: 'success',
-        children: app.translator.trans('askvortsov-pwa.admin.pwa.refreshed_message')
-      }));
-    })["catch"](function () {}).then(function () {
-      _this.saving = false;
-      window.location.reload();
-    });
-  };
-
   return PWALogoUploadButton;
 }(flarum_components_UploadImageButton__WEBPACK_IMPORTED_MODULE_3___default.a);
 
@@ -366,11 +349,10 @@ var PWAPage = /*#__PURE__*/function (_Page) {
     this.manifest = {};
     this.sizes = [];
     this.values = {};
-    this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
+    this.fields = ['askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
     this.fields.forEach(function (key) {
       return _this.values[key] = m.prop(settings[key] !== undefined ? settings[key] : '');
-    });
-    this.values['askvortsov-pwa.enable'] = m.prop(settings['askvortsov-pwa.enable'] == '1'); // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
+    }); // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
     //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
     // }
 
@@ -381,22 +363,6 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       _this.manifest = response['data']['attributes']['manifest'];
       _this.sizes = response['data']['attributes']['sizes'];
       _this.status_messages = response['data']['attributes']['status_messages'];
-      var basePath = response['data']['attributes']['base_path'];
-
-      if (_this.values['askvortsov-pwa.enable']() && !_this.checkExistence(basePath + 'sw.js')) {
-        _this.status_messages.push({
-          type: error,
-          message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
-        });
-      }
-
-      if (_this.values['askvortsov-pwa.enable']() && !_this.checkExistence(basePath + 'webmanifest.json')) {
-        _this.status_messages.push({
-          type: error,
-          message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')
-        });
-      }
-
       _this.loading = false;
       m.redraw();
     });
@@ -426,11 +392,7 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       onsubmit: this.onsubmit.bind(this)
     }, m("h2", null, app.translator.trans('askvortsov-pwa.admin.pwa.heading')), m("div", {
       className: "helpText"
-    }, app.translator.trans('askvortsov-pwa.admin.pwa.text')), m("fieldset", null, flarum_components_Switch__WEBPACK_IMPORTED_MODULE_7___default.a.component({
-      state: this.values['askvortsov-pwa.enable'](),
-      onchange: this.values['askvortsov-pwa.enable'],
-      children: app.translator.trans('askvortsov-pwa.admin.pwa.enable_label')
-    })), m("div", {
+    }, app.translator.trans('askvortsov-pwa.admin.pwa.text')), m("div", {
       "class": "statusCheck"
     }, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.status_check_heading')), this.status_messages.map(function (message) {
       return flarum_components_Alert__WEBPACK_IMPORTED_MODULE_5___default.a.component({
@@ -476,7 +438,8 @@ var PWAPage = /*#__PURE__*/function (_Page) {
       type: "text",
       placeholder: "#aaaaaa",
       value: this.values['askvortsov-pwa.backgroundColor'](),
-      oninput: m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])
+      oninput: m.withAttr('value', this.values['askvortsov-pwa.backgroundColor']),
+      required: true
     }))), flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default.a.component({
       type: 'submit',
       className: 'Button Button--primary',
@@ -528,19 +491,9 @@ var PWAPage = /*#__PURE__*/function (_Page) {
         children: app.translator.trans('core.admin.basics.saved_message')
       }));
     })["catch"](function () {}).then(function () {
-      app.request({
-        method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/pwa/refresh'
-      }).then(function () {
-        app.alerts.show(_this2.successAlert = new flarum_components_Alert__WEBPACK_IMPORTED_MODULE_5___default.a({
-          type: 'success',
-          children: app.translator.trans('askvortsov-pwa.admin.pwa.refreshed_message')
-        }));
-      })["catch"](function () {}).then(function () {
-        _this2.saving = false;
+      _this2.saving = false;
 
-        _this2.refresh();
-      });
+      _this2.refresh();
     });
   };
 

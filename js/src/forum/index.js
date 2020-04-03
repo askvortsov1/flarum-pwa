@@ -6,13 +6,13 @@ import SessionDropdown from 'flarum/components/SessionDropdown';
 app.initializers.add('askvortsov/flarum-pwa', () => {
   extend(Page.prototype, 'init', res => {
     const basePath = app.forum.attribute('basePath').trimRight('/');
-    document.querySelector('#manifest').setAttribute('href', basePath + '/webmanifest.json');
-    document.querySelector('#apple-title').setAttribute('content', app.forum.attribute('title'));
 
     if ("serviceWorker" in navigator) {
       if (!navigator.serviceWorker.controller) {
         navigator.serviceWorker
-          .register(basePath + "/sw.js")
+          .register(basePath + "/sw", {
+            scope: basePath + '/'
+          })
           .then(function (reg) {
             console.log("Service worker has been registered for scope: " + reg.scope);
           });

@@ -2,17 +2,14 @@
 
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
+use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\ShowForumController;
 use Flarum\Foundation\Application;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use League\Flysystem\MountManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 

@@ -30,19 +30,4 @@ export default class PWALogoUploadButton extends UploadImageButton {
     resourceUrl() {
         return app.forum.attribute('apiUrl') + '/pwa/logo/' + this.props.name;
     }
-
-    success(response) {
-        app.request({
-            method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/pwa/refresh',
-        })
-            .then(() => {
-                app.alerts.show(this.successAlert = new Alert({ type: 'success', children: app.translator.trans('askvortsov-pwa.admin.pwa.refreshed_message') }));
-            })
-            .catch(() => { })
-            .then(() => {
-                this.saving = false;
-                window.location.reload();
-            });
-    }
 }

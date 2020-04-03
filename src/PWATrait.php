@@ -1,6 +1,6 @@
 <?php
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace Askvortsov\FlarumPWA;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -48,7 +48,7 @@ trait PWATrait
     {
         if (is_null($this->mount)) {
             $this->mount = new MountManager([
-                'ext' => new Filesystem(new Local(dirname(__FILE__, 4) . '/assets')),
+                'ext' => new Filesystem(new Local(dirname(__FILE__, 2) . '/assets')),
                 'storage' => new Filesystem(new Local($this->app->storagePath() . '/tmp')),
                 'assets' => new Filesystem(new Local($this->app->publicPath() . '/assets')),
                 'public' => new Filesystem(new Local($this->app->publicPath())),

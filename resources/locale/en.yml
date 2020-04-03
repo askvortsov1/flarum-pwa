@@ -2,9 +2,8 @@ askvortsov-pwa:
   admin:
     nav:
       pwa_button: Progressive Web App
-      pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
+      pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices.
     pwa:
-      enable_label: Enable?
       about:
         description_text: You can set the description on the 'Basics' page in your admin dashboard.
         name_text: Enter a longer name to be used in your PWA.
@@ -15,7 +14,7 @@ askvortsov-pwa:
         background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
         theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site. You can set this by changing the primary theme in the 'Appearance' page of your admin dashboard.
       heading: Progressive Web App Configuration
-      text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site.
+      text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
       status_check_heading: Status Check
       logo_heading: Logos and Icons
       logo_text: |
@@ -29,13 +28,8 @@ askvortsov-pwa:
       submit_button: Save Settings
       refreshed_message: PWA config refreshed successfully.
     status:
-      disabled: You must enable Progressive Web Apps.
       config_no_https: The url in your config.php file isn't using HTTPS. HTTPS is required for Progressive Web Apps to work.
       possible_https_disabled: Your site might not be running on HTTPS. If it is, ignore this. If it isn't keep in mind that HTTPS is required for Progressive Web Apps to work.
-      no_logo: You must upload at least one logo for your app to work.
+      no_logo: You must upload at least one logo, with a size of at least 192px for your app to work.
       no_name: You must provide a full name for your app to work.
-      manifest_does_not_exist: The Web Manifest file does not exist. Try saving settings to refresh configuration.
-      manifest_not_accessible: The Web Manifest file is not accessible. It should be at https://YOUR_FLARUM_SITE_URL/webmanifest.json. If it not there, please review your web server's configuration. If not, you can ignore this message.
-      sw_does_not_exist: The Service Worker file does not exist. Try saving settings to refresh configuration.
-      sw_not_accessible: The service worker file is not accessible. It should be at https://YOUR_FLARUM_SITE_URL/sw.js. If it not there, please review your web server's configuration. If not, you can ignore this message.
       success: No Potential Issues Found!

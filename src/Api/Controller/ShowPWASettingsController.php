@@ -2,6 +2,7 @@
 
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
+use Askvortsov\FlarumPWA\PWATrait;
 use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\Application;
@@ -57,31 +58,10 @@ class ShowPWASettingsController extends AbstractShowController
 
         $status_messages = [];
 
-        if (!$this->settings->get('askvortsov-pwa.enable', false)) {
-            $status_messages[] = [
-                'type' => 'error',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.disabled')
-            ];
-        } else {
-            if (!$this->mount()->has('public://sw.js')) {
-                $status_messages[] = [
-                    'type' => 'error',
-                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.sw_does_not_exist')
-                ];
-            }
-
-            if (!$this->mount()->has('public://webmanifest.json')) {
-                $status_messages[] = [
-                    'type' => 'error',
-                    'message' => $this->translator->trans('askvortsov-pwa.admin.status.manifest_does_not_exist')
-                ];
-            }
-        }
-
         $logo = false;
 
         foreach ($this->sizes as $size) {
-            if ($this->settings->get("askvortsov-pwa.icon_${size}_path")) {
+            if ($size >= 192 && $this->settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $logo = true;
             }
         }

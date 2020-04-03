@@ -2,6 +2,7 @@
 
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
+use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Foundation\Application;
 use Flarum\Http\Exception\RouteNotFoundException;

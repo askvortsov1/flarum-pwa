@@ -24,10 +24,8 @@ export default class PWAPage extends Page {
         this.sizes = [];
         this.values = {};
 
-        this.fields = ['askvortsov-pwa.enable', 'askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
+        this.fields = ['askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
         this.fields.forEach(key => this.values[key] = m.prop(settings[key] !== undefined ? settings[key] : ''));
-
-        this.values['askvortsov-pwa.enable'] = m.prop(settings['askvortsov-pwa.enable'] == '1');
 
         // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
         //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
@@ -40,22 +38,6 @@ export default class PWAPage extends Page {
             this.manifest = response['data']['attributes']['manifest'];
             this.sizes = response['data']['attributes']['sizes'];
             this.status_messages = response['data']['attributes']['status_messages'];
-
-            const basePath = response['data']['attributes']['base_path'];
-
-            if (this.values['askvortsov-pwa.enable']() && !this.checkExistence(basePath + 'sw.js')) {
-                this.status_messages.push({
-                    type: error,
-                    message: app.translator.trans('askvortsov-pwa.admin.status.sw_not_accessible')
-                });
-            }
-
-            if (this.values['askvortsov-pwa.enable']() && !this.checkExistence(basePath + 'webmanifest.json')) {
-                this.status_messages.push({
-                    type: error,
-                    message: app.translator.trans('askvortsov-pwa.admin.status.manifest_not_accessible')
-                });
-            }
 
             this.loading = false;
             m.redraw();
@@ -90,14 +72,6 @@ export default class PWAPage extends Page {
                         <div className="helpText">
                             {app.translator.trans('askvortsov-pwa.admin.pwa.text')}
                         </div>
-
-                        <fieldset>
-                            {Switch.component({
-                                state: this.values['askvortsov-pwa.enable'](),
-                                onchange: this.values['askvortsov-pwa.enable'],
-                                children: app.translator.trans('askvortsov-pwa.admin.pwa.enable_label'),
-                            })}
-                        </fieldset>
 
                         <div class="statusCheck">
                             <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.status_check_heading')}</legend>
@@ -150,7 +124,7 @@ export default class PWAPage extends Page {
                                 <div className="helpText">
                                     {app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}
                                 </div>
-                                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.values['askvortsov-pwa.backgroundColor']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])} />
+                                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.values['askvortsov-pwa.backgroundColor']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.backgroundColor'])} required={true} />
                             </fieldset>
                         </fieldset>
 
@@ -210,18 +184,8 @@ export default class PWAPage extends Page {
             })
             .catch(() => { })
             .then(() => {
-                app.request({
-                    method: 'POST',
-                    url: app.forum.attribute('apiUrl') + '/pwa/refresh',
-                })
-                    .then(() => {
-                        app.alerts.show(this.successAlert = new Alert({ type: 'success', children: app.translator.trans('askvortsov-pwa.admin.pwa.refreshed_message') }));
-                    })
-                    .catch(() => { })
-                    .then(() => {
-                        this.saving = false;
-                        this.refresh();
-                    });
+                this.saving = false;
+                this.refresh();
             });
     }
 }
