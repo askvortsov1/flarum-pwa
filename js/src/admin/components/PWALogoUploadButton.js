@@ -1,4 +1,5 @@
 
+import Button from 'flarum/components/Button';
 import UploadImageButton from 'flarum/components/UploadImageButton';
 import Alert from 'flarum/components/Alert';
 
@@ -16,7 +17,7 @@ export default class PWALogoUploadButton extends UploadImageButton {
             return (
                 <div>
                     <p><img src={app.forum.attribute('basePath').trimRight('/') + '/assets/' + app.data.settings['askvortsov-pwa.icon_' + this.props.name + '_path']} alt="" /></p>
-                    <p>{super.view()}</p>
+                    <p>{Button.prototype.view.call(this)}</p>
                 </div>
             );
         } else {

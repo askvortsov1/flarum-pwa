@@ -8,6 +8,7 @@ use Flarum\Foundation\Application;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\AssertPermissionTrait;
+use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -55,6 +56,8 @@ class DeleteLogoController extends AbstractDeleteController
         if ($this->mount()->has($file = "assets://$path")) {
             $this->mount()->delete($file);
         }
+
+        $this->settings->set("askvortsov-pwa.icon_${size}_path", null);
 
         return new EmptyResponse(204);
     }
