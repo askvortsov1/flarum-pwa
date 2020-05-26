@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of askvortsov/flarum-pwa
+ *
+ *  Copyright (c) 2020 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
+ */
+
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
@@ -47,15 +56,15 @@ class UploadLogoController extends ShowForumController
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
 
         if (!in_array($size, $this->sizes)) {
-            throw new RouteNotFoundException;
+            throw new RouteNotFoundException();
         }
 
         $file = Arr::get($request->getUploadedFiles(), strval($size));
 
-        $tmpFile = tempnam($this->app->storagePath() . '/tmp', 'favicon');
+        $tmpFile = tempnam($this->app->storagePath().'/tmp', 'favicon');
         $file->moveTo($tmpFile);
 
-        $manager = new ImageManager;
+        $manager = new ImageManager();
 
         $encodedImage = $manager->make($tmpFile)->resize($size, $size)->encode('png');
         file_put_contents($tmpFile, $encodedImage);
@@ -66,7 +75,7 @@ class UploadLogoController extends ShowForumController
             $this->mount()->delete($file);
         }
 
-        $this->mount()->move('storage://' . pathinfo($tmpFile, PATHINFO_BASENAME), "assets://$path");
+        $this->mount()->move('storage://'.pathinfo($tmpFile, PATHINFO_BASENAME), "assets://$path");
 
         $this->settings->set("askvortsov-pwa.icon_${size}_path", $path);
 

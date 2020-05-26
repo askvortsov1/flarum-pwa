@@ -1,22 +1,21 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa.
+ * This file is part of askvortsov/flarum-pwa
  *
- * Copyright (c) 2020 Alexander Skvortsov.
+ *  Copyright (c) 2020 Alexander Skvortsov.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
  */
 
 namespace Askvortsov\FlarumPWA;
 
+use Askvortsov\FlarumPWA\Api\Controller as ApiController;
+use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Illuminate\Support\Arr;
-
-use Askvortsov\FlarumPWA\Api\Controller as ApiController;
-use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 
 $metaClosure = function (Document $document) {
     $forumApiDocument = $document->getForumApiDocument();
@@ -58,5 +57,5 @@ return [
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
-    new Extend\Locales(__DIR__ . '/resources/locale')
+    new Extend\Locales(__DIR__.'/resources/locale'),
 ];

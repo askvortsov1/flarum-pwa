@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of askvortsov/flarum-pwa
+ *
+ *  Copyright (c) 2020 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
+ */
+
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
@@ -46,7 +55,7 @@ class DeleteLogoController extends AbstractDeleteController
         $size = Arr::get($request->getQueryParams(), 'size');
 
         if (!in_array($size, $this->sizes)) {
-            throw new RouteNotFoundException;
+            throw new RouteNotFoundException();
         }
 
         $path = $this->settings->get("askvortsov-pwa.icon_${size}_path");

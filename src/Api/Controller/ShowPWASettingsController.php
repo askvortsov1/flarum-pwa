@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of askvortsov/flarum-pwa
+ *
+ *  Copyright (c) 2020 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
+ */
+
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
 use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
+use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\Application;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -54,7 +63,7 @@ class ShowPWASettingsController extends AbstractShowController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/') . '/' ?: '/';
+        $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
 
         $status_messages = [];
 
@@ -68,44 +77,44 @@ class ShowPWASettingsController extends AbstractShowController
 
         if (!$this->settings->get('askvortsov-pwa.longName')) {
             $status_messages[] = [
-                'type' => 'error',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_name')
+                'type'    => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_name'),
             ];
         }
 
         if (!$logo) {
             $status_messages[] = [
-                'type' => 'error',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_logo')
+                'type'    => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_logo'),
             ];
         }
 
         if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') && $_SERVER['SERVER_PORT'] != 443) {
             $status_messages[] = [
-                'type' => 'warning',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.possible_https_disabled')
+                'type'    => 'warning',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.possible_https_disabled'),
             ];
         }
 
         if (parse_url($this->app->url(), PHP_URL_SCHEME) !== 'https') {
             $status_messages[] = [
-                'type' => 'error',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.config_no_https')
+                'type'    => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.config_no_https'),
             ];
         }
 
         if (empty($status_messages)) {
             $status_messages[] = [
-                'type' => 'success',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.success')
+                'type'    => 'success',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.success'),
             ];
         }
 
         return [
-            "manifest" => $this->buildManifest(),
-            "sizes" => $this->sizes,
-            "status_messages" => $status_messages,
-            "base_path" => $basePath,
+            'manifest'        => $this->buildManifest(),
+            'sizes'           => $this->sizes,
+            'status_messages' => $status_messages,
+            'base_path'       => $basePath,
         ];
     }
 }
