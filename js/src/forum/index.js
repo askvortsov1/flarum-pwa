@@ -2,6 +2,7 @@ import { extend } from "flarum/extend";
 import Page from "flarum/components/Page";
 import LinkButton from "flarum/components/LinkButton";
 import SessionDropdown from "flarum/components/SessionDropdown";
+import addShareButtons from "./addShareButtons";
 
 app.initializers.add("askvortsov/flarum-pwa", () => {
   extend(Page.prototype, "init", (res) => {
@@ -46,4 +47,6 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
       );
     }
   });
+
+  addShareButtons();
 });

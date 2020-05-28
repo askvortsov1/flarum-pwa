@@ -33,3 +33,12 @@ askvortsov-pwa:
       no_logo: You must upload at least one logo, with a size of at least 192px for your app to work.
       no_name: You must provide a full name for your app to work.
       success: No Potential Issues Found!
+  forum:
+    discussion_controls:
+      share_button: Share
+    post_controls:
+      share_button: Share
+      share_api:
+        title: "{username}'s reply to {title}'"
+    user_controls:
+      share_button: Share
