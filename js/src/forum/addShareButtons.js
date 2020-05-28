@@ -31,7 +31,7 @@ export default () => {
               window.location.protocol +
               "//" +
               window.location.hostname +
-              app.route.discussion(discussion),
+              app.route.discussion(discussion)
           }),
       }),
       -1
@@ -61,7 +61,7 @@ export default () => {
               window.location.protocol +
               "//" +
               window.location.hostname +
-              app.route.post(post),
+              app.route.post(post)
           }),
       }),
       100
@@ -85,7 +85,7 @@ export default () => {
               window.location.protocol +
               "//" +
               window.location.hostname +
-              app.route.user(user),
+              app.route.user(user)
           }),
       }),
       100
