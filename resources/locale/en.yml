@@ -42,3 +42,5 @@ askvortsov-pwa:
         title: "{username}'s reply to {title}'"
     user_controls:
       share_button: Share
+    settings:
+      push: Push Notifications

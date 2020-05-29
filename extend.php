@@ -12,6 +12,7 @@
 namespace Askvortsov\FlarumPWA;
 
 use Askvortsov\FlarumPWA\Api\Controller as ApiController;
+use Askvortsov\FlarumPWA\Extend\RegisterPushNotificationPreferences;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
@@ -58,4 +59,6 @@ return [
         ->content($metaClosure),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
+
+    new RegisterPushNotificationPreferences(),
 ];
