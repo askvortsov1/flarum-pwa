@@ -17,6 +17,7 @@ use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\Application;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\AssertPermissionTrait;
+use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tobscure\JsonApi\Document;
@@ -100,6 +101,13 @@ class ShowPWASettingsController extends AbstractShowController
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.config_no_https'),
+            ];
+        }
+
+        if (!class_exists(VAPID::class) || !function_exists('gmp_init')) {
+            $status_messages[] = [
+                'type'    => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.push_needs_gmp_and_web_push'),
             ];
         }
 
