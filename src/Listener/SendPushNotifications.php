@@ -1,0 +1,159 @@
+<?php
+
+/*
+ * This file is part of fof/drafts.
+ *
+ * Copyright (c) 2019 FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace Askvortsov\FlarumPWA\Listener;
+
+use Askvortsov\FlarumPWA\PushSubscription;
+use Flarum\Discussion\Discussion;
+use Flarum\Http\UrlGenerator;
+use Flarum\Notification\Event\Sending;
+use Flarum\Notification\MailableInterface;
+use Flarum\Post\Post;
+use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\User;
+use Minishlink\WebPush\Subscription;
+use Minishlink\WebPush\WebPush;
+use ReflectionClass;
+
+class SendPushNotifications
+{
+    /**
+     * @var SettingsRepositoryInterface
+     */
+    protected $settings;
+
+    /**
+     * @var UrlGenerator
+     */
+    protected $url;
+
+    /**
+     * @param SettingsRepositoryInterface $settings
+     * @param UrlGenerator $url
+     */
+    public function __construct(SettingsRepositoryInterface $settings, UrlGenerator $url)
+    {
+        $this->settings = $settings;
+        $this->url = $url;
+    }
+
+    public function handle(Sending $event)
+    {
+        if (!class_exists(WebPush::class) || !function_exists('gmp_init')) return;
+
+        if (!(new ReflectionClass($event->blueprint))->implementsInterface(MailableInterface::class)) return;
+
+        $users = array_filter($event->users, function ($user) use ($event) {
+            return $user->getPreference(User::getNotificationPreferenceKey($event->blueprint->getType(), 'push'));
+        });
+
+        $notifications = [];
+
+        foreach ($users as $user) {
+            foreach ($user->pushSubscriptions as $subscription) {
+                $notifications[] = [
+                    'subscription' => Subscription::create([
+                        'endpoint' => $subscription->endpoint,
+                        'keys'     => json_decode($subscription->keys, true),
+                        'contentEncoding' => 'aesgcm',
+                    ]),
+                    'payload' => json_encode($this->getPayload($event->blueprint))
+                ];
+            }
+        }
+
+        $auth = [
+            'VAPID' => [
+                'subject' => $this->url->to('forum')->base(),
+                'publicKey' => $this->settings->get('askvortsov-pwa.vapid.public'),
+                'privateKey' => $this->settings->get('askvortsov-pwa.vapid.private')
+            ]
+        ];
+
+        $options = [
+            'topic' => $event->blueprint->getType()
+        ];
+
+        $webPush = new WebPush($auth, $options);
+        $webPush->setReuseVAPIDHeaders(true);
+
+        // send multiple notifications with payload
+        foreach ($notifications as $notification) {
+            $webPush->sendNotification(
+                $notification['subscription'],
+                $notification['payload']
+            );
+        }
+
+        /**
+         * Check sent results
+         * @var MessageSentReport $report
+         */
+        foreach ($webPush->flush() as $report) {
+            if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [403, 404, 410])) {
+                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
+            }
+        }
+    }
+
+    protected function getPayload($blueprint) {
+        $content = '';
+        $link = $this->url->to('forum')->base();
+
+        $subject = $blueprint->getSubject();
+        switch ($blueprint->getSubjectModel()) {
+            case User::class:
+                $link = $this->url->to('forum')->route('user', ['id' =>  $subject->username]);
+                break;
+            case Discussion::class:
+                $content = $this->excerpt($this->getRelevantPostContent($subject));
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
+                break;
+            case Post::class:
+                $content = $this->excerpt($subject->formatContent());
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number ?: $subject->id]);
+                break;
+        }
+
+
+        return [
+            'title' => $blueprint->getEmailSubject(),
+            'content' => $content,
+            'link' => $link,
+        ];
+    }
+
+    protected function base64url_encode($data)
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    protected function excerpt($str)
+    {
+        $str = strip_tags($str);
+        if (mb_strlen($str) > 300) {
+            $str = mb_substr($str, 0, 300);
+            $str .= '...';
+        }
+        return $str;
+    }
+
+    protected function getRelevantPostContent($discussion)
+    {
+        $relevantPost = $discussion->mostRelevantPost ?: $discussion->firstPost ?: $discussion->comments->first();
+
+        if ($relevantPost === null) {
+            return '';
+        }
+
+        return $relevantPost->formatContent();
+    }
+}
