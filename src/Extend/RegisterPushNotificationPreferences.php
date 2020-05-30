@@ -13,8 +13,10 @@ use Flarum\Event\ConfigureNotificationTypes;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extension\Extension;
 use Flarum\Notification\Blueprint\DiscussionRenamedBlueprint;
+use Flarum\Notification\MailableInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Container\Container;
+use ReflectionClass;
 
 class RegisterPushNotificationPreferences implements ExtenderInterface
 {
@@ -33,11 +35,13 @@ class RegisterPushNotificationPreferences implements ExtenderInterface
         foreach ($blueprints as $blueprint => $enabled) {
             $type = $blueprint::getType();
 
-            User::addPreference(
-                User::getNotificationPreferenceKey($type, 'push'),
-                'boolval',
-                in_array('email', $enabled)
-            );
+            if ((new ReflectionClass($blueprint))->implementsInterface(MailableInterface::class)) {
+                User::addPreference(
+                    User::getNotificationPreferenceKey($type, 'push'),
+                    'boolval',
+                    in_array('email', $enabled)
+                );
+            }
         }
     }
 }
