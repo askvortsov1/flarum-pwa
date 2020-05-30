@@ -1,10 +1,12 @@
 <?php
 
 /*
- * This file is part of Flarum.
+ * This file is part of askvortsov/flarum-pwa
  *
- * For detailed copyright and license information, please view the
- * LICENSE file that was distributed with this source code.
+ *  Copyright (c) 2020 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
  */
 
 use Flarum\Database\Migration;

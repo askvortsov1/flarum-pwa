@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/drafts.
+ * This file is part of askvortsov/flarum-pwa
  *
- * Copyright (c) 2019 FriendsOfFlarum.
+ *  Copyright (c) 2020 Alexander Skvortsov.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
  */
 
 namespace Askvortsov\FlarumPWA\Listener;

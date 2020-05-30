@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/drafts.
+ * This file is part of askvortsov/flarum-pwa
  *
- * Copyright (c) 2019 FriendsOfFlarum.
+ *  Copyright (c) 2020 Alexander Skvortsov.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
  */
 
 namespace Askvortsov\FlarumPWA\Listener;
@@ -37,7 +37,7 @@ class SendPushNotifications
 
     /**
      * @param SettingsRepositoryInterface $settings
-     * @param UrlGenerator $url
+     * @param UrlGenerator                $url
      */
     public function __construct(SettingsRepositoryInterface $settings, UrlGenerator $url)
     {
@@ -47,9 +47,13 @@ class SendPushNotifications
 
     public function handle(Sending $event)
     {
-        if (!class_exists(WebPush::class) || !function_exists('gmp_init')) return;
+        if (!class_exists(WebPush::class) || !function_exists('gmp_init')) {
+            return;
+        }
 
-        if (!(new ReflectionClass($event->blueprint))->implementsInterface(MailableInterface::class)) return;
+        if (!(new ReflectionClass($event->blueprint))->implementsInterface(MailableInterface::class)) {
+            return;
+        }
 
         $users = array_filter($event->users, function ($user) use ($event) {
             return $user->getPreference(User::getNotificationPreferenceKey($event->blueprint->getType(), 'push'));
@@ -61,25 +65,25 @@ class SendPushNotifications
             foreach ($user->pushSubscriptions as $subscription) {
                 $notifications[] = [
                     'subscription' => Subscription::create([
-                        'endpoint' => $subscription->endpoint,
-                        'keys'     => json_decode($subscription->keys, true),
+                        'endpoint'        => $subscription->endpoint,
+                        'keys'            => json_decode($subscription->keys, true),
                         'contentEncoding' => 'aesgcm',
                     ]),
-                    'payload' => json_encode($this->getPayload($event->blueprint))
+                    'payload' => json_encode($this->getPayload($event->blueprint)),
                 ];
             }
         }
 
         $auth = [
             'VAPID' => [
-                'subject' => $this->url->to('forum')->base(),
-                'publicKey' => $this->settings->get('askvortsov-pwa.vapid.public'),
-                'privateKey' => $this->settings->get('askvortsov-pwa.vapid.private')
-            ]
+                'subject'    => $this->url->to('forum')->base(),
+                'publicKey'  => $this->settings->get('askvortsov-pwa.vapid.public'),
+                'privateKey' => $this->settings->get('askvortsov-pwa.vapid.private'),
+            ],
         ];
 
         $options = [
-            'topic' => $event->blueprint->getType()
+            'topic' => $event->blueprint->getType(),
         ];
 
         $webPush = new WebPush($auth, $options);
@@ -94,7 +98,8 @@ class SendPushNotifications
         }
 
         /**
-         * Check sent results
+         * Check sent results.
+         *
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
@@ -104,7 +109,8 @@ class SendPushNotifications
         }
     }
 
-    protected function getPayload($blueprint) {
+    protected function getPayload($blueprint)
+    {
         $content = '';
         $link = $this->url->to('forum')->base();
 
@@ -123,11 +129,10 @@ class SendPushNotifications
                 break;
         }
 
-
         return [
-            'title' => $blueprint->getEmailSubject(),
+            'title'   => $blueprint->getEmailSubject(),
             'content' => $content,
-            'link' => $link,
+            'link'    => $link,
         ];
     }
 
@@ -143,6 +148,7 @@ class SendPushNotifications
             $str = mb_substr($str, 0, 300);
             $str .= '...';
         }
+
         return $str;
     }
 

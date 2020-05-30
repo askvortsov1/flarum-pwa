@@ -71,7 +71,7 @@ return [
             return $model->hasMany(PushSubscription::class, 'user_id');
         }),
 
-    (new Extend\Event)->listen(Serializing::class, Listener\AddApiAttributes::class),
+    (new Extend\Event())->listen(Serializing::class, Listener\AddApiAttributes::class),
 
     function (Dispatcher $events) {
         $events->listen(Sending::class, Listener\SendPushNotifications::class);

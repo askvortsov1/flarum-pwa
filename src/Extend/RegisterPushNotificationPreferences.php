@@ -1,10 +1,12 @@
 <?php
 
 /*
- * This file is part of Flarum.
+ * This file is part of askvortsov/flarum-pwa
  *
- * For detailed copyright and license information, please view the
- * LICENSE file that was distributed with this source code.
+ *  Copyright (c) 2020 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
  */
 
 namespace Askvortsov\FlarumPWA\Extend;
@@ -20,12 +22,11 @@ use ReflectionClass;
 
 class RegisterPushNotificationPreferences implements ExtenderInterface
 {
-
     public function extend(Container $container, Extension $extension = null)
     {
         // We really need to improve notification channel extenders...
         $blueprints = [
-            DiscussionRenamedBlueprint::class => ['alert']
+            DiscussionRenamedBlueprint::class => ['alert'],
         ];
 
         $container->make('events')->dispatch(
