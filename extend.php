@@ -12,10 +12,15 @@
 namespace Askvortsov\FlarumPWA;
 
 use Askvortsov\FlarumPWA\Api\Controller as ApiController;
+use Askvortsov\FlarumPWA\Extend\InitializeVAPIDKeys;
 use Askvortsov\FlarumPWA\Extend\RegisterPushNotificationPreferences;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
+use Flarum\Api\Event\Serializing;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
+use Flarum\Notification\Event\Sending;
+use Flarum\User\User;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -41,7 +46,8 @@ return [
     (new Extend\Routes('api'))
         ->get('/pwa/settings', 'askvortsov-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'askvortsov-pwa.size_delete', ApiController\DeleteLogoController::class)
-        ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class),
+        ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
+        ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class),
 
     (new Extend\Routes('forum'))
         ->get('/webmanifest', 'askvortsov-pwa.webmanifest', ForumController\WebManifestController::class)
@@ -60,5 +66,17 @@ return [
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
+    (new Extend\Model(User::class))
+        ->relationship('pushSubscriptions', function ($model) {
+            return $model->hasMany(PushSubscription::class, 'user_id');
+        }),
+
+    (new Extend\Event)->listen(Serializing::class, Listener\AddApiAttributes::class),
+
+    function (Dispatcher $events) {
+        $events->listen(Sending::class, Listener\SendPushNotifications::class);
+    },
+
     new RegisterPushNotificationPreferences(),
+    new InitializeVAPIDKeys(),
 ];
