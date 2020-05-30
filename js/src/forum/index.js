@@ -1,27 +1,42 @@
 import { extend } from "flarum/extend";
+import { openDB } from "idb";
+
 import Page from "flarum/components/Page";
 import LinkButton from "flarum/components/LinkButton";
 import SessionDropdown from "flarum/components/SessionDropdown";
 import addShareButtons from "./addShareButtons";
-import addPushNotifications from "./addPushNotifications";
+import addPushNotifications, {
+  refreshSubscription,
+} from "./addPushNotifications";
 
 app.initializers.add("askvortsov/flarum-pwa", () => {
   extend(Page.prototype, "init", (res) => {
     const basePath = app.forum.attribute("basePath").trimRight("/");
 
-    if ("serviceWorker" in navigator) {
-      if (!navigator.serviceWorker.controller) {
-        navigator.serviceWorker
-          .register(basePath + "/sw", {
-            scope: basePath + "/",
-          })
-          .then(function (reg) {
-            console.log(
-              "Service worker has been registered for scope: " + reg.scope
-            );
-          });
+    const registerSW = async () => {
+      const dbPromise = openDB("keyval-store", 1, {
+        upgrade(db) {
+          db.createObjectStore("keyval");
+        },
+      });
+      (await dbPromise).put(
+        "keyval",
+        app.forum.data.attributes,
+        "flarum.forumPayload"
+      );
+
+      if ("serviceWorker" in navigator) {
+        const sw = await navigator.serviceWorker.register(basePath + "/sw", {
+          scope: basePath + "/",
+        });
+
+        app.sw = sw;
+
+        refreshSubscription(sw);
       }
-    }
+    };
+
+    registerSW();
   });
 
   extend(SessionDropdown.prototype, "items", (items) => {
