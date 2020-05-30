@@ -1,6 +1,32 @@
-// This is the "Offline page" service worker
+importScripts('assets/extensions/askvortsov-pwa/idb.js');
+
+const dbPromise = idb.openDB('keyval-store', 1, {
+  upgrade(db) {
+    db.createObjectStore('keyval');
+  },
+});
+
+const idbKeyval = {
+  async get(key) {
+    return (await dbPromise).get('keyval', key);
+  },
+  async set(key, val) {
+    return (await dbPromise).put('keyval', val, key);
+  },
+  async delete(key) {
+    return (await dbPromise).delete('keyval', key);
+  },
+  async clear() {
+    return (await dbPromise).clear('keyval');
+  },
+  async keys() {
+    return (await dbPromise).getAllKeys('keyval');
+  },
+};
 
 const CACHE = "pwa-page";
+
+const forumPayload = {};
 
 // Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
 const offlineFallbackPage = "/offline";
@@ -20,6 +46,13 @@ self.addEventListener("install", function (event) {
             return cache.add(offlineFallbackPage);
         })
     );
+
+  const receiveInfo = async () => {
+    const payload = await idbKeyval.get('flarum.forumPayload');
+    Object.assign(forumPayload, payload);
+  }
+
+  receiveInfo();
 });
 
 // If any fetch fails, it will show the offline page.
@@ -54,4 +87,35 @@ self.addEventListener("refreshOffline", function () {
             return cache.put(offlinePageRequest, response);
         });
     });
+});
+
+self.addEventListener('push', function (event) {
+  if (event.data) {
+    const options = {
+      body: event.data.json().content,
+      data: {
+        link: event.data.json().link
+      }
+    };
+
+    if (forumPayload.faviconUrl) {
+      options.icon = forumPayload.faviconUrl;
+    }
+
+    const promiseChain = self.registration.showNotification(event.data.json().title, options);
+
+    event.waitUntil(promiseChain);
+  } else {
+    console.log('This push event has no data.');
+  }
+});
+
+self.addEventListener('notificationclick', function (event) {
+  const clickedNotification = event.notification;
+  clickedNotification.close();
+
+  if (event.notification.data && event.notification.data.link) {
+    const promiseChain = clients.openWindow(event.notification.data.link);
+    event.waitUntil(promiseChain);
+  }
 });
