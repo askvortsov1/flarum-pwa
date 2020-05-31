@@ -6,19 +6,21 @@ import Button from "flarum/components/Button";
 import Page from "flarum/components/Page";
 import icon from "flarum/helpers/icon";
 
-const subscribeUser = async (save) => {
-  const subscription = await app.sw.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: app.forum.attribute("vapidPublicKey"),
-  });
+const subscribeUser = (save) => {
+  return app.sw.pushManager
+    .subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: app.forum.attribute("vapidPublicKey"),
+    })
+    .then((subscription) => {
+      if (!save) return;
 
-  if (!save) return;
-
-  app.request({
-    method: "POST",
-    url: app.forum.attribute("apiUrl") + "/pwa/push",
-    data: { subscription: subscription },
-  });
+      app.request({
+        method: "POST",
+        url: app.forum.attribute("apiUrl") + "/pwa/push",
+        data: { subscription },
+      });
+    });
 };
 
 const pushEnabled = () => {

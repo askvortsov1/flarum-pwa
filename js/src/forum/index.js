@@ -26,13 +26,14 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
       );
 
       if ("serviceWorker" in navigator) {
-        const sw = await navigator.serviceWorker.register(basePath + "/sw", {
-          scope: basePath + "/",
-        });
-
-        app.sw = sw;
-
-        refreshSubscription(sw);
+        navigator.serviceWorker
+          .register(basePath + "/sw", {
+            scope: basePath + "/",
+          })
+          .then((sw) => {
+            app.sw = sw;
+            refreshSubscription(sw);
+          });
       }
     };
 
