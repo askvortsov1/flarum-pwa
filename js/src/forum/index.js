@@ -31,8 +31,10 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
             scope: basePath + "/",
           })
           .then((sw) => {
-            app.sw = sw;
-            refreshSubscription(sw);
+            navigator.serviceWorker.ready.then(() => {
+              app.sw = sw;
+              refreshSubscription(sw);
+            });
           });
       }
     };
