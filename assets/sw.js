@@ -90,7 +90,15 @@ self.addEventListener("refreshOffline", function () {
 });
 
 self.addEventListener('push', function (event) {
-  if (event.data) {
+  function isJSON(str) {
+    try {
+      return (JSON.parse(str) && !!str);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  if (isJSON(event.data.text())) {
     const options = {
       body: event.data.json().content,
       data: {
