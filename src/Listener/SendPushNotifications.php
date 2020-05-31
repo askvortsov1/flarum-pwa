@@ -125,7 +125,7 @@ class SendPushNotifications
                 break;
             case Post::class:
                 $content = $this->excerpt($subject->formatContent());
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number ?: $subject->id]);
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
                 break;
         }
 
