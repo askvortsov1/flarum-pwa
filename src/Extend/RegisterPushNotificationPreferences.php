@@ -14,6 +14,7 @@ namespace Askvortsov\FlarumPWA\Extend;
 use Flarum\Event\ConfigureNotificationTypes;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extension\Extension;
+use Flarum\Foundation\Application;
 use Flarum\Notification\Blueprint\DiscussionRenamedBlueprint;
 use Flarum\Notification\MailableInterface;
 use Flarum\User\User;
@@ -24,25 +25,29 @@ class RegisterPushNotificationPreferences implements ExtenderInterface
 {
     public function extend(Container $container, Extension $extension = null)
     {
-        // We really need to improve notification channel extenders...
-        $blueprints = [
-            DiscussionRenamedBlueprint::class => ['alert'],
-        ];
+        $application = $container->make(Application::class);
 
-        $container->make('events')->dispatch(
-            new ConfigureNotificationTypes($blueprints)
-        );
+        $application->booted(function () use ($container) {
+            // We really need to improve notification channel extenders...
+            $blueprints = [
+                DiscussionRenamedBlueprint::class => ['alert'],
+            ];
 
-        foreach ($blueprints as $blueprint => $enabled) {
-            $type = $blueprint::getType();
+            $container->make('events')->dispatch(
+                new ConfigureNotificationTypes($blueprints)
+            );
 
-            if ((new ReflectionClass($blueprint))->implementsInterface(MailableInterface::class)) {
-                User::addPreference(
-                    User::getNotificationPreferenceKey($type, 'push'),
-                    'boolval',
-                    in_array('email', $enabled)
-                );
+            foreach ($blueprints as $blueprint => $enabled) {
+                $type = $blueprint::getType();
+
+                if ((new ReflectionClass($blueprint))->implementsInterface(MailableInterface::class)) {
+                    User::addPreference(
+                        User::getNotificationPreferenceKey($type, 'push'),
+                        'boolval',
+                        in_array('email', $enabled)
+                    );
+                }
             }
-        }
+        });
     }
 }
