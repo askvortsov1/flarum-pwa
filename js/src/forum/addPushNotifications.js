@@ -70,24 +70,17 @@ export default () => {
     if (isInitialized) return;
     if (!pushConfigured()) return;
 
-    app.alerts.dismiss(app.cache.pwaNotifsAlert);
-
-    const pwaAlertDismissed = () => {
-      const obj = JSON.parse(
-        localStorage.getItem("askvortov-pwa.notif-alert.dismissed")
+    const dismissAlert = () => {
+      localStorage.setItem(
+        "askvortov-pwa.notif-alert.dismissed",
+        JSON.stringify({ timestamp: new Date().getTime() })
       );
-
-      if (!obj) return false;
-
-      const timestamp = new Date(obj.timestamp);
-      const currentTime = new Date();
-      currentTime.setDate(currentTime.getDate() - 7);
-
-      return timestamp > currentTime;
     };
 
+    app.alerts.dismiss(app.cache.pwaNotifsAlert);
+
     if (
-      !pwaAlertDismissed() &&
+      !localStorage.getItem("askvortov-pwa.notif-alert.dismissed") &&
       "Notification" in window &&
       window.Notification.permission === "default" &&
       pushEnabled()
@@ -99,18 +92,15 @@ export default () => {
             <a
               class="Button Button--link"
               href={app.route("settings")}
-              config={m.route}
+              config={(path) => {
+                dismissAlert();
+                return m.route(path);
+              }}
             >
               {app.translator.trans("askvortsov-pwa.forum.alerts.optin_button")}
             </a>,
           ],
-          ondismiss: () => {
-            localStorage.setItem(
-              "askvortov-pwa.notif-alert.dismissed",
-              JSON.stringify({ timestamp: new Date().getTime() })
-            );
-            app.cache.pwaNotifsAlertDismissed = true;
-          },
+          ondismiss: dismissAlert,
         }))
       );
     }
