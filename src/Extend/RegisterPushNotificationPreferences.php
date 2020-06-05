@@ -11,6 +11,7 @@
 
 namespace Askvortsov\FlarumPWA\Extend;
 
+use Askvortsov\FlarumPWA\Listener\SendPushNotifications;
 use Flarum\Event\ConfigureNotificationTypes;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extension\Extension;
@@ -40,7 +41,7 @@ class RegisterPushNotificationPreferences implements ExtenderInterface
             foreach ($blueprints as $blueprint => $enabled) {
                 $type = $blueprint::getType();
 
-                if ((new ReflectionClass($blueprint))->implementsInterface(MailableInterface::class)) {
+                if ((new ReflectionClass($blueprint))->implementsInterface(MailableInterface::class) || in_array($blueprint, SendPushNotifications::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
                     User::addPreference(
                         User::getNotificationPreferenceKey($type, 'push'),
                         'boolval',

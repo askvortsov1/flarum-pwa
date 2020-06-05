@@ -21,7 +21,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
-use ReflectionClass;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SendPushNotifications
 {
@@ -29,6 +29,11 @@ class SendPushNotifications
      * @var SettingsRepositoryInterface
      */
     protected $settings;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
 
     /**
      * @var UrlGenerator
@@ -39,9 +44,10 @@ class SendPushNotifications
      * @param SettingsRepositoryInterface $settings
      * @param UrlGenerator                $url
      */
-    public function __construct(SettingsRepositoryInterface $settings, UrlGenerator $url)
+    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
     {
         $this->settings = $settings;
+        $this->translator = $translator;
         $this->url = $url;
     }
 
@@ -51,7 +57,7 @@ class SendPushNotifications
             return;
         }
 
-        if (!(new ReflectionClass($event->blueprint))->implementsInterface(MailableInterface::class)) {
+        if (!is_subclass_of($event->blueprint, MailableInterface::class) && !in_array(get_class($event->blueprint), SendPushNotifications::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             return;
         }
 
@@ -125,12 +131,12 @@ class SendPushNotifications
                 break;
             case Post::class:
                 $content = $this->excerpt($subject->formatContent());
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]) . '/' . $subject->number;
                 break;
         }
 
         return [
-            'title'   => $blueprint->getEmailSubject(),
+            'title'   => $this->getTitle($blueprint),
             'content' => $content,
             'link'    => $link,
         ];
@@ -162,4 +168,25 @@ class SendPushNotifications
 
         return $relevantPost->formatContent();
     }
+
+    protected function getTitle($blueprint)
+    {
+        if (is_subclass_of($blueprint, MailableInterface::class)) {
+            return $blueprint->getEmailSubject();
+        } else if (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
+            switch ($blueprint->getType()) {
+            case 'postLiked':
+                return $this->translator->transChoice(
+                    'flarum-likes.forum.notifications.post_liked_text',
+                    1,
+                    ['{username}' => $blueprint->getFromUser()->getDisplayNameAttribute()]
+                );
+            }
+        }
+        return '';
+    }
+
+    public static $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
+        "Flarum\Likes\Notification\PostLikedBlueprint"
+    ];
 }
