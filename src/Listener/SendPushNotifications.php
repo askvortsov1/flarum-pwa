@@ -57,7 +57,7 @@ class SendPushNotifications
             return;
         }
 
-        if (!is_subclass_of($event->blueprint, MailableInterface::class) && !in_array(get_class($event->blueprint), SendPushNotifications::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
+        if (!is_subclass_of($event->blueprint, MailableInterface::class) && !in_array(get_class($event->blueprint), self::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             return;
         }
 
@@ -131,7 +131,7 @@ class SendPushNotifications
                 break;
             case Post::class:
                 $content = $this->excerpt($subject->formatContent());
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]) . '/' . $subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
                 break;
         }
 
@@ -173,7 +173,7 @@ class SendPushNotifications
     {
         if (is_subclass_of($blueprint, MailableInterface::class)) {
             return $blueprint->getEmailSubject();
-        } else if (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
+        } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             switch ($blueprint->getType()) {
             case 'postLiked':
                 return $this->translator->transChoice(
@@ -183,10 +183,11 @@ class SendPushNotifications
                 );
             }
         }
+
         return '';
     }
 
     public static $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
-        "Flarum\Likes\Notification\PostLikedBlueprint"
+        "Flarum\Likes\Notification\PostLikedBlueprint",
     ];
 }
