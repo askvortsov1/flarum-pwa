@@ -1,11 +1,8 @@
 import Button from "flarum/components/Button";
 import UploadImageButton from "flarum/components/UploadImageButton";
-import Alert from "flarum/components/Alert";
 
 export default class PWALogoUploadButton extends UploadImageButton {
   view() {
-    const settings = app.data.settings;
-
     this.props.loading = this.loading;
     this.props.className = (this.props.className || "") + " Button";
 
@@ -24,7 +21,7 @@ export default class PWALogoUploadButton extends UploadImageButton {
                 "/assets/" +
                 app.data.settings[
                   "askvortsov-pwa.icon_" + this.props.name + "_path"
-                ]
+                ] + "?" + performance.now()
               }
               alt=""
             />

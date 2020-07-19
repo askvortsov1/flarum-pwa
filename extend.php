@@ -37,7 +37,7 @@ $metaClosure = function (Document $document) {
     $document->head[] = "<link id='apple-icon-72' rel='apple-touch-icon' sizes='72x72' href='$basePath/assets/pwa-icon-72x72.png'>";
     $document->head[] = "<link id='apple-icon-96' rel='apple-touch-icon' sizes='96x96' href='$basePath/assets/pwa-icon-96x96.png'>";
     $document->head[] = "<link id='apple-icon-144' rel='apple-touch-icon' sizes='144x144' href='$basePath/assets/pwa-icon-144x144.png'>";
-    $document->head[] = "<link id='apple-icon-192' rel='apple-touch-icon' sizes='192x192' href='$basePath/assets/pwa-icon-192x192.png'>";
+    $document->head[] = "<link id='apple-icon-196' rel='apple-touch-icon' sizes='196x196' href='$basePath/assets/pwa-icon-196x196.png'>";
     $document->head[] = "<link id='apple-icon-256' rel='apple-touch-icon' sizes='256x256' href='$basePath/assets/pwa-icon-256x256.png'>";
     $document->head[] = "<link id='apple-icon-512' rel='apple-touch-icon' sizes='512x512' href='$basePath/assets/pwa-icon-512x512.png'>";
 };
