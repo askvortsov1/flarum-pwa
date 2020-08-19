@@ -12,12 +12,9 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
   extend(AdminNav.prototype, "items", (items) => {
     items.add(
       "pwa",
-      AdminLinkButton.component({
-        href: app.route("pwa"),
-        icon: "fas fa-mobile-alt",
-        children: app.translator.trans("askvortsov-pwa.admin.nav.pwa_button"),
-        description: app.translator.trans("askvortsov-pwa.admin.nav.pwa_text"),
-      })
+      <AdminLinkButton href={app.route("pwa")} icon="fas fa-mobile-alt" description={app.translator.trans("askvortsov-pwa.admin.nav.pwa_text")}>
+        {app.translator.trans("askvortsov-pwa.admin.nav.pwa_button")}
+      </AdminLinkButton>
     );
   });
 });
