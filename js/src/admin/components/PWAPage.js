@@ -87,10 +87,11 @@ export default class PWAPage extends Page {
                   "askvortsov-pwa.admin.pwa.status_check_heading"
                 )}
               </legend>
-              {this.status_messages.map((message) =>
+              {this.status_messages.map((message) => (
                 <Alert type={message.type} dismissible={false}>
                   {[message.message]}
-                </Alert>)}
+                </Alert>
+              ))}
             </div>
 
             <fieldset class="parent">
@@ -192,9 +193,7 @@ export default class PWAPage extends Page {
             </fieldset>
 
             <Button type="submit" className="Button Button--primary">
-              {app.translator.trans(
-                "askvortsov-pwa.admin.pwa.submit_button"
-              )}
+              {app.translator.trans("askvortsov-pwa.admin.pwa.submit_button")}
             </Button>
 
             <fieldset>
