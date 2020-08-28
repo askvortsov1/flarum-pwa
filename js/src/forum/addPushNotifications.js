@@ -10,7 +10,11 @@ const subscribeUser = (save) => {
   return app.sw.pushManager
     .subscribe({
       userVisibleOnly: true,
-      applicationServerKey: app.forum.attribute("vapidPublicKey"),
+      applicationServerKey: app.forum
+        .attribute("vapidPublicKey")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/g, ""),
     })
     .then((subscription) => {
       if (!save) return;
