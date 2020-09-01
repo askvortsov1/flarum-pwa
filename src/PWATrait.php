@@ -41,7 +41,7 @@ trait PWATrait
         foreach ($this->sizes as $size) {
             if ($this->settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $icon = [
-                    'src'   => $basePath . 'assets/'.$this->settings->get("askvortsov-pwa.icon_${size}_path"),
+                    'src'   => $basePath.'assets/'.$this->settings->get("askvortsov-pwa.icon_${size}_path"),
                     'sizes' => "${size}x${size}",
                     'type'  => 'image/png',
                 ];
