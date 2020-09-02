@@ -12,6 +12,7 @@
 namespace Askvortsov\FlarumPWA\Listener;
 
 use Askvortsov\FlarumPWA\PushSubscription;
+use Askvortsov\FlarumPWA\Util;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Event\Sending;
@@ -83,8 +84,8 @@ class SendPushNotifications
         $auth = [
             'VAPID' => [
                 'subject'    => $this->url->to('forum')->base(),
-                'publicKey'  => $this->settings->get('askvortsov-pwa.vapid.public'),
-                'privateKey' => $this->settings->get('askvortsov-pwa.vapid.private'),
+                'publicKey'  => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
+                'privateKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.private')),
             ],
         ];
 
@@ -111,6 +112,8 @@ class SendPushNotifications
         foreach ($webPush->flush() as $report) {
             if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [403, 404, 410])) {
                 PushSubscription::where('endpoint', $report->getEndpoint())->delete();
+            } elseif (!$report->isSuccess()) {
+                echo "[x] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}";
             }
         }
     }
@@ -140,11 +143,6 @@ class SendPushNotifications
             'content' => $content,
             'link'    => $link,
         ];
-    }
-
-    protected function base64url_encode($data)
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
     protected function excerpt($str)
@@ -189,5 +187,6 @@ class SendPushNotifications
 
     public static $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
         "Flarum\Likes\Notification\PostLikedBlueprint",
+        "Flarum\Notification\DiscussionRenamedBlueprint",
     ];
 }
