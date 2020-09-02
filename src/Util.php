@@ -15,7 +15,6 @@ class Util
 {
     public static function url_encode($data)
     {
-        return rtrim(strtr($data, ["+" => "-", "/" => "_"]), '=');
+        return rtrim(strtr($data, ['+' => '-', '/' => '_']), '=');
     }
 }
-
