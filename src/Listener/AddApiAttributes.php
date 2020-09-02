@@ -11,6 +11,7 @@
 
 namespace Askvortsov\FlarumPWA\Listener;
 
+use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Event\Serializing;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -33,7 +34,7 @@ class AddApiAttributes
     public function handle(Serializing $event)
     {
         if ($event->isSerializer(ForumSerializer::class)) {
-            $event->attributes['vapidPublicKey'] = $this->settings->get('askvortsov-pwa.vapid.public');
+            $event->attributes['vapidPublicKey'] = Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public'));
         }
     }
 }
