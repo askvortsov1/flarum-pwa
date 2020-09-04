@@ -10,7 +10,7 @@ import addPushNotifications, {
 } from "./addPushNotifications";
 
 app.initializers.add("askvortsov/flarum-pwa", () => {
-  extend(Page.prototype, "init", (res) => {
+  extend(Page.prototype, "oninit", () => {
     const basePath = app.forum.attribute("basePath").trimRight("/");
 
     const registerSW = async () => {
@@ -50,19 +50,14 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
     if (isInStandaloneMode() && items.has("administration")) {
       items.replace(
         "administration",
-        LinkButton.component({
-          icon: "fas fa-wrench",
-          children: app.translator.trans("core.forum.header.admin_button"),
-          href: app.forum.attribute("adminUrl"),
-          config: function (element, isInitialized) {
-            if (isInitialized) return;
-            $(element).on("click", (e) => {
-              e.stopPropagation();
-              m.route.apply(this, arguments);
-              window.location.reload();
-            });
+        LinkButton.component(
+          {
+            icon: "fas fa-wrench",
+            href: app.forum.attribute("adminUrl"),
+            target: "_self",
           },
-        })
+          app.translator.trans("core.forum.header.admin_button")
+        )
       );
     }
   });

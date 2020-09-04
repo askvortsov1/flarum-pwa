@@ -19,21 +19,23 @@ export default () => {
 
     items.add(
       "share",
-      Button.component({
-        children: app.translator.trans(
+      Button.component(
+        {
+          icon: "fas fa-share-square",
+          onclick: () =>
+            shareContent({
+              title: discussion.title(),
+              url:
+                window.location.protocol +
+                "//" +
+                window.location.hostname +
+                app.route.discussion(discussion),
+            }),
+        },
+        app.translator.trans(
           "askvortsov-pwa.forum.discussion_controls.share_button"
-        ),
-        icon: "fas fa-share-square",
-        onclick: () =>
-          shareContent({
-            title: discussion.title(),
-            url:
-              window.location.protocol +
-              "//" +
-              window.location.hostname +
-              app.route.discussion(discussion),
-          }),
-      }),
+        )
+      ),
       -1
     );
   });
@@ -43,27 +45,27 @@ export default () => {
 
     items.add(
       "share",
-      Button.component({
-        children: app.translator.trans(
-          "askvortsov-pwa.forum.post_controls.share_button"
-        ),
-        icon: "fas fa-share-square",
-        onclick: () =>
-          shareContent({
-            title: app.translator.trans(
-              "askvortsov-pwa.forum.post_controls.share_api.title",
-              {
-                username: post.user().displayName(),
-                title: post.discussion().title(),
-              }
-            ),
-            url:
-              window.location.protocol +
-              "//" +
-              window.location.hostname +
-              app.route.post(post),
-          }),
-      }),
+      Button.component(
+        {
+          icon: "fas fa-share-square",
+          onclick: () =>
+            shareContent({
+              title: app.translator.trans(
+                "askvortsov-pwa.forum.post_controls.share_api.title",
+                {
+                  username: post.user().displayName(),
+                  title: post.discussion().title(),
+                }
+              ),
+              url:
+                window.location.protocol +
+                "//" +
+                window.location.hostname +
+                app.route.post(post),
+            }),
+        },
+        app.translator.trans("askvortsov-pwa.forum.post_controls.share_button")
+      ),
       100
     );
   });
@@ -73,21 +75,21 @@ export default () => {
 
     items.add(
       "share",
-      Button.component({
-        children: app.translator.trans(
-          "askvortsov-pwa.forum.user_controls.share_button"
-        ),
-        icon: "fas fa-share-square",
-        onclick: () =>
-          shareContent({
-            title: user.displayName(),
-            url:
-              window.location.protocol +
-              "//" +
-              window.location.hostname +
-              app.route.user(user),
-          }),
-      }),
+      Button.component(
+        {
+          icon: "fas fa-share-square",
+          onclick: () =>
+            shareContent({
+              title: user.displayName(),
+              url:
+                window.location.protocol +
+                "//" +
+                window.location.hostname +
+                app.route.user(user),
+            }),
+        },
+        app.translator.trans("askvortsov-pwa.forum.user_controls.share_button")
+      ),
       100
     );
   });
