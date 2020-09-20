@@ -92,10 +92,8 @@ export default () => {
             <a
               class="Button Button--link"
               href={app.route("settings")}
-              config={(path) => {
-                dismissAlert();
-                return m.route(path);
-              }}
+              config={m.route}
+              onclick={() => dismissAlert()}
             >
               {app.translator.trans("askvortsov-pwa.forum.alerts.optin_button")}
             </a>,
