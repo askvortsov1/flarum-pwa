@@ -85,7 +85,6 @@ export default () => {
       pushEnabled()
     ) {
       app.cache.pwaNotifsAlert = app.alerts.show(
-        app.translator.trans("askvortsov-pwa.forum.alerts.optin"),
         {
           controls: [
             <a
@@ -97,7 +96,8 @@ export default () => {
             </a>,
           ],
           ondismiss: dismissAlert,
-        }
+        },
+        app.translator.trans("askvortsov-pwa.forum.alerts.optin")
       );
     }
   });

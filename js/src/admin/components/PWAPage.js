@@ -234,8 +234,8 @@ export default class PWAPage extends Page {
     saveSettings(settings)
       .then(() => {
         this.successAlert = app.alerts.show(
-          app.translator.trans("core.admin.basics.saved_message"),
-          { type: "success" }
+          { type: "success" },
+          app.translator.trans("core.admin.basics.saved_message")
         );
       })
       .catch(() => {})
