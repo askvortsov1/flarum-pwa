@@ -8,8 +8,8 @@ import saveSettings from "flarum/utils/saveSettings";
 import PWALogoUploadButton from "./PWALogoUploadButton";
 
 export default class PWAPage extends Page {
-  init() {
-    super.init();
+  oninit(vnode) {
+    super.oninit(vnode);
 
     this.saving = false;
     this.refresh();
@@ -27,13 +27,13 @@ export default class PWAPage extends Page {
     this.fields = ["askvortsov-pwa.longName", "askvortsov-pwa.backgroundColor"];
     this.fields.forEach(
       (key) =>
-        (this.values[key] = m.prop(
+        (this.values[key] = m.stream(
           settings[key] !== undefined ? settings[key] : ""
         ))
     );
 
     // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
-    //     this.values['askvortsov-pwa.categories'] = m.prop(settings['askvortsov-pwa.categories'].join(','));
+    //     this.values['askvortsov-pwa.categories'] = m.stream(settings['askvortsov-pwa.categories'].join(','));
     // }
 
     app
@@ -120,11 +120,7 @@ export default class PWAPage extends Page {
                 </div>
                 <input
                   className="FormControl"
-                  value={this.values["askvortsov-pwa.longName"]()}
-                  oninput={m.withAttr(
-                    "value",
-                    this.values["askvortsov-pwa.longName"]
-                  )}
+                  bidi={this.values["askvortsov-pwa.longName"]}
                   required={true}
                 />
               </fieldset>
@@ -142,14 +138,6 @@ export default class PWAPage extends Page {
                   {this.manifest.description}
                 </textarea>
               </fieldset>
-              {/* <fieldset>
-                                <div className="helpText">
-                                    {app.translator.trans('askvortsov-pwa.admin.pwa.about.categories_text')}
-                                </div>
-                                <textarea className="FormControl" value={this.values['askvortsov-pwa.categories']()} oninput={m.withAttr('value', this.values['askvortsov-pwa.categories'])}>
-                                    {this.manifest.description}
-                                </textarea>
-                            </fieldset> */}
             </fieldset>
 
             <fieldset class="parent">
@@ -182,11 +170,7 @@ export default class PWAPage extends Page {
                   className="FormControl"
                   type="text"
                   placeholder="#aaaaaa"
-                  value={this.values["askvortsov-pwa.backgroundColor"]()}
-                  oninput={m.withAttr(
-                    "value",
-                    this.values["askvortsov-pwa.backgroundColor"]
-                  )}
+                  bidi={this.values["askvortsov-pwa.backgroundColor"]}
                   required={true}
                 />
               </fieldset>
@@ -249,11 +233,9 @@ export default class PWAPage extends Page {
 
     saveSettings(settings)
       .then(() => {
-        app.alerts.show(
-          (this.successAlert = new Alert({
-            type: "success",
-            children: app.translator.trans("core.admin.basics.saved_message"),
-          }))
+        this.successAlert = app.alerts.show(
+          { type: "success" },
+          app.translator.trans("core.admin.basics.saved_message")
         );
       })
       .catch(() => {})

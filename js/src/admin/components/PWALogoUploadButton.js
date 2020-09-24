@@ -2,15 +2,12 @@ import Button from "flarum/components/Button";
 import UploadImageButton from "flarum/components/UploadImageButton";
 
 export default class PWALogoUploadButton extends UploadImageButton {
-  view() {
-    this.props.loading = this.loading;
-    this.props.className = (this.props.className || "") + " Button";
+  view(vnode) {
+    vnode.attrs.loading = this.loading;
+    vnode.attrs.className = (this.attrs.className || "") + " Button";
 
-    if (app.data.settings["askvortsov-pwa.icon_" + this.props.name + "_path"]) {
-      this.props.onclick = this.remove.bind(this);
-      this.props.children = app.translator.trans(
-        "core.admin.upload_image.remove_button"
-      );
+    if (app.data.settings["askvortsov-pwa.icon_" + this.attrs.name + "_path"]) {
+      vnode.attrs.onclick = this.remove.bind(this);
 
       return (
         <div>
@@ -20,7 +17,7 @@ export default class PWALogoUploadButton extends UploadImageButton {
                 app.forum.attribute("basePath").trimRight("/") +
                 "/assets/" +
                 app.data.settings[
-                  "askvortsov-pwa.icon_" + this.props.name + "_path"
+                  "askvortsov-pwa.icon_" + this.attrs.name + "_path"
                 ] +
                 "?" +
                 performance.now()
@@ -28,20 +25,24 @@ export default class PWALogoUploadButton extends UploadImageButton {
               alt=""
             />
           </p>
-          <p>{Button.prototype.view.call(this)}</p>
+          <p>
+            {Button.prototype.view.call(this, {
+              ...vnode,
+              children: app.translator.trans(
+                "core.admin.upload_image.remove_button"
+              ),
+            })}
+          </p>
         </div>
-      );
-    } else {
-      this.props.onclick = this.upload.bind(this);
-      this.props.children = app.translator.trans(
-        "core.admin.upload_image.upload_button"
       );
     }
 
-    return super.view();
+    vnode.attrs.onclick = this.upload.bind(this);
+
+    return super.view(vnode);
   }
 
   resourceUrl() {
-    return app.forum.attribute("apiUrl") + "/pwa/logo/" + this.props.name;
+    return app.forum.attribute("apiUrl") + "/pwa/logo/" + this.attrs.name;
   }
 }

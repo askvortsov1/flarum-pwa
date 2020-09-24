@@ -18,7 +18,7 @@ const subscribeUser = (save) => {
       app.request({
         method: "POST",
         url: app.forum.attribute("apiUrl") + "/pwa/push",
-        data: { subscription },
+        body: { subscription },
       });
     });
 };
@@ -66,8 +66,7 @@ const pushConfigured = () => {
 };
 
 export default () => {
-  extend(Page.prototype, "config", (res, isInitialized) => {
-    if (isInitialized) return;
+  extend(Page.prototype, "oncreate", () => {
     if (!pushConfigured()) return;
 
     const dismissAlert = () => {
@@ -85,21 +84,20 @@ export default () => {
       window.Notification.permission === "default" &&
       pushEnabled()
     ) {
-      app.alerts.show(
-        (app.cache.pwaNotifsAlert = new Alert({
-          children: app.translator.trans("askvortsov-pwa.forum.alerts.optin"),
+      app.cache.pwaNotifsAlert = app.alerts.show(
+        {
           controls: [
             <a
               class="Button Button--link"
-              href={app.route("settings")}
-              config={m.route}
+              route={app.route("settings")}
               onclick={() => dismissAlert()}
             >
               {app.translator.trans("askvortsov-pwa.forum.alerts.optin_button")}
             </a>,
           ],
           ondismiss: dismissAlert,
-        }))
+        },
+        app.translator.trans("askvortsov-pwa.forum.alerts.optin")
       );
     }
   });
@@ -120,25 +118,27 @@ export default () => {
     if (!("Notification" in window)) {
       items.add(
         "push-no-browser-support",
-        Alert.component({
-          dismissible: false,
-          children: [
+        Alert.component(
+          {
+            dismissible: false,
+            controls: [
+              <a
+                class="Button Button--link"
+                href="https://developer.mozilla.org/en-US/docs/Web/API/Push_API"
+              >
+                {app.translator.trans(
+                  "askvortsov-pwa.forum.settings.pwa_notifications.no_browser_support_button"
+                )}
+              </a>,
+            ],
+          },
+          [
             icon("fas fa-exclamation-triangle"),
             app.translator.trans(
               "askvortsov-pwa.forum.settings.pwa_notifications.no_browser_support"
             ),
-          ],
-          controls: [
-            <a
-              class="Button Button--link"
-              href="https://developer.mozilla.org/en-US/docs/Web/API/Push_API"
-            >
-              {app.translator.trans(
-                "askvortsov-pwa.forum.settings.pwa_notifications.no_browser_support_button"
-              )}
-            </a>,
-          ],
-        }),
+          ]
+        ),
         10
       );
       return;
@@ -149,59 +149,65 @@ export default () => {
 
       items.add(
         "push-optin-default",
-        Alert.component({
-          itemClassName: "pwa-setting-alert",
-          dismissible: false,
-          children: [
+        Alert.component(
+          {
+            itemClassName: "pwa-setting-alert",
+            dismissible: false,
+            controls: [
+              Button.component(
+                {
+                  className: "Button Button--link",
+                  onclick: () => {
+                    window.Notification.requestPermission((res) => {
+                      m.redraw();
+
+                      if (res === "granted") {
+                        subscribeUser(true);
+                      }
+                    });
+                  },
+                },
+                app.translator.trans(
+                  "askvortsov-pwa.forum.settings.pwa_notifications.access_default_button"
+                )
+              ),
+            ],
+          },
+          [
             icon("fas fa-exclamation-circle"),
             app.translator.trans(
               "askvortsov-pwa.forum.settings.pwa_notifications.access_default"
             ),
-          ],
-          controls: [
-            Button.component({
-              className: "Button Button--link",
-              children: app.translator.trans(
-                "askvortsov-pwa.forum.settings.pwa_notifications.access_default_button"
-              ),
-              onclick: () => {
-                window.Notification.requestPermission((res) => {
-                  m.redraw();
-
-                  if (res === "granted") {
-                    subscribeUser(true);
-                  }
-                });
-              },
-            }),
-          ],
-        }),
+          ]
+        ),
         10
       );
     } else if (window.Notification.permission === "denied") {
       items.add(
         "push-optin-denied",
-        Alert.component({
-          itemClassName: "pwa-setting-alert",
-          dismissible: false,
-          type: "error",
-          children: [
+        Alert.component(
+          {
+            itemClassName: "pwa-setting-alert",
+            dismissible: false,
+            type: "error",
+            controls: [
+              <a
+                class="Button Button--link"
+                href="https://support.humblebundle.com/hc/en-us/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers"
+              >
+                {app.translator.trans(
+                  "askvortsov-pwa.forum.settings.pwa_notifications.access_denied_button"
+                )}
+              </a>,
+            ],
+          },
+          [
             icon("fas fa-exclamation-triangle"),
             app.translator.trans(
               "askvortsov-pwa.forum.settings.pwa_notifications.access_denied"
             ),
-          ],
-          controls: [
-            <a
-              class="Button Button--link"
-              href="https://support.humblebundle.com/hc/en-us/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers"
-            >
-              {app.translator.trans(
-                "askvortsov-pwa.forum.settings.pwa_notifications.access_denied_button"
-              )}
-            </a>,
-          ],
-        }),
+          ]
+        ),
         10
       );
     }
