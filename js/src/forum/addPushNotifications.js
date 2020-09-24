@@ -90,7 +90,7 @@ export default () => {
             <a
               class="Button Button--link"
               route={app.route("settings")}
-              onclick={dismissAlert()}
+              onclick={() => dismissAlert()}
             >
               {app.translator.trans("askvortsov-pwa.forum.alerts.optin_button")}
             </a>,
