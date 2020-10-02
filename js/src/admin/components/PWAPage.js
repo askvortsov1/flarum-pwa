@@ -2,8 +2,8 @@ import Page from "flarum/components/Page";
 import Button from "flarum/components/Button";
 import Alert from "flarum/components/Alert";
 import LoadingIndicator from "flarum/components/LoadingIndicator";
-import Switch from "flarum/components/Switch";
 import saveSettings from "flarum/utils/saveSettings";
+import Stream from "flarum/utils/Stream";
 
 import PWALogoUploadButton from "./PWALogoUploadButton";
 
@@ -27,13 +27,13 @@ export default class PWAPage extends Page {
     this.fields = ["askvortsov-pwa.longName", "askvortsov-pwa.backgroundColor"];
     this.fields.forEach(
       (key) =>
-        (this.values[key] = m.stream(
+        (this.values[key] = Stream(
           settings[key] !== undefined ? settings[key] : ""
         ))
     );
 
     // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
-    //     this.values['askvortsov-pwa.categories'] = m.stream(settings['askvortsov-pwa.categories'].join(','));
+    //     this.values['askvortsov-pwa.categories'] = Stream(settings['askvortsov-pwa.categories'].join(','));
     // }
 
     app
