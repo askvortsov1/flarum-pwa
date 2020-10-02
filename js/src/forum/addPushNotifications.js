@@ -3,6 +3,7 @@ import NotificationGrid from "flarum/components/NotificationGrid";
 import SettingsPage from "flarum/components/SettingsPage";
 import Alert from "flarum/components/Alert";
 import Button from "flarum/components/Button";
+import Link from "flarum/components/Link";
 import Page from "flarum/components/Page";
 import icon from "flarum/helpers/icon";
 
@@ -87,13 +88,13 @@ export default () => {
       app.cache.pwaNotifsAlert = app.alerts.show(
         {
           controls: [
-            <a
+            <Link
               class="Button Button--link"
-              route={app.route("settings")}
+              href={app.route("settings")}
               onclick={() => dismissAlert()}
             >
               {app.translator.trans("askvortsov-pwa.forum.alerts.optin_button")}
-            </a>,
+            </Link>,
           ],
           ondismiss: dismissAlert,
         },
