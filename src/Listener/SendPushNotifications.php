@@ -170,7 +170,7 @@ class SendPushNotifications
     protected function getTitle($blueprint)
     {
         if (is_subclass_of($blueprint, MailableInterface::class)) {
-            return $blueprint->getEmailSubject();
+            return $blueprint->getEmailSubject($this->translator);
         } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             switch ($blueprint->getType()) {
             case 'postLiked':
