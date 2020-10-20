@@ -110,7 +110,7 @@ class SendPushNotifications
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
-            if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [403, 404, 410])) {
+            if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
                 PushSubscription::where('endpoint', $report->getEndpoint())->delete();
             } elseif (!$report->isSuccess()) {
                 echo "[x] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}";
