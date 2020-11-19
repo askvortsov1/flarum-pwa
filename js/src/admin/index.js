@@ -5,15 +5,15 @@ import AdminLinkButton from "flarum/components/AdminLinkButton";
 import PWAPage from "./components/PWAPage";
 
 app.initializers.add("askvortsov/flarum-pwa", () => {
-  app.routes.pwa = { path: "/pwa", component: PWAPage };
+  app.routes["askvortsov-pwa"] = { path: "/pwa", component: PWAPage };
 
-  app.extensionSettings["askvortsov-pwa"] = () => m.route.set(app.route("pwa"));
+  //app.extensionSettings["askvortsov-pwa"] = () => m.route.set(app.route("askvortsov-pwa"));
 
   extend(AdminNav.prototype, "items", (items) => {
     items.add(
       "pwa",
       <AdminLinkButton
-        href={app.route("pwa")}
+        href={app.route("askvortsov-pwa")}
         icon="fas fa-mobile-alt"
         description={app.translator.trans("askvortsov-pwa.admin.nav.pwa_text")}
       >

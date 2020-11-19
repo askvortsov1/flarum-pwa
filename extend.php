@@ -18,9 +18,7 @@ use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Api\Event\Serializing;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
-use Flarum\Notification\Event\Sending;
 use Flarum\User\User;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -73,10 +71,8 @@ return [
 
     (new Extend\Event())->listen(Serializing::class, Listener\AddApiAttributes::class),
 
-    function (Dispatcher $events) {
-        $events->listen(Sending::class, Listener\SendPushNotifications::class);
-    },
+    // (new Extend\Notification())
+    //     ->driver('push', PushNotificationDriver::class),
 
-    new RegisterPushNotificationPreferences(),
     new InitializeVAPIDKeys(),
 ];

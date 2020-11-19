@@ -1,4 +1,4 @@
-import Page from "flarum/components/Page";
+import ExtensionPage from "flarum/components/ExtensionPage";
 import Button from "flarum/components/Button";
 import Alert from "flarum/components/Alert";
 import LoadingIndicator from "flarum/components/LoadingIndicator";
@@ -7,7 +7,7 @@ import Stream from "flarum/utils/Stream";
 
 import PWALogoUploadButton from "./PWALogoUploadButton";
 
-export default class PWAPage extends Page {
+export default class PWAPage extends ExtensionPage {
   oninit(vnode) {
     super.oninit(vnode);
 
@@ -61,150 +61,160 @@ export default class PWAPage extends Page {
     return http.status != 404;
   }
 
-  view() {
+  sections() {
+    const items = super.sections();
+
     if (this.loading || this.saving) {
-      return (
+      items.replace(
+        "settings",
         <div className="PWAPage">
           <div className="container">
             <LoadingIndicator />
           </div>
         </div>
       );
+    } else {
+      items.replace(
+        "settings",
+        <div className="PWAPage">
+          <div className="container">
+            <form onsubmit={this.onsubmit.bind(this)}>
+              <h2>
+                {app.translator.trans("askvortsov-pwa.admin.pwa.heading")}
+              </h2>
+              <div className="helpText">
+                {app.translator.trans("askvortsov-pwa.admin.pwa.text")}
+              </div>
+
+              <div class="statusCheck">
+                <legend>
+                  {app.translator.trans(
+                    "askvortsov-pwa.admin.pwa.status_check_heading"
+                  )}
+                </legend>
+                {this.status_messages.map((message) => (
+                  <Alert type={message.type} dismissible={false}>
+                    {[message.message]}
+                  </Alert>
+                ))}
+              </div>
+
+              <fieldset class="parent">
+                <fieldset>
+                  <legend>
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.about.heading"
+                    )}
+                  </legend>
+                  <div className="helpText">
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.about.short_name_text"
+                    )}
+                  </div>
+                  <input
+                    className="FormControl"
+                    value={this.manifest.short_name}
+                    disabled={true}
+                  ></input>
+                </fieldset>
+                <fieldset>
+                  <div className="helpText">
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.about.name_text"
+                    )}
+                  </div>
+                  <input
+                    className="FormControl"
+                    bidi={this.values["askvortsov-pwa.longName"]}
+                    required={true}
+                  />
+                </fieldset>
+                <fieldset>
+                  <div className="helpText">
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.about.description_text"
+                    )}
+                  </div>
+                  <textarea
+                    className="FormControl"
+                    value={this.manifest.description}
+                    disabled={true}
+                  >
+                    {this.manifest.description}
+                  </textarea>
+                </fieldset>
+              </fieldset>
+
+              <fieldset class="parent">
+                <fieldset>
+                  <legend>
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.colors.heading"
+                    )}
+                  </legend>
+                  <div className="helpText">
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.colors.theme_color_text"
+                    )}
+                  </div>
+                  <input
+                    className="FormControl"
+                    type="text"
+                    placeholder="#aaaaaa"
+                    value={this.manifest.theme_color}
+                    disabled={true}
+                  />
+                </fieldset>
+                <fieldset>
+                  <div className="helpText">
+                    {app.translator.trans(
+                      "askvortsov-pwa.admin.pwa.colors.background_color_text"
+                    )}
+                  </div>
+                  <input
+                    className="FormControl"
+                    type="text"
+                    placeholder="#aaaaaa"
+                    bidi={this.values["askvortsov-pwa.backgroundColor"]}
+                    required={true}
+                  />
+                </fieldset>
+              </fieldset>
+
+              <Button type="submit" className="Button Button--primary">
+                {app.translator.trans("askvortsov-pwa.admin.pwa.submit_button")}
+              </Button>
+
+              <fieldset>
+                <legend>
+                  {app.translator.trans(
+                    "askvortsov-pwa.admin.pwa.logo_heading"
+                  )}
+                </legend>
+                <div className="helpText">
+                  {app.translator.trans("askvortsov-pwa.admin.pwa.logo_text")}
+                </div>
+                {this.sizes.map((size) => {
+                  return (
+                    <fieldset class="logoFieldset">
+                      <PWALogoUploadButton name={size} />
+                      <div className="helpText">
+                        {app.translator.trans(
+                          "askvortsov-pwa.admin.pwa.logo_size_text",
+                          { size }
+                        )}
+                      </div>
+                    </fieldset>
+                  );
+                })}
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      );
     }
 
-    return (
-      <div className="PWAPage">
-        <div className="container">
-          <form onsubmit={this.onsubmit.bind(this)}>
-            <h2>{app.translator.trans("askvortsov-pwa.admin.pwa.heading")}</h2>
-            <div className="helpText">
-              {app.translator.trans("askvortsov-pwa.admin.pwa.text")}
-            </div>
-
-            <div class="statusCheck">
-              <legend>
-                {app.translator.trans(
-                  "askvortsov-pwa.admin.pwa.status_check_heading"
-                )}
-              </legend>
-              {this.status_messages.map((message) => (
-                <Alert type={message.type} dismissible={false}>
-                  {[message.message]}
-                </Alert>
-              ))}
-            </div>
-
-            <fieldset class="parent">
-              <fieldset>
-                <legend>
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.heading"
-                  )}
-                </legend>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.short_name_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  value={this.manifest.short_name}
-                  disabled={true}
-                ></input>
-              </fieldset>
-              <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.name_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  bidi={this.values["askvortsov-pwa.longName"]}
-                  required={true}
-                />
-              </fieldset>
-              <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.description_text"
-                  )}
-                </div>
-                <textarea
-                  className="FormControl"
-                  value={this.manifest.description}
-                  disabled={true}
-                >
-                  {this.manifest.description}
-                </textarea>
-              </fieldset>
-            </fieldset>
-
-            <fieldset class="parent">
-              <fieldset>
-                <legend>
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.heading"
-                  )}
-                </legend>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.theme_color_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  type="text"
-                  placeholder="#aaaaaa"
-                  value={this.manifest.theme_color}
-                  disabled={true}
-                />
-              </fieldset>
-              <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.background_color_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  type="text"
-                  placeholder="#aaaaaa"
-                  bidi={this.values["askvortsov-pwa.backgroundColor"]}
-                  required={true}
-                />
-              </fieldset>
-            </fieldset>
-
-            <Button type="submit" className="Button Button--primary">
-              {app.translator.trans("askvortsov-pwa.admin.pwa.submit_button")}
-            </Button>
-
-            <fieldset>
-              <legend>
-                {app.translator.trans("askvortsov-pwa.admin.pwa.logo_heading")}
-              </legend>
-              <div className="helpText">
-                {app.translator.trans("askvortsov-pwa.admin.pwa.logo_text")}
-              </div>
-              {this.sizes.map((size) => {
-                return (
-                  <fieldset class="logoFieldset">
-                    <PWALogoUploadButton name={size} />
-                    <div className="helpText">
-                      {app.translator.trans(
-                        "askvortsov-pwa.admin.pwa.logo_size_text",
-                        { size }
-                      )}
-                    </div>
-                  </fieldset>
-                );
-              })}
-            </fieldset>
-          </form>
-        </div>
-      </div>
-    );
+    return items;
   }
 
   onsubmit(e) {

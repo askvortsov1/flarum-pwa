@@ -9,13 +9,14 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Listener;
+namespace Askvortsov\FlarumPWA;
 
 use Askvortsov\FlarumPWA\PushSubscription;
 use Askvortsov\FlarumPWA\Util;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
-use Flarum\Notification\Event\Sending;
+use Flarum\Notification\Driver\NotificationDriverInterface;
+use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -24,7 +25,7 @@ use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class SendPushNotifications
+class PushNotificationDriver implements NotificationDriverInterface
 {
     /**
      * @var SettingsRepositoryInterface
@@ -52,18 +53,35 @@ class SendPushNotifications
         $this->url = $url;
     }
 
-    public function handle(Sending $event)
+    /**
+     * {@inheritDoc}
+     */
+    public function registerType(string $blueprintClass, array $enabled): void
+    {
+        if ((new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass, static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
+            User::addPreference(
+                User::getNotificationPreferenceKey($blueprintClass::getType(), 'push'),
+                'boolval',
+                in_array('email', $enabled)
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function send(BlueprintInterface $blueprint, array $users): void
     {
         if (!class_exists(WebPush::class) || !function_exists('gmp_init')) {
             return;
         }
 
-        if (!is_subclass_of($event->blueprint, MailableInterface::class) && !in_array(get_class($event->blueprint), self::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
+        if (!is_subclass_of($blueprint, MailableInterface::class) && !in_array(get_class($blueprint), self::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             return;
         }
 
-        $users = array_filter($event->users, function ($user) use ($event) {
-            return $user->getPreference(User::getNotificationPreferenceKey($event->blueprint->getType(), 'push'));
+        $users = array_filter($users, function ($user) use ($blueprint) {
+            return $user->getPreference(User::getNotificationPreferenceKey($blueprint->getType(), 'push'));
         });
 
         $notifications = [];
@@ -76,7 +94,7 @@ class SendPushNotifications
                         'keys'            => json_decode($subscription->keys, true),
                         'contentEncoding' => 'aesgcm',
                     ]),
-                    'payload' => json_encode($this->getPayload($event->blueprint)),
+                    'payload' => json_encode($this->getPayload($blueprint)),
                 ];
             }
         }
@@ -90,7 +108,7 @@ class SendPushNotifications
         ];
 
         $options = [
-            'topic' => $event->blueprint->getType(),
+            'topic' => $blueprint->getType(),
         ];
 
         $webPush = new WebPush($auth, $options);
@@ -134,7 +152,7 @@ class SendPushNotifications
                 break;
             case Post::class:
                 $content = $this->excerpt($subject->formatContent());
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]) . '/' . $subject->number;
                 break;
         }
 
@@ -173,12 +191,12 @@ class SendPushNotifications
             return $blueprint->getEmailSubject($this->translator);
         } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             switch ($blueprint->getType()) {
-            case 'postLiked':
-                return $this->translator->transChoice(
-                    'flarum-likes.forum.notifications.post_liked_text',
-                    1,
-                    ['{username}' => $blueprint->getFromUser()->getDisplayNameAttribute()]
-                );
+                case 'postLiked':
+                    return $this->translator->transChoice(
+                        'flarum-likes.forum.notifications.post_liked_text',
+                        1,
+                        ['{username}' => $blueprint->getFromUser()->getDisplayNameAttribute()]
+                    );
             }
         }
 
