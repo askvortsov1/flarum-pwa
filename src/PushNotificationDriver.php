@@ -11,12 +11,10 @@
 
 namespace Askvortsov\FlarumPWA;
 
-use Askvortsov\FlarumPWA\PushSubscription;
-use Askvortsov\FlarumPWA\Util;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
-use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
+use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -152,7 +150,7 @@ class PushNotificationDriver implements NotificationDriverInterface
                 break;
             case Post::class:
                 $content = $this->excerpt($subject->formatContent());
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]) . '/' . $subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
                 break;
         }
 
