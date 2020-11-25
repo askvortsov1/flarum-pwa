@@ -30,7 +30,13 @@
   },
   "extra": {
     "flarum-extension": {
-      "title": "Flarum Progressive Web App",
+      "title": "Progressive Web App",
+      "category": "feature",
+      "info": {
+        "donate": "https://flarum.org/donate/",
+        "website": "https://flarum.org",
+        "support": "https://discuss.flarum.org"
+      },
       "icon": {
         "name": "fas fa-mobile-alt",
         "backgroundColor": "#6932D1",
