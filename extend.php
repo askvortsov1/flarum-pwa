@@ -14,10 +14,10 @@ namespace Askvortsov\FlarumPWA;
 use Askvortsov\FlarumPWA\Api\Controller as ApiController;
 use Askvortsov\FlarumPWA\Extend\InitializeVAPIDKeys;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
-use Flarum\Api\Event\Serializing;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\User\User;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -30,13 +30,13 @@ $metaClosure = function (Document $document) {
     $document->head[] = "<meta id='apple-style' name='apple-mobile-web-app-status-bar-style' content='default'>";
     $document->head[] = "<meta id='apple-title' name='apple-mobile-web-app-title' content='$forumName'>";
 
-    $document->head[] = "<link id='apple-icon-48' rel='apple-touch-icon' href='$basePath/assets/pwa-icon-48x48.png'>";
-    $document->head[] = "<link id='apple-icon-72' rel='apple-touch-icon' sizes='72x72' href='$basePath/assets/pwa-icon-72x72.png'>";
-    $document->head[] = "<link id='apple-icon-96' rel='apple-touch-icon' sizes='96x96' href='$basePath/assets/pwa-icon-96x96.png'>";
-    $document->head[] = "<link id='apple-icon-144' rel='apple-touch-icon' sizes='144x144' href='$basePath/assets/pwa-icon-144x144.png'>";
-    $document->head[] = "<link id='apple-icon-196' rel='apple-touch-icon' sizes='196x196' href='$basePath/assets/pwa-icon-196x196.png'>";
-    $document->head[] = "<link id='apple-icon-256' rel='apple-touch-icon' sizes='256x256' href='$basePath/assets/pwa-icon-256x256.png'>";
-    $document->head[] = "<link id='apple-icon-512' rel='apple-touch-icon' sizes='512x512' href='$basePath/assets/pwa-icon-512x512.png'>";
+    $settings = app(SettingsRepositoryInterface::class);
+
+    foreach (PWATrait::$SIZES as $size) {
+        if (($sizePath = $settings->get("askvortsov-pwa.icon_".strval($size)."_path"))) {
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? "" : "sizes='${size}x$size'")." href='$basePath/assets/$sizePath'>";
+        }
+    }
 };
 
 return [
@@ -68,10 +68,13 @@ return [
             return $model->hasMany(PushSubscription::class, 'user_id');
         }),
 
-    (new Extend\Event())->listen(Serializing::class, Listener\AddApiAttributes::class),
+    (new Extend\Settings())
+        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', function($val) {
+            return Util::url_encode($val);
+        }),
 
-    // (new Extend\Notification())
-    //     ->driver('push', PushNotificationDriver::class),
+    (new Extend\Notification())
+        ->driver('push', PushNotificationDriver::class),
 
     new InitializeVAPIDKeys(),
 ];

@@ -14,16 +14,15 @@ namespace Askvortsov\FlarumPWA\Api\Controller;
 use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Foundation\Application;
+use Flarum\Foundation\Paths;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class DeleteLogoController extends AbstractDeleteController
 {
-    use AssertPermissionTrait;
     use PWATrait;
 
     /**
@@ -37,12 +36,18 @@ class DeleteLogoController extends AbstractDeleteController
     protected $app;
 
     /**
+     * @var Paths
+     */
+    protected $paths;
+
+    /**
      * @param SettingsRepositoryInterface $settings
      */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app)
+    public function __construct(SettingsRepositoryInterface $settings, Application $app, Paths $paths)
     {
         $this->settings = $settings;
         $this->app = $app;
+        $this->paths = $paths;
     }
 
     /**
@@ -50,11 +55,11 @@ class DeleteLogoController extends AbstractDeleteController
      */
     protected function delete(ServerRequestInterface $request)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
         $size = Arr::get($request->getQueryParams(), 'size');
 
-        if (!in_array($size, $this->sizes)) {
+        if (!in_array($size, PWATrait::$SIZES)) {
             throw new RouteNotFoundException();
         }
 

@@ -16,7 +16,6 @@ use Askvortsov\FlarumPWA\PushSubscription;
 use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -24,8 +23,6 @@ use Tobscure\JsonApi\Exception\InvalidParameterException;
 
 class AddPushSubscriptionController extends AbstractCreateController
 {
-    use AssertPermissionTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -54,7 +51,7 @@ class AddPushSubscriptionController extends AbstractCreateController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = $request->getAttribute('actor');
-        $this->assertRegistered($actor);
+        $actor->assertRegistered();
 
         $data = Arr::get($request->getParsedBody(), 'subscription', []);
 

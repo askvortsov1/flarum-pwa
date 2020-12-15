@@ -15,8 +15,8 @@ use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
 use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\Application;
+use Flarum\Foundation\Paths;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\AssertPermissionTrait;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -24,7 +24,6 @@ use Tobscure\JsonApi\Document;
 
 class ShowPWASettingsController extends AbstractShowController
 {
-    use AssertPermissionTrait;
     use PWATrait;
 
     /**
@@ -48,13 +47,19 @@ class ShowPWASettingsController extends AbstractShowController
     protected $translator;
 
     /**
+     * @var Paths
+     */
+    protected $paths;
+
+    /**
      * @param SettingsRepositoryInterface $settings
      */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app, TranslatorInterface $translator)
+    public function __construct(SettingsRepositoryInterface $settings, Application $app, TranslatorInterface $translator, Paths $paths)
     {
         $this->settings = $settings;
         $this->app = $app;
         $this->translator = $translator;
+        $this->paths = $paths;
     }
 
     /**
@@ -62,7 +67,7 @@ class ShowPWASettingsController extends AbstractShowController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
         $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
 
@@ -70,7 +75,7 @@ class ShowPWASettingsController extends AbstractShowController
 
         $logo = false;
 
-        foreach ($this->sizes as $size) {
+        foreach (PWATrait::$SIZES as $size) {
             if ($size >= 196 && $this->settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $logo = true;
             }
@@ -120,7 +125,7 @@ class ShowPWASettingsController extends AbstractShowController
 
         return [
             'manifest'        => $this->buildManifest(),
-            'sizes'           => $this->sizes,
+            'sizes'           => PWATrait::$SIZES,
             'status_messages' => $status_messages,
             'base_path'       => $basePath,
         ];

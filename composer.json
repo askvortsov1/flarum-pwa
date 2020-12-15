@@ -6,8 +6,13 @@
   ],
   "type": "flarum-extension",
   "license": "MIT",
+  "support": {
+    "issues": "https://github.com/askvortsov1/flarum-pwa/issues",
+    "source": "https://github.com/askvortsov1/flarum-pwa",
+    "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
+  },
   "require": {
-    "flarum/core": "^0.1.0-beta.14"
+    "flarum/core": "^0.1.0-beta.15"
   },
   "conflict": {
     "minishlink/web-push": "<5.2.5 || >=6"
@@ -19,7 +24,7 @@
   "authors": [
     {
       "name": "Alexander Skvortsov",
-      "email": "sasha.skvortsov109@gmail.com",
+      "email": "askvortsov@flarum.org",
       "role": "Developer"
     }
   ],
@@ -32,19 +37,11 @@
     "flarum-extension": {
       "title": "Progressive Web App",
       "category": "feature",
-      "info": {
-        "donate": "https://flarum.org/donate/",
-        "website": "https://flarum.org",
-        "support": "https://discuss.flarum.org"
-      },
       "icon": {
         "name": "fas fa-mobile-alt",
         "backgroundColor": "#6932D1",
         "color": "#fff"
       }
-    },
-    "flagrow": {
-      "discuss": ""
     }
   }
 }

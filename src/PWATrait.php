@@ -18,7 +18,7 @@ use League\Flysystem\MountManager;
 trait PWATrait
 {
     protected $mount;
-    protected $sizes = [48, 72, 96, 144, 196, 256, 512];
+    public static $SIZES = [48, 72, 96, 144, 196, 256, 512];
 
     protected function buildManifest()
     {
@@ -38,7 +38,7 @@ trait PWATrait
             'icons'            => [],
         ];
 
-        foreach ($this->sizes as $size) {
+        foreach (PWATrait::$SIZES as $size) {
             if ($this->settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $icon = [
                     'src'   => $basePath.'assets/'.$this->settings->get("askvortsov-pwa.icon_${size}_path"),
@@ -57,9 +57,9 @@ trait PWATrait
         if (is_null($this->mount)) {
             $this->mount = new MountManager([
                 'ext'     => new Filesystem(new Local(dirname(__FILE__, 2).'/assets')),
-                'storage' => new Filesystem(new Local($this->app->storagePath().'/tmp')),
-                'assets'  => new Filesystem(new Local($this->app->publicPath().'/assets')),
-                'public'  => new Filesystem(new Local($this->app->publicPath())),
+                'storage' => new Filesystem(new Local($this->paths->storage.'/tmp')),
+                'assets'  => new Filesystem(new Local($this->paths->public.'/assets')),
+                'public'  => new Filesystem(new Local($this->paths->public)),
             ]);
         }
 
