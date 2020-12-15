@@ -16,8 +16,8 @@ use Askvortsov\FlarumPWA\Extend\InitializeVAPIDKeys;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
-use Flarum\User\User;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\User;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -33,8 +33,8 @@ $metaClosure = function (Document $document) {
     $settings = app(SettingsRepositoryInterface::class);
 
     foreach (PWATrait::$SIZES as $size) {
-        if (($sizePath = $settings->get("askvortsov-pwa.icon_".strval($size)."_path"))) {
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? "" : "sizes='${size}x$size'")." href='$basePath/assets/$sizePath'>";
+        if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='${size}x$size'")." href='$basePath/assets/$sizePath'>";
         }
     }
 };
@@ -69,7 +69,7 @@ return [
         }),
 
     (new Extend\Settings())
-        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', function($val) {
+        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', function ($val) {
             return Util::url_encode($val);
         }),
 
