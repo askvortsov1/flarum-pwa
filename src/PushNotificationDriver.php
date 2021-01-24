@@ -57,7 +57,7 @@ class PushNotificationDriver implements NotificationDriverInterface
     public function registerType(string $blueprintClass, array $enabled): void
     {
         if ((new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass, static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
-            User::addPreference(
+            User::registerPreference(
                 User::getNotificationPreferenceKey($blueprintClass::getType(), 'push'),
                 'boolval',
                 in_array('email', $enabled)
