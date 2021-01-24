@@ -145,27 +145,27 @@ class PushNotificationDriver implements NotificationDriverInterface
                 $link = $this->url->to('forum')->route('user', ['id' =>  $subject->username]);
                 break;
             case Discussion::class:
-                $content = $this->excerpt($this->getRelevantPostContent($subject));
+                $content = $this->getRelevantPostContent($subject);
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
                 break;
             case Post::class:
-                $content = $this->excerpt($subject->formatContent());
+                $content = $subject->formatContent();
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
                 break;
         }
 
         return [
-            'title'   => $this->getTitle($blueprint),
-            'content' => $content,
+            'title'   => $this->excerpt($this->getTitle($blueprint), 30),
+            'content' => $this->excerpt($content),
             'link'    => $link,
         ];
     }
 
-    protected function excerpt($str)
+    protected function excerpt($str, $maxLen = 200)
     {
         $str = strip_tags($str);
-        if (mb_strlen($str) > 300) {
-            $str = mb_substr($str, 0, 300);
+        if (mb_strlen($str) > $maxLen) {
+            $str = mb_substr($str, 0, $maxLen);
             $str .= '...';
         }
 
