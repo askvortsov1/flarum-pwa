@@ -54,7 +54,9 @@ export const refreshSubscription = async (sw) => {
     try {
       await subscribeUser(true);
     } catch (e) {
-      console.log(e);
+      if (!sw.pushManager) {
+        return;
+      }
       sw.pushManager
         .getSubscription()
         .then((s) => s.unsubscribe().then(subscribeUser.bind(this, true)));
