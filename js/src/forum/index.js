@@ -55,6 +55,7 @@ app.initializers.add("askvortsov/flarum-pwa", () => {
             icon: "fas fa-wrench",
             href: app.forum.attribute("adminUrl"),
             target: "_self",
+            external: true,
           },
           app.translator.trans("core.forum.header.admin_button")
         )
