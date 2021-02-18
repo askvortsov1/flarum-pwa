@@ -111,6 +111,7 @@ class PushNotificationDriver implements NotificationDriverInterface
 
         $webPush = new WebPush($auth, $options);
         $webPush->setReuseVAPIDHeaders(true);
+        $webPush->setAutomaticPadding(false);
 
         // send multiple notifications with payload
         foreach ($notifications as $notification) {
