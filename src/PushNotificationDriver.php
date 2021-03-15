@@ -86,8 +86,8 @@ class PushNotificationDriver implements NotificationDriverInterface
             return $user->getPreference(User::getNotificationPreferenceKey($blueprint->getType(), 'push'));
         });
 
-        $this->log("[PWA PUSH] Notification Type: ".$blueprint::getType());
-        $this->log("[PWA PUSH] Sending for users with ids: ".json_encode(Arr::pluck($users, 'id')));
+        $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
+        $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
 
         $notifications = [];
 
@@ -102,7 +102,7 @@ class PushNotificationDriver implements NotificationDriverInterface
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint'        => $subscription->endpoint,
-                        'keys'            => json_decode($subscription->keys, true)
+                        'keys'            => json_decode($subscription->keys, true),
                     ]),
                     'payload' => $payload,
                 ];
@@ -222,7 +222,8 @@ class PushNotificationDriver implements NotificationDriverInterface
         return '';
     }
 
-    protected function log($message) {
+    protected function log($message)
+    {
         if ($this->settings->get('askvortsov-pwa.debug', false)) {
             $this->logger->info($message);
         }
