@@ -8,6 +8,9 @@ import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
 
 app.initializers.add('askvortsov/flarum-pwa', () => {
+  const isInStandaloneMode = () =>
+    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+
   extend(Page.prototype, 'oninit', () => {
     const basePath = app.forum.attribute('basePath').trimRight('/');
 
@@ -37,8 +40,6 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
   });
 
   extend(SessionDropdown.prototype, 'items', (items) => {
-    const isInStandaloneMode = () =>
-      window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
     if (isInStandaloneMode() && items.has('administration')) {
       items.replace(
         'administration',

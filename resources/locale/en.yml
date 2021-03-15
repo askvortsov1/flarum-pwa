@@ -13,6 +13,9 @@ askvortsov-pwa:
         heading: Colors
         background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
         theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site. You can set this by changing the primary theme in the 'Appearance' page of your admin dashboard.
+      maintenance:
+        heading: Maintenance
+        debug_label: Debug mode? This will log info about notifications to `storage/logs`.
       heading: Progressive Web App Configuration
       text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
       status_check_heading: Status Check
