@@ -70,7 +70,6 @@ self.addEventListener("fetch", function (event) {
               return;
           }
 
-          console.error("[PWA] Network request failed. Serving offline page " + error);
           return caches.open(CACHE).then(function (cache) {
               return cache.match(offlineFallbackPage);
           });
