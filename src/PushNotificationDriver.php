@@ -19,12 +19,19 @@ use Flarum\Notification\MailableInterface;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Support\Arr;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class PushNotificationDriver implements NotificationDriverInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     /**
      * @var SettingsRepositoryInterface
      */
@@ -40,12 +47,9 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     protected $url;
 
-    /**
-     * @param SettingsRepositoryInterface $settings
-     * @param UrlGenerator                $url
-     */
-    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
+    public function __construct(LoggerInterface $logger, SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
     {
+        $this->logger = $logger;
         $this->settings = $settings;
         $this->translator = $translator;
         $this->url = $url;
@@ -82,17 +86,25 @@ class PushNotificationDriver implements NotificationDriverInterface
             return $user->getPreference(User::getNotificationPreferenceKey($blueprint->getType(), 'push'));
         });
 
+        $this->log("[PWA PUSH] Notification Type: ".$blueprint::getType());
+        $this->log("[PWA PUSH] Sending for users with ids: ".json_encode(Arr::pluck($users, 'id')));
+
         $notifications = [];
 
+        $payload = json_encode($this->getPayload($blueprint));
+
+        $sendingCounter = 0;
+
         foreach ($users as $user) {
-            foreach ($user->pushSubscriptions as $subscription) {
+            $subscriptions = $user->pushSubscriptions;
+            $sendingCounter += $subscriptions->count();
+            foreach ($subscriptions as $subscription) {
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint'        => $subscription->endpoint,
-                        'keys'            => json_decode($subscription->keys, true),
-                        'contentEncoding' => 'aesgcm',
+                        'keys'            => json_decode($subscription->keys, true)
                     ]),
-                    'payload' => json_encode($this->getPayload($blueprint)),
+                    'payload' => $payload,
                 ];
             }
         }
@@ -109,6 +121,8 @@ class PushNotificationDriver implements NotificationDriverInterface
             'topic' => $blueprint->getType(),
         ];
 
+        $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
+
         $webPush = new WebPush($auth, $options);
         $webPush->setReuseVAPIDHeaders(true);
         $webPush->setAutomaticPadding(false);
@@ -121,6 +135,8 @@ class PushNotificationDriver implements NotificationDriverInterface
             );
         }
 
+        $sentCounter = 0;
+
         /**
          * Check sent results.
          *
@@ -131,8 +147,12 @@ class PushNotificationDriver implements NotificationDriverInterface
                 PushSubscription::where('endpoint', $report->getEndpoint())->delete();
             } elseif (!$report->isSuccess()) {
                 echo "[x] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}";
+            } else {
+                $sentCounter++;
             }
         }
+
+        $this->log("[PWA PUSH] Sent $sentCounter notifications successfully.\n\n");
     }
 
     protected function getPayload($blueprint)
@@ -200,6 +220,12 @@ class PushNotificationDriver implements NotificationDriverInterface
         }
 
         return '';
+    }
+
+    protected function log($message) {
+        if ($this->settings->get('askvortsov-pwa.debug', false)) {
+            $this->logger->info($message);
+        }
     }
 
     public static $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
