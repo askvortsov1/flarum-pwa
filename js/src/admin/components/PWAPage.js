@@ -17,19 +17,10 @@ export default class PWAPage extends ExtensionPage {
 
   refresh() {
     this.loading = true;
-    const settings = app.data.settings;
 
     this.status_messages = [];
     this.manifest = {};
     this.sizes = [];
-    this.values = {};
-
-    this.fields = ['askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
-    this.fields.forEach((key) => (this.values[key] = Stream(settings[key] !== undefined ? settings[key] : '')));
-
-    // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
-    //     this.values['askvortsov-pwa.categories'] = Stream(settings['askvortsov-pwa.categories'].join(','));
-    // }
 
     app
       .request({
@@ -69,7 +60,7 @@ export default class PWAPage extends ExtensionPage {
     return (
       <div className="PWAPage">
         <div className="container">
-          <form onsubmit={this.onsubmit.bind(this)}>
+          <form>
             <h2>{app.translator.trans('askvortsov-pwa.admin.pwa.heading')}</h2>
             <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.text')}</div>
 
@@ -83,14 +74,14 @@ export default class PWAPage extends ExtensionPage {
             </div>
 
             <fieldset class="parent">
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
               <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text')}</div>
                 <input className="FormControl" value={this.manifest.short_name} disabled={true}></input>
               </fieldset>
               <fieldset>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.name_text')}</div>
-                <input className="FormControl" bidi={this.values['askvortsov-pwa.longName']} required={true} />
+                <input className="FormControl" bidi={this.setting('askvortsov-pwa.longName')} required={true} />
               </fieldset>
               <fieldset>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.description_text')}</div>
@@ -101,8 +92,8 @@ export default class PWAPage extends ExtensionPage {
             </fieldset>
 
             <fieldset class="parent">
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
               <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text')}</div>
                 <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.manifest.theme_color} disabled={true} />
               </fieldset>
@@ -112,15 +103,13 @@ export default class PWAPage extends ExtensionPage {
                   className="FormControl"
                   type="text"
                   placeholder="#aaaaaa"
-                  bidi={this.values['askvortsov-pwa.backgroundColor']}
+                  bidi={this.setting('askvortsov-pwa.backgroundColor')}
                   required={true}
                 />
               </fieldset>
             </fieldset>
 
-            <Button type="submit" className="Button Button--primary">
-              {app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')}
-            </Button>
+            {this.submitButton()}
 
             <fieldset>
               <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')}</legend>
@@ -140,38 +129,14 @@ export default class PWAPage extends ExtensionPage {
     );
   }
 
-  onsubmit(e) {
-    e.preventDefault();
+  saveSettings(e) {
     const hex = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
 
-    if (!hex.test(this.values['askvortsov-pwa.backgroundColor']())) {
+    if (!hex.test(this.setting('askvortsov-pwa.backgroundColor')())) {
       alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
       return;
     }
-    // this.values['askvortsov-pwa.categories'](this.values['askvortsov-pwa.categories']().split(',').map(function (item) {
-    //     return item.trim();
-    // }));
-    this.saveSettings();
-  }
 
-  saveSettings() {
-    if (this.saving) return;
-
-    this.saving = true;
-    app.alerts.dismiss(this.successAlert);
-
-    const settings = {};
-
-    this.fields.forEach((key) => (settings[key] = this.values[key]()));
-
-    saveSettings(settings)
-      .then(() => {
-        this.successAlert = app.alerts.show({ type: 'success' }, app.translator.trans('core.admin.basics.saved_message'));
-      })
-      .catch(() => {})
-      .then(() => {
-        this.saving = false;
-        this.refresh();
-      });
+    return super.saveSettings(e);
   }
 }
