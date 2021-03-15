@@ -1,11 +1,11 @@
-import ExtensionPage from "flarum/components/ExtensionPage";
-import Button from "flarum/components/Button";
-import Alert from "flarum/components/Alert";
-import LoadingIndicator from "flarum/components/LoadingIndicator";
-import saveSettings from "flarum/utils/saveSettings";
-import Stream from "flarum/utils/Stream";
+import ExtensionPage from 'flarum/components/ExtensionPage';
+import Button from 'flarum/components/Button';
+import Alert from 'flarum/components/Alert';
+import LoadingIndicator from 'flarum/components/LoadingIndicator';
+import saveSettings from 'flarum/utils/saveSettings';
+import Stream from 'flarum/utils/Stream';
 
-import PWALogoUploadButton from "./PWALogoUploadButton";
+import PWALogoUploadButton from './PWALogoUploadButton';
 
 export default class PWAPage extends ExtensionPage {
   oninit(vnode) {
@@ -24,13 +24,8 @@ export default class PWAPage extends ExtensionPage {
     this.sizes = [];
     this.values = {};
 
-    this.fields = ["askvortsov-pwa.longName", "askvortsov-pwa.backgroundColor"];
-    this.fields.forEach(
-      (key) =>
-        (this.values[key] = Stream(
-          settings[key] !== undefined ? settings[key] : ""
-        ))
-    );
+    this.fields = ['askvortsov-pwa.longName', 'askvortsov-pwa.backgroundColor'];
+    this.fields.forEach((key) => (this.values[key] = Stream(settings[key] !== undefined ? settings[key] : '')));
 
     // if (Array.isArray(settings['askvortsov-pwa.categories'])) {
     //     this.values['askvortsov-pwa.categories'] = Stream(settings['askvortsov-pwa.categories'].join(','));
@@ -38,14 +33,13 @@ export default class PWAPage extends ExtensionPage {
 
     app
       .request({
-        method: "GET",
-        url: app.forum.attribute("apiUrl") + "/pwa/settings",
+        method: 'GET',
+        url: app.forum.attribute('apiUrl') + '/pwa/settings',
       })
       .then((response) => {
-        this.manifest = response["data"]["attributes"]["manifest"];
-        this.sizes = response["data"]["attributes"]["sizes"];
-        this.status_messages =
-          response["data"]["attributes"]["status_messages"];
+        this.manifest = response['data']['attributes']['manifest'];
+        this.sizes = response['data']['attributes']['sizes'];
+        this.status_messages = response['data']['attributes']['status_messages'];
 
         this.loading = false;
         m.redraw();
@@ -55,7 +49,7 @@ export default class PWAPage extends ExtensionPage {
   checkExistence(url) {
     let http = new XMLHttpRequest();
 
-    http.open("HEAD", url, false);
+    http.open('HEAD', url, false);
     http.send();
 
     return http.status != 404;
@@ -76,17 +70,11 @@ export default class PWAPage extends ExtensionPage {
       <div className="PWAPage">
         <div className="container">
           <form onsubmit={this.onsubmit.bind(this)}>
-            <h2>{app.translator.trans("askvortsov-pwa.admin.pwa.heading")}</h2>
-            <div className="helpText">
-              {app.translator.trans("askvortsov-pwa.admin.pwa.text")}
-            </div>
+            <h2>{app.translator.trans('askvortsov-pwa.admin.pwa.heading')}</h2>
+            <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.text')}</div>
 
             <div class="statusCheck">
-              <legend>
-                {app.translator.trans(
-                  "askvortsov-pwa.admin.pwa.status_check_heading"
-                )}
-              </legend>
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.status_check_heading')}</legend>
               {this.status_messages.map((message) => (
                 <Alert type={message.type} dismissible={false}>
                   {[message.message]}
@@ -96,45 +84,17 @@ export default class PWAPage extends ExtensionPage {
 
             <fieldset class="parent">
               <fieldset>
-                <legend>
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.heading"
-                  )}
-                </legend>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.short_name_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  value={this.manifest.short_name}
-                  disabled={true}
-                ></input>
+                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
+                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text')}</div>
+                <input className="FormControl" value={this.manifest.short_name} disabled={true}></input>
               </fieldset>
               <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.name_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  bidi={this.values["askvortsov-pwa.longName"]}
-                  required={true}
-                />
+                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.name_text')}</div>
+                <input className="FormControl" bidi={this.values['askvortsov-pwa.longName']} required={true} />
               </fieldset>
               <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.about.description_text"
-                  )}
-                </div>
-                <textarea
-                  className="FormControl"
-                  value={this.manifest.description}
-                  disabled={true}
-                >
+                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.description_text')}</div>
+                <textarea className="FormControl" value={this.manifest.description} disabled={true}>
                   {this.manifest.description}
                 </textarea>
               </fieldset>
@@ -142,61 +102,34 @@ export default class PWAPage extends ExtensionPage {
 
             <fieldset class="parent">
               <fieldset>
-                <legend>
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.heading"
-                  )}
-                </legend>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.theme_color_text"
-                  )}
-                </div>
-                <input
-                  className="FormControl"
-                  type="text"
-                  placeholder="#aaaaaa"
-                  value={this.manifest.theme_color}
-                  disabled={true}
-                />
+                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
+                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text')}</div>
+                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.manifest.theme_color} disabled={true} />
               </fieldset>
               <fieldset>
-                <div className="helpText">
-                  {app.translator.trans(
-                    "askvortsov-pwa.admin.pwa.colors.background_color_text"
-                  )}
-                </div>
+                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}</div>
                 <input
                   className="FormControl"
                   type="text"
                   placeholder="#aaaaaa"
-                  bidi={this.values["askvortsov-pwa.backgroundColor"]}
+                  bidi={this.values['askvortsov-pwa.backgroundColor']}
                   required={true}
                 />
               </fieldset>
             </fieldset>
 
             <Button type="submit" className="Button Button--primary">
-              {app.translator.trans("askvortsov-pwa.admin.pwa.submit_button")}
+              {app.translator.trans('askvortsov-pwa.admin.pwa.submit_button')}
             </Button>
 
             <fieldset>
-              <legend>
-                {app.translator.trans("askvortsov-pwa.admin.pwa.logo_heading")}
-              </legend>
-              <div className="helpText">
-                {app.translator.trans("askvortsov-pwa.admin.pwa.logo_text")}
-              </div>
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')}</legend>
+              <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')}</div>
               {this.sizes.map((size) => {
                 return (
                   <fieldset class="logoFieldset">
                     <PWALogoUploadButton name={size} />
-                    <div className="helpText">
-                      {app.translator.trans(
-                        "askvortsov-pwa.admin.pwa.logo_size_text",
-                        { size }
-                      )}
-                    </div>
+                    <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_size_text', { size })}</div>
                   </fieldset>
                 );
               })}
@@ -211,8 +144,8 @@ export default class PWAPage extends ExtensionPage {
     e.preventDefault();
     const hex = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
 
-    if (!hex.test(this.values["askvortsov-pwa.backgroundColor"]())) {
-      alert(app.translator.trans("core.admin.appearance.enter_hex_message"));
+    if (!hex.test(this.values['askvortsov-pwa.backgroundColor']())) {
+      alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
       return;
     }
     // this.values['askvortsov-pwa.categories'](this.values['askvortsov-pwa.categories']().split(',').map(function (item) {
@@ -233,10 +166,7 @@ export default class PWAPage extends ExtensionPage {
 
     saveSettings(settings)
       .then(() => {
-        this.successAlert = app.alerts.show(
-          { type: "success" },
-          app.translator.trans("core.admin.basics.saved_message")
-        );
+        this.successAlert = app.alerts.show({ type: 'success' }, app.translator.trans('core.admin.basics.saved_message'));
       })
       .catch(() => {})
       .then(() => {

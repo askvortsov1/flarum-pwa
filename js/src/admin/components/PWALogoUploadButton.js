@@ -1,12 +1,12 @@
-import Button from "flarum/components/Button";
-import UploadImageButton from "flarum/components/UploadImageButton";
+import Button from 'flarum/components/Button';
+import UploadImageButton from 'flarum/components/UploadImageButton';
 
 export default class PWALogoUploadButton extends UploadImageButton {
   view(vnode) {
     vnode.attrs.loading = this.loading;
-    vnode.attrs.className = (this.attrs.className || "") + " Button";
+    vnode.attrs.className = (this.attrs.className || '') + ' Button';
 
-    if (app.data.settings["askvortsov-pwa.icon_" + this.attrs.name + "_path"]) {
+    if (app.data.settings['askvortsov-pwa.icon_' + this.attrs.name + '_path']) {
       vnode.attrs.onclick = this.remove.bind(this);
 
       return (
@@ -14,12 +14,10 @@ export default class PWALogoUploadButton extends UploadImageButton {
           <p>
             <img
               src={
-                app.forum.attribute("basePath").trimRight("/") +
-                "/assets/" +
-                app.data.settings[
-                  "askvortsov-pwa.icon_" + this.attrs.name + "_path"
-                ] +
-                "?" +
+                app.forum.attribute('basePath').trimRight('/') +
+                '/assets/' +
+                app.data.settings['askvortsov-pwa.icon_' + this.attrs.name + '_path'] +
+                '?' +
                 performance.now()
               }
               alt=""
@@ -28,9 +26,7 @@ export default class PWALogoUploadButton extends UploadImageButton {
           <p>
             {Button.prototype.view.call(this, {
               ...vnode,
-              children: app.translator.trans(
-                "core.admin.upload_image.remove_button"
-              ),
+              children: app.translator.trans('core.admin.upload_image.remove_button'),
             })}
           </p>
         </div>
@@ -43,6 +39,6 @@ export default class PWALogoUploadButton extends UploadImageButton {
   }
 
   resourceUrl() {
-    return app.forum.attribute("apiUrl") + "/pwa/logo/" + this.attrs.name;
+    return app.forum.attribute('apiUrl') + '/pwa/logo/' + this.attrs.name;
   }
 }
