@@ -1,9 +1,6 @@
 import ExtensionPage from 'flarum/components/ExtensionPage';
-import Button from 'flarum/components/Button';
 import Alert from 'flarum/components/Alert';
 import LoadingIndicator from 'flarum/components/LoadingIndicator';
-import saveSettings from 'flarum/utils/saveSettings';
-import Stream from 'flarum/utils/Stream';
 
 import PWALogoUploadButton from './PWALogoUploadButton';
 
@@ -74,8 +71,17 @@ export default class PWAPage extends ExtensionPage {
             </div>
 
             <fieldset class="parent">
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.heading')}</legend>
+              {this.buildSettingComponent({
+                setting: 'askvortsov-pwa.debug',
+                label: app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.debug_label'),
+                type: 'boolean',
+              })}
+            </fieldset>
+
+            <fieldset class="parent">
               <fieldset>
+                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text')}</div>
                 <input className="FormControl" value={this.manifest.short_name} disabled={true}></input>
               </fieldset>
@@ -92,8 +98,8 @@ export default class PWAPage extends ExtensionPage {
             </fieldset>
 
             <fieldset class="parent">
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
               <fieldset>
+                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text')}</div>
                 <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.manifest.theme_color} disabled={true} />
               </fieldset>
