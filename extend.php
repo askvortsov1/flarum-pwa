@@ -30,7 +30,7 @@ $metaClosure = function (Document $document) {
     $document->head[] = "<meta id='apple-style' name='apple-mobile-web-app-status-bar-style' content='default'>";
     $document->head[] = "<meta id='apple-title' name='apple-mobile-web-app-title' content='$forumName'>";
 
-    $settings = app(SettingsRepositoryInterface::class);
+    $settings = resolve(SettingsRepositoryInterface::class);
 
     foreach (PWATrait::$SIZES as $size) {
         if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
@@ -69,9 +69,7 @@ return [
         }),
 
     (new Extend\Settings())
-        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', function ($val) {
-            return Util::url_encode($val);
-        }),
+        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', [Util::class, 'url_encode']),
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
