@@ -23,7 +23,7 @@ use Illuminate\Support\Arr;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PushNotificationDriver implements NotificationDriverInterface
 {
