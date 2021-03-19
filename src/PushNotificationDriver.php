@@ -129,7 +129,7 @@ class PushNotificationDriver implements NotificationDriverInterface
 
         // send multiple notifications with payload
         foreach ($notifications as $notification) {
-            $webPush->sendNotification(
+            $webPush->queueNotification(
                 $notification['subscription'],
                 $notification['payload']
             );
