@@ -211,9 +211,8 @@ class PushNotificationDriver implements NotificationDriverInterface
         } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             switch ($blueprint->getType()) {
                 case 'postLiked':
-                    return $this->translator->transChoice(
+                    return $this->translator->trans(
                         'flarum-likes.forum.notifications.post_liked_text',
-                        1,
                         ['{username}' => $blueprint->getFromUser()->getDisplayNameAttribute()]
                     );
             }
