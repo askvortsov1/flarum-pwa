@@ -6,9 +6,9 @@ askvortsov-pwa:
     pwa:
       about:
         description_text: You can set the description on the 'Basics' page in your admin dashboard.
-        name_text: Enter a longer name to be used in your PWA.
+        long_name_text: The name of the web application displayed to the user.
         heading: About
-        short_name_text: You can set the short name on the 'Basics' page in your admin dashboard.
+        short_name_text: The name of the application displayed to the user if there is not enough space for the long name.
       colors:
         heading: Colors
         background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
