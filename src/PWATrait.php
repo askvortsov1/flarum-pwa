@@ -25,7 +25,7 @@ trait PWATrait
         $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
         $manifest = [
             'name'        => $this->settings->get('askvortsov-pwa.longName', $this->settings->get('forum_title')),
-            'short_name'  => $this->settings->get('askvortsov-pwa.shortName', $this->settings->get('forum_title')),
+            'short_name'  => $this->settings->get('askvortsov-pwa.shortName'),
             'description' => $this->settings->get('forum_description', ''),
             //"categories" => $this->settings->get('askvortsov-pwa.categories', []),
             'start_url'        => $basePath,
