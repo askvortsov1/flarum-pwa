@@ -93,7 +93,8 @@ export default class PWAPage extends ExtensionPage {
                 </div>
                 <input
                   className="FormControl"
-                  bidi={this.values["askvortsov-pwa.shortName"]}
+                  bidi={this.setting("askvortsov-pwa.shortName")}
+                  placeholder={this.setting("forum_title")()}
                 ></input>
               </fieldset>
               <fieldset>
@@ -104,7 +105,8 @@ export default class PWAPage extends ExtensionPage {
                 </div>
                 <input
                   className="FormControl"
-                  bidi={this.values["askvortsov-pwa.longName"]}
+                  bidi={this.setting("askvortsov-pwa.longName")}
+                  placeholder={this.setting("forum_title")()}
                 />
               </fieldset>
               <fieldset>
