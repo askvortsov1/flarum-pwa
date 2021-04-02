@@ -16,6 +16,7 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Notification\MailableInterface;
+use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -169,9 +170,13 @@ class PushNotificationDriver implements NotificationDriverInterface
                 $content = $this->getRelevantPostContent($subject);
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
                 break;
-            case Post::class:
+            case CommentPost::class:
                 $content = $subject->formatContent();
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
+                break;
+            case Post::class:
+                $content = '';
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]) . '/' . $subject->number;
                 break;
         }
 
