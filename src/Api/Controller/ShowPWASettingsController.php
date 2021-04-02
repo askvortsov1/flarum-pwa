@@ -81,7 +81,7 @@ class ShowPWASettingsController extends AbstractShowController
             }
         }
 
-        if (!$this->settings->get('askvortsov-pwa.longName')) {
+        if (!isset($this->buildManifest()['name'])) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_name'),
