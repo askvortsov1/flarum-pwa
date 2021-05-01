@@ -25,7 +25,6 @@ trait PWATrait
         $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
         $manifest = [
             'name'        => $this->settings->get('askvortsov-pwa.longName', $this->settings->get('forum_title')),
-            'short_name'  => $this->settings->get('askvortsov-pwa.shortName'),
             'description' => $this->settings->get('forum_description', ''),
             //"categories" => $this->settings->get('askvortsov-pwa.categories', []),
             'start_url'        => $basePath,
@@ -36,6 +35,11 @@ trait PWATrait
             'display'          => 'standalone',
             'icons'            => [],
         ];
+
+        $shortName = $this->settings->get('askvortsov-pwa.shortName');
+        if ($shortName) {
+            $manifest['short_name'] = $shortName;
+        }
 
         foreach (PWATrait::$SIZES as $size) {
             if ($this->settings->get("askvortsov-pwa.icon_${size}_path")) {
