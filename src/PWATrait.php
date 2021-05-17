@@ -36,6 +36,10 @@ trait PWATrait
             'icons'            => [],
         ];
 
+        if ($this->settings->get('askvortsov-pwa.forcePortrait')) {
+            $manifest['orientation'] = 'portrait';
+        }
+
         $shortName = $this->settings->get('askvortsov-pwa.shortName');
         if ($shortName) {
             $manifest['short_name'] = $shortName;

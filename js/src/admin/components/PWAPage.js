@@ -120,6 +120,17 @@ export default class PWAPage extends ExtensionPage {
               </fieldset>
             </fieldset>
 
+            <fieldset class="parent">
+              <fieldset>
+                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.other.heading')}</legend>
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.forcePortrait',
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.force_portrait_text'),
+                  type: 'boolean',
+                })}
+              </fieldset>
+            </fieldset>
+
             {this.submitButton()}
 
             <fieldset>
