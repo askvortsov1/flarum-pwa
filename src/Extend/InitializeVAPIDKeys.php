@@ -16,6 +16,7 @@ use Flarum\Extension\Extension;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Container\Container;
 use Minishlink\WebPush\VAPID;
+use RuntimeException;
 
 class InitializeVAPIDKeys implements ExtenderInterface
 {
@@ -24,8 +25,16 @@ class InitializeVAPIDKeys implements ExtenderInterface
         $settings = $container->make(SettingsRepositoryInterface::class);
 
         if (!$settings->get('askvortsov-pwa.vapid.private') || !$settings->get('askvortsov-pwa.vapid.private')) {
-            $keys = VAPID::createVapidKeys();
+            try {
+                $keys = VAPID::createVapidKeys();
+            } catch (RuntimeException $e) {
+                $settings->set('askvortsov-pwa.vapid.success', false);
+                $settings->set('askvortsov-pwa.vapid.error', $e->getMessage());
 
+                return;
+            }
+
+            $settings->set('askvortsov-pwa.vapid.success', true);
             $settings->set('askvortsov-pwa.vapid.private', $keys['privateKey']);
             $settings->set('askvortsov-pwa.vapid.public', $keys['publicKey']);
         }

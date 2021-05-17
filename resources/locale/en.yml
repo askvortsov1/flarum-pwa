@@ -32,9 +32,10 @@ askvortsov-pwa:
       refreshed_message: PWA config refreshed successfully.
     status:
       config_no_https: The url in your config.php file isn't using HTTPS. HTTPS is required for Progressive Web Apps to work.
-      possible_https_disabled: Your site might not be running on HTTPS. If it is, ignore this. If it isn't keep in mind that HTTPS is required for Progressive Web Apps to work.
+      possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard page => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
       no_logo: You must upload at least one logo, with a size of at least 196px for your app to work.
       no_name: You must provide a full name for your app to work.
+      key_gen_failed: "Generation of keys needed for push notifications has failed. The full error message was: {error}"
       success: No Potential Issues Found!
   forum:
     alerts:

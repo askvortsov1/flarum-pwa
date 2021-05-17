@@ -109,6 +109,13 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
+        if (!$this->settings->get('askvortsov-pwa.vapid.success', true)) {
+            $status_messages[] = [
+                'type'    => 'error',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.key_gen_failed', ['error' => $this->settings->get('askvortsov-pwa.vapid.error', '')]),
+            ];
+        }
+
         if (empty($status_messages)) {
             $status_messages[] = [
                 'type'    => 'success',
