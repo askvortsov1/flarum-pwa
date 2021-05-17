@@ -214,7 +214,7 @@ class PushNotificationDriver implements NotificationDriverInterface
                 case 'postLiked':
                     return $this->translator->trans(
                         'flarum-likes.forum.notifications.post_liked_text',
-                        ['{username}' => $blueprint->getFromUser()->getDisplayNameAttribute()]
+                        ['username' => $blueprint->getFromUser()->getDisplayNameAttribute()]
                     );
             }
         }
