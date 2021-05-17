@@ -110,13 +110,7 @@ export default class PWAPage extends ExtensionPage {
               </fieldset>
               <fieldset>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}</div>
-                <input
-                  className="FormControl"
-                  type="text"
-                  placeholder="#aaaaaa"
-                  bidi={this.setting('askvortsov-pwa.backgroundColor')}
-                  required={true}
-                />
+                <input className="FormControl" type="text" placeholder="#aaaaaa" bidi={this.setting('askvortsov-pwa.backgroundColor')} />
               </fieldset>
             </fieldset>
 
