@@ -35,6 +35,6 @@ class OfflineController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new HtmlResponse($this->assetDir->get('askvortsov-pwa/offline.html'));
+        return new HtmlResponse($this->assetDir->get('extensions/askvortsov-pwa/offline.html'));
     }
 }

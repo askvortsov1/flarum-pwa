@@ -35,7 +35,7 @@ class ServiceWorkerController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $response = new TextResponse($this->assetDir->get('askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
+        $response = new TextResponse($this->assetDir->get('extensions/askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
 
         return $response;
     }
