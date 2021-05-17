@@ -72,7 +72,7 @@ return [
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
             foreach (PWATrait::$SIZES as $size) {
-                if (($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path'))) {
+                if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
                     $attributes["pwa-icon-${size}x${size}Url"] = $assets->url($sizePath);
                 }
             }

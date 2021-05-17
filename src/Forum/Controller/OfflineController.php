@@ -12,9 +12,6 @@
 namespace Askvortsov\FlarumPWA\Forum\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
-use Flarum\Foundation\Application;
-use Flarum\Foundation\Paths;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -35,7 +32,7 @@ class OfflineController implements RequestHandlerInterface
     {
         $this->assetDir = $filesystemFactory->disk('flarum-assets');
     }
-    
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse($this->assetDir->get('askvortsov-pwa/offline.html'));

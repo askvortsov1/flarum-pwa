@@ -32,7 +32,7 @@ class ServiceWorkerController implements RequestHandlerInterface
     {
         $this->assetDir = $filesystemFactory->disk('flarum-assets');
     }
-    
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $response = new TextResponse($this->assetDir->get('askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
