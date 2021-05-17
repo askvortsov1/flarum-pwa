@@ -12,45 +12,24 @@
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
-use Flarum\Api\Controller\ShowForumController;
-use Flarum\Foundation\Application;
-use Flarum\Foundation\Paths;
+use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
+use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Tobscure\JsonApi\Document;
 
-class UploadLogoController extends ShowForumController
+class UploadLogoController extends UploadImageController
 {
     use PWATrait;
 
     /**
-     * @var SettingsRepositoryInterface
+     * @var string
      */
-    protected $settings;
-
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var Paths
-     */
-    protected $paths;
-
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app, Paths $paths)
-    {
-        $this->settings = $settings;
-        $this->app = $app;
-        $this->paths = $paths;
-    }
+    protected $size;
 
     /**
      * {@inheritdoc}
@@ -60,31 +39,22 @@ class UploadLogoController extends ShowForumController
         RequestUtil::getActor($request)->assertAdmin();
 
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
+        $this->size = $size;
 
         if (!in_array($size, PWATrait::$SIZES)) {
             throw new RouteNotFoundException();
         }
 
-        $file = Arr::get($request->getUploadedFiles(), strval($size));
-
-        $tmpFile = tempnam($this->paths->storage.'/tmp', 'favicon');
-        $file->moveTo($tmpFile);
-
-        $manager = new ImageManager();
-
-        $encodedImage = $manager->make($tmpFile)->resize($size, $size)->encode('png');
-        file_put_contents($tmpFile, $encodedImage);
-
-        $path = "pwa-icon-${size}x${size}.png";
-
-        if ($this->mount()->has($file = "assets://$path")) {
-            $this->mount()->delete($file);
-        }
-
-        $this->mount()->move('storage://'.pathinfo($tmpFile, PATHINFO_BASENAME), "assets://$path");
-
-        $this->settings->set("askvortsov-pwa.icon_${size}_path", $path);
+        $this->filenamePrefix = "pwa-icon-${size}x${size}";
+        $this->filePathSettingKey = "askvortsov-pwa.icon_${size}_path";
 
         return parent::data($request, $document);
+    }
+
+    protected function makeImage(UploadedFileInterface $file): Image
+    {
+        $manager = new ImageManager();
+
+        return $manager->make($file->getStream())->resize($this->size, $this->size)->encode('png');
     }
 }

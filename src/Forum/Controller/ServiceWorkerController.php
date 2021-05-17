@@ -12,9 +12,8 @@
 namespace Askvortsov\FlarumPWA\Forum\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
-use Flarum\Foundation\Application;
-use Flarum\Foundation\Paths;
-use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Laminas\Diactoros\Response\TextResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,36 +24,18 @@ class ServiceWorkerController implements RequestHandlerInterface
     use PWATrait;
 
     /**
-     * @var SettingsRepositoryInterface
+     * @var Filesystem
      */
-    protected $settings;
+    protected $assetDir;
 
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var Paths
-     */
-    protected $paths;
-
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app, Paths $paths)
+    public function __construct(Factory $filesystemFactory)
     {
-        $this->settings = $settings;
-        $this->app = $app;
-        $this->paths = $paths;
+        $this->assetDir = $filesystemFactory->disk('flarum-assets');
     }
-
-    /**
-     * {@inheritdoc}
-     */
+    
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $response = new TextResponse($this->mount()->read('ext://sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
+        $response = new TextResponse($this->assetDir->get('askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
 
         return $response;
     }

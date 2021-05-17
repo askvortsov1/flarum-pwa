@@ -133,7 +133,7 @@ export default class PWAPage extends ExtensionPage {
               {this.sizes.map((size) => {
                 return (
                   <fieldset class="logoFieldset">
-                    <PWALogoUploadButton name={size} />
+                    <PWALogoUploadButton size={size} />
                     <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_size_text', { size })}</div>
                   </fieldset>
                 );

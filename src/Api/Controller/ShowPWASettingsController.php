@@ -14,9 +14,8 @@ namespace Askvortsov\FlarumPWA\Api\Controller;
 use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
 use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractShowController;
-use Flarum\Foundation\Application;
-use Flarum\Foundation\Paths;
 use Flarum\Http\RequestUtil;
+use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -37,29 +36,23 @@ class ShowPWASettingsController extends AbstractShowController
     protected $settings;
 
     /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
      * @var TranslatorInterface
      */
     protected $translator;
 
     /**
-     * @var Paths
+     * @var UrlGenerator
      */
-    protected $paths;
+    protected $url;
 
     /**
      * @param SettingsRepositoryInterface $settings
      */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app, TranslatorInterface $translator, Paths $paths)
+    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
     {
         $this->settings = $settings;
-        $this->app = $app;
         $this->translator = $translator;
-        $this->paths = $paths;
+        $this->url = $url;
     }
 
     /**
@@ -68,8 +61,6 @@ class ShowPWASettingsController extends AbstractShowController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         RequestUtil::getActor($request)->assertAdmin();
-
-        $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
 
         $status_messages = [];
 
@@ -102,7 +93,7 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
-        if (parse_url($this->app->url(), PHP_URL_SCHEME) !== 'https') {
+        if (parse_url($this->url->to('forum')->base(), PHP_URL_SCHEME) !== 'https') {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.config_no_https'),
@@ -134,7 +125,6 @@ class ShowPWASettingsController extends AbstractShowController
             'manifest'        => $this->buildManifest(),
             'sizes'           => PWATrait::$SIZES,
             'status_messages' => $status_messages,
-            'base_path'       => $basePath,
         ];
     }
 }

@@ -13,11 +13,12 @@ namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractDeleteController;
-use Flarum\Foundation\Application;
 use Flarum\Foundation\Paths;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,23 +33,17 @@ class DeleteLogoController extends AbstractDeleteController
     protected $settings;
 
     /**
-     * @var Application
+     * @var Filesystem
      */
-    protected $app;
-
-    /**
-     * @var Paths
-     */
-    protected $paths;
+    protected $uploadDir;
 
     /**
      * @param SettingsRepositoryInterface $settings
      */
-    public function __construct(SettingsRepositoryInterface $settings, Application $app, Paths $paths)
+    public function __construct(SettingsRepositoryInterface $settings, Factory $filesystemFactory)
     {
         $this->settings = $settings;
-        $this->app = $app;
-        $this->paths = $paths;
+        $this->uploadDir = $filesystemFactory->disk('flarum-assets');
     }
 
     /**
@@ -64,15 +59,12 @@ class DeleteLogoController extends AbstractDeleteController
             throw new RouteNotFoundException();
         }
 
-        $path = $this->settings->get("askvortsov-pwa.icon_${size}_path");
+        $pathKey = "askvortsov-pwa.icon_${size}_path";
+        $path = $this->settings->get($pathKey);
 
-        $this->settings->set($path, null);
+        $this->uploadDir->delete($path);
 
-        if ($this->mount()->has($file = "assets://$path")) {
-            $this->mount()->delete($file);
-        }
-
-        $this->settings->set("askvortsov-pwa.icon_${size}_path", null);
+        $this->settings->set($pathKey, null);
 
         return new EmptyResponse(204);
     }

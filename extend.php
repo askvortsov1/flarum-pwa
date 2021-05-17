@@ -14,17 +14,19 @@ namespace Askvortsov\FlarumPWA;
 use Askvortsov\FlarumPWA\Api\Controller as ApiController;
 use Askvortsov\FlarumPWA\Extend\InitializeVAPIDKeys;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
+use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
     $forumApiDocument = $document->getForumApiDocument();
     $basePath = rtrim(Arr::get($forumApiDocument, 'data.attributes.basePath'), '/');
 
-    $settings = app(SettingsRepositoryInterface::class);
+    $settings = resolve(SettingsRepositoryInterface::class);
     $appName = $settings->get('askvortsov-pwa.shortName', $settings->get('askvortsov-pwa.longName', $settings->get('forum_title')));
 
     $document->head[] = "<link rel='manifest' href='$basePath/webmanifest'>";
@@ -32,11 +34,12 @@ $metaClosure = function (Document $document) {
     $document->head[] = "<meta id='apple-style' name='apple-mobile-web-app-status-bar-style' content='default'>";
     $document->head[] = "<meta id='apple-title' name='apple-mobile-web-app-title' content='$appName'>";
 
-    $settings = resolve(SettingsRepositoryInterface::class);
+    $assets = resolve(Factory::class)->disk('flarum-assets');
 
     foreach (PWATrait::$SIZES as $size) {
         if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='${size}x$size'")." href='$basePath/assets/$sizePath'>";
+            $assetUrl = $assets->url($sizePath);
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='${size}x$size'")." href='$assetUrl'>";
         }
     }
 };
@@ -62,6 +65,20 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
+
+    (new Extend\ApiSerializer(ForumSerializer::class))
+        ->attributes(function ($serializer, $model, $attributes) {
+            $settings = resolve(SettingsRepositoryInterface::class);
+            $assets = resolve(Factory::class)->disk('flarum-assets');
+
+            foreach (PWATrait::$SIZES as $size) {
+                if (($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path'))) {
+                    $attributes["pwa-icon-${size}x${size}Url"] = $assets->url($sizePath);
+                }
+            }
+
+            return $attributes;
+        }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
