@@ -21,10 +21,6 @@ class InitializeVAPIDKeys implements ExtenderInterface
 {
     public function extend(Container $container, Extension $extension = null)
     {
-        if (!class_exists(VAPID::class) || !function_exists('gmp_init')) {
-            return;
-        }
-
         $settings = $container->make(SettingsRepositoryInterface::class);
 
         if (!$settings->get('askvortsov-pwa.vapid.private') || !$settings->get('askvortsov-pwa.vapid.private')) {

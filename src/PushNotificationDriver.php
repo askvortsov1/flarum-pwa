@@ -75,10 +75,6 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (!class_exists(WebPush::class) || !function_exists('gmp_init')) {
-            return;
-        }
-
         if (!is_subclass_of($blueprint, MailableInterface::class) && !in_array(get_class($blueprint), self::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             return;
         }

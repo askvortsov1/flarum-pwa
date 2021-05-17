@@ -12,14 +12,11 @@
     "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
   },
   "require": {
-    "flarum/core": "^0.1.0-beta.16"
-  },
-  "conflict": {
-    "minishlink/web-push": "<6"
+    "flarum/core": "^0.1.0-beta.16",
+    "minishlink/web-push": "^6.0"
   },
   "suggest": {
-    "ext-gmp": "This is required for push notifications",
-    "minishlink/web-push": "This is required for push notifications"
+    "ext-gmp": "This can improve push notification performance."
   },
   "authors": [
     {
@@ -43,8 +40,5 @@
         "color": "#fff"
       }
     }
-  },
-  "require-dev": {
-    "minishlink/web-push": "^6.0"
   }
 }

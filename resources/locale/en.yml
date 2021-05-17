@@ -35,7 +35,6 @@ askvortsov-pwa:
       possible_https_disabled: Your site might not be running on HTTPS. If it is, ignore this. If it isn't keep in mind that HTTPS is required for Progressive Web Apps to work.
       no_logo: You must upload at least one logo, with a size of at least 196px for your app to work.
       no_name: You must provide a full name for your app to work.
-      push_needs_gmp_and_web_push: The gmp PHP extension and minishlink/web-push library (composer require minishlink/web-push) MUST be enabled for push notifications to work.
       success: No Potential Issues Found!
   forum:
     alerts:
