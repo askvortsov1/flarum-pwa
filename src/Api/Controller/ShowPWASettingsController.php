@@ -109,6 +109,13 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
+        if (!function_exists('gmp_init')) {
+            $status_messages[] = [
+                'type'    => 'warning',
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.suggest_gmp'),
+            ];
+        }
+
         if (!$this->settings->get('askvortsov-pwa.vapid.success', true)) {
             $status_messages[] = [
                 'type'    => 'error',
