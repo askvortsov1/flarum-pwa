@@ -12,7 +12,7 @@ askvortsov-pwa:
       colors:
         heading: Colors
         background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
-        theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site. You can set this by changing the primary theme in the 'Appearance' page of your admin dashboard.
+        theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site.
       maintenance:
         heading: Maintenance
         debug_label: Debug mode? This will log info about notifications to `storage/logs`.

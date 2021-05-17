@@ -101,7 +101,12 @@ export default class PWAPage extends ExtensionPage {
               <fieldset>
                 <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text')}</div>
-                <input className="FormControl" type="text" placeholder="#aaaaaa" value={this.manifest.theme_color} disabled={true} />
+                <input
+                  className="FormControl"
+                  type="text"
+                  placeholder={this.setting('theme_primary_color')()}
+                  bidi={this.setting('askvortsov-pwa.themeColor')}
+                />
               </fieldset>
               <fieldset>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}</div>

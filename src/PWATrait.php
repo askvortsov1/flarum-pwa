@@ -30,7 +30,7 @@ trait PWATrait
             'start_url'        => $basePath,
             'scope'            => $basePath,
             'dir'              => 'auto',
-            'theme_color'      => $this->settings->get('theme_primary_color'),
+            'theme_color'      => $this->settings->get('askvortsov-pwa.themeColor', $this->settings->get('theme_primary_color')),
             'background_color' => $this->settings->get('askvortsov-pwa.backgroundColor', '#ffffff'),
             'display'          => 'standalone',
             'icons'            => [],
