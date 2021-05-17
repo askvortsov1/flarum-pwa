@@ -16,6 +16,7 @@ use Askvortsov\FlarumPWA\PWATrait;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\Application;
 use Flarum\Foundation\Paths;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -66,7 +67,7 @@ class ShowPWASettingsController extends AbstractShowController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $basePath = rtrim(parse_url($this->app->url(), PHP_URL_PATH), '/').'/' ?: '/';
 

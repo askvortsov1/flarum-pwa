@@ -15,6 +15,7 @@ use Askvortsov\FlarumPWA\Api\Serializer\PushSubscriptionSerializer;
 use Askvortsov\FlarumPWA\PushSubscription;
 use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,7 +51,7 @@ class AddPushSubscriptionController extends AbstractCreateController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $actor = $request->getAttribute('actor');
+        $actor = RequestUtil::getActor($request);
         $actor->assertRegistered();
 
         $data = Arr::get($request->getParsedBody(), 'subscription', []);

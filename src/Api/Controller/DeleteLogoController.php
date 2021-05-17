@@ -16,6 +16,7 @@ use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Foundation\Application;
 use Flarum\Foundation\Paths;
 use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
@@ -55,7 +56,7 @@ class DeleteLogoController extends AbstractDeleteController
      */
     protected function delete(ServerRequestInterface $request)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $size = Arr::get($request->getQueryParams(), 'size');
 

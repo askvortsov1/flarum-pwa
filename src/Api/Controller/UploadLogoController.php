@@ -16,6 +16,7 @@ use Flarum\Api\Controller\ShowForumController;
 use Flarum\Foundation\Application;
 use Flarum\Foundation\Paths;
 use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Arr;
 use Intervention\Image\ImageManager;
@@ -56,7 +57,7 @@ class UploadLogoController extends ShowForumController
      */
     public function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
 
