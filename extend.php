@@ -94,4 +94,7 @@ return [
         ->driver('push', PushNotificationDriver::class),
 
     new InitializeVAPIDKeys(),
+
+    (new Extend\View)
+        ->namespace('askvortsov-pwa', __DIR__.'/views'),
 ];

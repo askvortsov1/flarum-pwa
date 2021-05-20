@@ -12,8 +12,9 @@
 namespace Askvortsov\FlarumPWA\Forum\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
-use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,13 +29,20 @@ class OfflineController implements RequestHandlerInterface
      */
     protected $assetDir;
 
-    public function __construct(Factory $filesystemFactory)
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    public function __construct(FilesystemFactory $filesystemFactory, ViewFactory $viewFactory)
     {
         $this->assetDir = $filesystemFactory->disk('flarum-assets');
+        $this->viewFactory = $viewFactory;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new HtmlResponse($this->assetDir->get('extensions/askvortsov-pwa/offline.html'));
+        $html = $this->viewFactory->make('askvortsov-pwa::offline')->render();
+        return new HtmlResponse($html);
     }
 }
