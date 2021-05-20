@@ -95,6 +95,6 @@ return [
 
     new InitializeVAPIDKeys(),
 
-    (new Extend\View)
+    (new Extend\View())
         ->namespace('askvortsov-pwa', __DIR__.'/views'),
 ];
