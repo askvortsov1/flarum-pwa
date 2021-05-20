@@ -28,13 +28,13 @@ trait PWATrait
 
         $basePath = rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
         $manifest = [
-            'name'        => $settings->get('askvortsov-pwa.longName', $settings->get('forum_title')),
+            'name'        => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
             'description' => $settings->get('forum_description', ''),
             //"categories" => $settings->get('askvortsov-pwa.categories', []),
             'start_url'        => $basePath,
             'scope'            => $basePath,
             'dir'              => 'auto',
-            'theme_color'      => $settings->get('askvortsov-pwa.themeColor', $settings->get('theme_primary_color')),
+            'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
             'background_color' => $settings->get('askvortsov-pwa.backgroundColor', '#ffffff'),
             'display'          => 'standalone',
             'icons'            => [],
