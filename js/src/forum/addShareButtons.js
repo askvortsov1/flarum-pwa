@@ -1,4 +1,5 @@
 import { extend } from 'flarum/extend';
+import extractText from 'flarum/common/utils/extractText';
 import DiscussionControls from 'flarum/utils/DiscussionControls';
 import PostControls from 'flarum/utils/PostControls';
 import UserControls from 'flarum/utils/UserControls';
@@ -6,7 +7,7 @@ import Button from 'flarum/components/Button';
 
 async function shareContent(data) {
   try {
-    await navigator.share(data);
+    await navigator.share(extractText(data));
     resultPara.textContent = 'MDN shared successfully';
   } catch (err) {
     console.log('Error: ' + err);
