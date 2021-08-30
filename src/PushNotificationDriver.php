@@ -168,11 +168,11 @@ class PushNotificationDriver implements NotificationDriverInterface
                 break;
             case CommentPost::class:
                 $content = $subject->formatContent();
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number]);
                 break;
             case Post::class:
                 $content = '';
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id]).'/'.$subject->number;
+                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number]);
                 break;
         }
 
