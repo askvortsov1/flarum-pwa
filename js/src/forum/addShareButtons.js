@@ -7,7 +7,8 @@ import Button from 'flarum/components/Button';
 
 async function shareContent(data) {
   try {
-    await navigator.share(extractText(data));
+    const title = extractText(data.title);
+    await navigator.share({ title, url: data.url });
     resultPara.textContent = 'MDN shared successfully';
   } catch (err) {
     console.log('Error: ' + err);
