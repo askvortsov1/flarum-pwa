@@ -1,9 +1,9 @@
-import { extend } from 'flarum/extend';
+import { extend } from 'flarum/common/extend';
 import extractText from 'flarum/common/utils/extractText';
-import DiscussionControls from 'flarum/utils/DiscussionControls';
-import PostControls from 'flarum/utils/PostControls';
-import UserControls from 'flarum/utils/UserControls';
-import Button from 'flarum/components/Button';
+import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
+import PostControls from 'flarum/forum/utils/PostControls';
+import UserControls from 'flarum/forum/utils/UserControls';
+import Button from 'flarum/common/components/Button';
 
 async function shareContent(data) {
   try {

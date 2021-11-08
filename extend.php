@@ -49,7 +49,8 @@ return [
         ->get('/pwa/settings', 'askvortsov-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'askvortsov-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class),
+        ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class)
+        ->post('/reset_vapid', 'askvortsov-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
         ->get('/webmanifest', 'askvortsov-pwa.webmanifest', ForumController\WebManifestController::class)
@@ -92,8 +93,6 @@ return [
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
-
-    new InitializeVAPIDKeys(),
 
     (new Extend\View())
         ->namespace('askvortsov-pwa', __DIR__.'/views'),

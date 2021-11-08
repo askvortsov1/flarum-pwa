@@ -1,6 +1,7 @@
-import ExtensionPage from 'flarum/components/ExtensionPage';
-import Alert from 'flarum/components/Alert';
-import LoadingIndicator from 'flarum/components/LoadingIndicator';
+import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import Alert from 'flarum/common/components/Alert';
+import Button from 'flarum/common/components/Button';
+import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 
 import PWALogoUploadButton from './PWALogoUploadButton';
 
@@ -75,19 +76,40 @@ export default class PWAPage extends ExtensionPage {
               {this.buildSettingComponent({
                 setting: 'askvortsov-pwa.debug',
                 label: app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.debug_label'),
+                help: app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.debug_text'),
                 type: 'boolean',
+              })}
+              {this.buildSettingComponent(() => {
+                return (
+                  <div>
+                    <Button className="Button" onclick={this.resetVapid.bind(this)}>
+                      Reset VAPID keys
+                    </Button>
+                    <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_text')}</div>
+                  </div>
+                );
               })}
             </fieldset>
 
             <fieldset class="parent">
               <fieldset>
                 <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
-                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text')}</div>
-                <input className="FormControl" bidi={this.setting('askvortsov-pwa.shortName')} placeholder={this.setting('forum_title')()}></input>
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.shortName',
+                  placeholder: this.setting('forum_title')(),
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text'),
+                  type: 'text',
+                })}
               </fieldset>
               <fieldset>
-                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.long_name_text')}</div>
-                <input className="FormControl" bidi={this.setting('askvortsov-pwa.longName')} placeholder={this.setting('forum_title')()} />
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.longName',
+                  placeholder: this.setting('forum_title')(),
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.about.long_name_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.about.long_name_text'),
+                  type: 'text',
+                })}
               </fieldset>
               <fieldset>
                 <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.description_text')}</div>
@@ -100,17 +122,22 @@ export default class PWAPage extends ExtensionPage {
             <fieldset class="parent">
               <fieldset>
                 <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
-                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text')}</div>
-                <input
-                  className="FormControl"
-                  type="text"
-                  placeholder={this.setting('theme_primary_color')()}
-                  bidi={this.setting('askvortsov-pwa.themeColor')}
-                />
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.themeColor',
+                  placeholder: this.setting('theme_primary_color')(),
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text'),
+                  type: 'text',
+                })}
               </fieldset>
               <fieldset>
-                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text')}</div>
-                <input className="FormControl" type="text" placeholder="#aaaaaa" bidi={this.setting('askvortsov-pwa.backgroundColor')} />
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.backgroundColor',
+                  placeholder: '#aaaaaa',
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text'),
+                  type: 'text',
+                })}
               </fieldset>
             </fieldset>
 
@@ -143,6 +170,24 @@ export default class PWAPage extends ExtensionPage {
         </div>
       </div>
     );
+  }
+
+  resetVapid() {
+    if (confirm(app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_confirm'))) {
+      app
+        .request({
+          method: 'POST',
+          url: app.forum.attribute('apiUrl') + '/reset_vapid',
+        })
+        .then((response) => {
+          app.alerts.show(
+            {
+              type: 'success',
+            },
+            app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_success', { count: response.deleted })
+          );
+        });
+    }
   }
 
   saveSettings(e) {

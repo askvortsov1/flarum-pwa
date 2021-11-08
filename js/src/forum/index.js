@@ -1,9 +1,9 @@
-import { extend } from 'flarum/extend';
+import { extend } from 'flarum/common/extend';
 import { openDB } from 'idb';
 
-import Page from 'flarum/components/Page';
-import LinkButton from 'flarum/components/LinkButton';
-import SessionDropdown from 'flarum/components/SessionDropdown';
+import Page from 'flarum/common/components/Page';
+import LinkButton from 'flarum/common/components/LinkButton';
+import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
 

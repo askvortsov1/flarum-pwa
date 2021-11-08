@@ -5,17 +5,26 @@ askvortsov-pwa:
       pwa_text: Configure Flarum to run as an Progressive Web App, installable on mobile devices.
     pwa:
       about:
+        description_label: Description
         description_text: You can set the description on the 'Basics' page in your admin dashboard.
+        long_name_label: Long name
         long_name_text: The name of the web application displayed to the user.
         heading: About
+        short_name_label: Short name
         short_name_text: The name of the application displayed to the user if there is not enough space for the long name.
       colors:
         heading: Colors
+        background_color_label: Background color
         background_color_text: This is used as a placeholder color for the splash screen that's displayed while your PWA is being loaded. It is not used when the app is actually loaded.
+        theme_color_label: Theme color
         theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher, as the color that surround the site.
       maintenance:
         heading: Maintenance
-        debug_label: Debug mode? This will log info about notifications to `storage/logs`.
+        debug_label: Debug mode?
+        debug_text: This will log info about notifications to `storage/logs`. It should generally be disabled to avoid filling up logs unnecessarily.
+        reset_vapid_text: This will regenerate VAPID keys, and delete any existing subscriptions using the current VAPID keys.
+        reset_vapid_confirm: Resetting VAPID keys will remove any subscriptions using the existing keys, so users won't receive any notifications until the next time they visit your site. This should only be done when setting up push notifications for the first time, or if push notifications aren't working at all and there's a warning about missing VAPID keys above.
+        reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. Reload the page to see an updated status check report.
       other:
         heading: Other
         force_portrait_text: Force portait orientation?
@@ -38,6 +47,7 @@ askvortsov-pwa:
       possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard page => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
       no_logo: You must upload at least one logo, with a size of at least 196px for your app to work.
       no_name: You must provide a full name for your app to work.
+      no_vapid_keys: No VAPID keys found. These are required for push notifications to send. You can reset VAPID keys below.
       key_gen_failed: "Generation of keys needed for push notifications has failed. The full error message was: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but can improve performance and is recommended. Some shared hosts might not support it though.
       success: No Potential Issues Found!

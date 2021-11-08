@@ -1,11 +1,11 @@
-import { extend } from 'flarum/extend';
-import NotificationGrid from 'flarum/components/NotificationGrid';
-import SettingsPage from 'flarum/components/SettingsPage';
-import Alert from 'flarum/components/Alert';
-import Button from 'flarum/components/Button';
-import Link from 'flarum/components/Link';
-import Page from 'flarum/components/Page';
-import icon from 'flarum/helpers/icon';
+import { extend } from 'flarum/common/extend';
+import NotificationGrid from 'flarum/forum/components/NotificationGrid';
+import SettingsPage from 'flarum/forum/components/SettingsPage';
+import Alert from 'flarum/common/components/Alert';
+import Button from 'flarum/common/components/Button';
+import Link from 'flarum/common/components/Link';
+import Page from 'flarum/common/components/Page';
+import icon from 'flarum/common/helpers/icon';
 
 const subscribeUser = (save) => {
   return app.sw.pushManager
