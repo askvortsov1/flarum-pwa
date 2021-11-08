@@ -12,24 +12,16 @@
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PushSubscription;
-use Askvortsov\FlarumPWA\PWATrait;
-use Flarum\Api\Controller\UploadImageController;
-use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Illuminate\Support\Arr;
-use Intervention\Image\Image;
-use Intervention\Image\ImageManager;
 use Laminas\Diactoros\Response\JsonResponse;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
-use Tobscure\JsonApi\Document;
 
-class ResetVAPIDKeysController  implements RequestHandlerInterface
+class ResetVAPIDKeysController implements RequestHandlerInterface
 {
     /**
      * @var SettingsRepositoryInterface
@@ -50,7 +42,7 @@ class ResetVAPIDKeysController  implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
-        
+
         try {
             $keys = VAPID::createVapidKeys();
         } catch (RuntimeException $e) {
@@ -71,7 +63,7 @@ class ResetVAPIDKeysController  implements RequestHandlerInterface
         $query->delete();
 
         return new JsonResponse([
-            'deleted' => $count
+            'deleted' => $count,
         ]);
     }
 }

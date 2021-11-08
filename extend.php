@@ -12,7 +12,6 @@
 namespace Askvortsov\FlarumPWA;
 
 use Askvortsov\FlarumPWA\Api\Controller as ApiController;
-use Askvortsov\FlarumPWA\Extend\InitializeVAPIDKeys;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;

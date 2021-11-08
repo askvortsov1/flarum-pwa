@@ -110,7 +110,7 @@ class ShowPWASettingsController extends AbstractShowController
         if (!$this->settings->get('askvortsov-pwa.vapid.private') || !$this->settings->get('askvortsov-pwa.vapid.public')) {
             $status_messages[] = [
                 'type'    => 'error',
-                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_vapid_keys')
+                'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_vapid_keys'),
             ];
         }
 
