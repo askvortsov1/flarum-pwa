@@ -167,7 +167,7 @@ class PushNotificationDriver implements NotificationDriverInterface
 
         switch ($subjectModel) {
             case User::class:
-                $link = $this->url->to('forum')->route('user', ['id' =>  $subject->username]);
+                $link = $this->url->to('forum')->route('user', ['username' =>  $subject->display_name]);
                 break;
             case Discussion::class:
                 $content = $this->getRelevantPostContent($subject);
