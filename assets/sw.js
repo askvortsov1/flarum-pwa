@@ -38,11 +38,7 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA] Cached offline page during install.");
-
-      if (offlineFallbackPage === "ToDo-replace-this-name.html") {
-        return cache.add(new Response("TODO: Update the value of the offlineFallbackPage constant in the serviceworker."));
-      }
-
+  
       return cache.add(offlineFallbackPage);
     })
   );
@@ -57,23 +53,30 @@ self.addEventListener("install", function (event) {
 
 // If any fetch fails, it will show the offline page.
 self.addEventListener("fetch", function (event) {
-  if (event.request.method !== "GET") return;
-  if (forumPayload.debug && forumPayload.clockworkEnabled) return;
-
   event.respondWith(
-    fetch(event.request).catch(function (error) {
-          // The following validates that the request was for a navigation to a new document
-          if (
-              event.request.destination !== "document" ||
-              event.request.mode !== "navigate"
-          ) {
-              return;
-          }
+    caches.match(fetchEvent.request).then(res => {
+      if (
+        event.request.method !== 'GET' ||
+        forumPayload.debug && forumPayload.clockworkEnabled ||
+        !res
+      ) {
+        return fetch(event.request);
+      }
 
-          return caches.open(CACHE).then(function (cache) {
-              return cache.match(offlineFallbackPage);
-          });
-      })
+      return res;
+    }).catch(error => {
+      // The following validates that the request was for a navigation to a new document
+      if (
+        event.request.destination !== "document" ||
+        event.request.mode !== "navigate"
+      ) {
+        throw error;
+      }
+
+      return caches.open(CACHE).then(function (cache) {
+        return cache.match(offlineFallbackPage);
+      });
+    })
   );
 });
 
