@@ -38,7 +38,7 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA] Cached offline page during install.");
-  
+
       return cache.add(offlineFallbackPage);
     })
   );
@@ -54,7 +54,7 @@ self.addEventListener("install", function (event) {
 // If any fetch fails, it will show the offline page.
 self.addEventListener("fetch", function (event) {
   event.respondWith(
-    caches.match(fetchEvent.request).then(res => {
+    caches.match(event.request).then(res => {
       if (
         event.request.method !== 'GET' ||
         forumPayload.debug && forumPayload.clockworkEnabled ||
