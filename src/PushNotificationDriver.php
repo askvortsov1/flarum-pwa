@@ -160,7 +160,7 @@ class PushNotificationDriver implements NotificationDriverInterface
         $subject = $blueprint->getSubject();
         $subjectModel = $blueprint->getSubjectModel();
 
-        if ($blueprint->getType() === 'newPost') {
+        if (in_array($blueprint->getType(), ['newPost', 'byobuPrivateDiscussionReplied'])) {
             $subject = $blueprint->post;
             $subjectModel = CommentPost::class;
         }
