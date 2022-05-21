@@ -27,9 +27,9 @@ askvortsov-pwa:
         reset_vapid_success: Chaves VAPID reestabelecidas corretamente. {count} assinaturas foram reestabelecidas. Recarregue a página para ver um relatório atualizado de verificação de status.
       other:
         heading: Outro
-        force_portrait_text: Forção orientação de retrato?
+        force_portrait_text: Forçar orientação de retrato?
       heading: Configuração da Progressive Web App
-      text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
+      text: Configure o seu site Flarum para ser executado como uma progressive web app! Por favor observe que isso não coloca o seu site automaticamente na loja de aplicativos. Ao invés, isso significa que usuários tem uma opção 'Adicionar a tela inicial' para o seu site. Nós fornecemos algumas verificações de status, no entanto, a melhor forma de testar isso é experimentar e instalar (pesquise no google instruções de como instalar progressive web apps). Também, tenha em mente que popups do tipo 'instalar esta PWA' são controladas pelos navegadores, e não podem ser acionadas por desenvolvedores/administradores/programas. Eu recomendo incluir instruções de como instalar uma PWA na documentação do seu site.
       status_check_heading: Verificação de Status
       logo_heading: Logos e Ícones
       logo_text: |
