@@ -23,14 +23,14 @@ askvortsov-pwa:
         debug_label: Modo de depuração?
         debug_text: Isto vai logar informações sobre notificaçôes no `storage/logs`. Deve em geral estar desativado para evitar encher os logs desnecessariamente.
         reset_vapid_text: Isto vai recriar as chaves VAPID, e deletar quaisquer assinaturas existentes usando as chaves VAPID atuais.
-        reset_vapid_confirm: Resetting VAPID keys will remove any subscriptions using the existing keys, so users won't receive any notifications until the next time they visit your site. This should only be done when setting up push notifications for the first time, or if push notifications aren't working at all and there's a warning about missing VAPID keys above.
-        reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. Reload the page to see an updated status check report.
+        reset_vapid_confirm: Reestabelecer as chaves VAPID removerá quaisquer assinaturas que usem as chaves atuais, então os usuários não receberão quaisquer notificação até a próxima vez que eles visitarem o seu site. Isso apenas deve ser feito quando configurando as notificações push pela primera vez, ou se as notificações push não estiverem funcionado ao todo e existe um aviso de chaves VAPID faltantes, acima.
+        reset_vapid_success: Chaves VAPID reestabelecidas corretamente. {count} assinaturas foram reestabelecidas. Recarregue a página para ver um relatório atualizado de verificação de status.
       other:
         heading: Outro
         force_portrait_text: Forção orientação de retrato?
       heading: Configuração da Progressive Web App
       text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
-      status_check_heading: Status Check
+      status_check_heading: Verificação de Status
       logo_heading: Logos e Ícones
       logo_text: |
         Você deve fazer o upload de no mínimo um logo para que sua progressive web app seja instalável. Por favor note que todos os logos devem ser quadrados; se não forem, eles serão redimensionados e possivelmente esticados.
