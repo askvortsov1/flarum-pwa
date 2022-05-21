@@ -50,6 +50,7 @@ askvortsov-pwa:
       no_vapid_keys: Nenhuma chave VAPID encontrada. Estas são exigidas para enviar notificações push. Você pode reestabelecer as chaves VAPID abaixo.
       key_gen_failed: "A criação de chaves necessárias para as notificações push falhou. A mensagem completa do erro foi: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but can improve performance and is recommended. Some shared hosts might not support it though.
+      suggest_gmp: A extensão gmp do PHP não parece estar ativada no seu servidor. Ela não é estritamente necessária, mas pode melhorar a performance e é recomendada. Algumas hospedagens compartilhadas podem não suportá-la no entanto.
       success: Não Foram Encontrados Problemas em Potencial
   forum:
     alerts:
