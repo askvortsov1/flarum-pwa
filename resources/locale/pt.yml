@@ -46,9 +46,8 @@ askvortsov-pwa:
       config_no_https: A url no seu arquivo config.php não está usando HTTPS. HTTPS é exigido para Progressive Web Apps funcionarem.
       possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard page => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
       no_logo: Você deve enviar ao menos um logo, com um tamanho de no mínimo 196px para a sua app funcionar.
-      no_name: You must provide a full name for your app to work.
       no_name: Você deve fornecer um nome completo para a sua app funcionar.
-      no_vapid_keys: No VAPID keys found. These are required for push notifications to send. You can reset VAPID keys below.
+      no_vapid_keys: Nenhuma chave VAPID encontrada. Estas são exigidas para enviar notificações push. Você pode reestabelecer as chaves VAPID abaixo.
       key_gen_failed: "Generation of keys needed for push notifications has failed. The full error message was: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but can improve performance and is recommended. Some shared hosts might not support it though.
       success: Não Foram Encontrados Problemas em Potencial
@@ -67,12 +66,12 @@ askvortsov-pwa:
     settings:
       push_header: Push
       pwa_notifications:
-        access_default: Due to browser restrictions, you must opt in to receive push notifications on this device.
-        access_default_button: Opt In
-        access_denied: You must adjust your browser settings to receive push notifications on this device.
-        access_denied_button: Learn How
-        no_browser_support: This browser does not support push notifications for progressive web apps.
-        no_browser_support_button: Learn More
+        access_default: Devido a restrições do navegador, você deve ativar para receber notificações push nesse dispositivo.
+        access_default_button: Ativar
+        access_denied: Você deve ajustar as configurações do seu navegador para receber notificações neste dispositivo.
+        access_denied_button: Veja Como
+        no_browser_support: Este navegador não suporta notificações push para progressive web apps.
+        no_browser_support_button: Veja Mais
 
   views:
     offline:
