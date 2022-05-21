@@ -33,11 +33,11 @@ askvortsov-pwa:
       status_check_heading: Status Check
       logo_heading: Logos e Ícones
       logo_text: |
-        You must upload at least one logo for your progressive web app to be installable. Please note that all logos must be square; if they are not, they will be resized and possibly stretched.
+        Você deve fazer o upload de no mínimo um logo para que sua progressive web app seja instalável. Por favor note que todos os logos devem ser quadrados; se não forem, eles serão redimensionados e possivelmente esticados.
 
-        There are a number of size options available below. I would recommend trying to upload a logo to as many as you can: this supports more devices.
+        Existe um número de opções de tamanho disponíveis abaixo. Eu recomendaria tentar fazer upload tantos logos quando você puder: isto suporta mais dispositivos.
 
-        Please note that you can upload 1 large logo to inputs for smaller logos. For instance, you can upload a 1000px x 1000px logo to ALL the file inputs below. However, if you try to upload a 50px x 50px logo to the 512x512 input, it will be stretched a lot.
+        Por favor observe que você pode fazer o upload de 1 logo grande para entrar com logos menores. Por exemplo, você pode fazer o upload de um logo de 1000px x 1000px em TODAS as entradas de arquivo abaixo. No entanto, se você tentar fazer upload de um logo de 50px x 50px na entrada de 512x512, ele vai esticar bastante.
 
       logo_size_text: Upload a logo which will be scaled to {size} pixels by {size} pixels size.
       submit_button: Salvar Configurações
