@@ -39,16 +39,16 @@ askvortsov-pwa:
 
         Por favor observe que você pode fazer o upload de 1 logo grande para entrar com logos menores. Por exemplo, você pode fazer o upload de um logo de 1000px x 1000px em TODAS as entradas de arquivo abaixo. No entanto, se você tentar fazer upload de um logo de 50px x 50px na entrada de 512x512, ele vai esticar bastante.
 
-      logo_size_text: Upload a logo which will be scaled to {size} pixels by {size} pixels size.
+      logo_size_text: Faça upload de um logo que será redimensionado para {size} pixels por {size} pixels em tamanho.
       submit_button: Salvar Configurações
       refreshed_message: Configuração de PWA atualizada corretamente.
     status:
       config_no_https: A url no seu arquivo config.php não está usando HTTPS. HTTPS é exigido para Progressive Web Apps funcionarem.
-      possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard page => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
+      possible_https_disabled: O seu site pode não estar rodando sob HTTPS. Limpar o cache (página do painel de admin => botão ferramentas) pode ajudar. Se for assim, ignore isso; senão, lembre-se que HTTPS é exigido para que Progressive Web Apps funcionem.
       no_logo: Você deve enviar ao menos um logo, com um tamanho de no mínimo 196px para a sua app funcionar.
       no_name: Você deve fornecer um nome completo para a sua app funcionar.
       no_vapid_keys: Nenhuma chave VAPID encontrada. Estas são exigidas para enviar notificações push. Você pode reestabelecer as chaves VAPID abaixo.
-      key_gen_failed: "Generation of keys needed for push notifications has failed. The full error message was: {error}"
+      key_gen_failed: "A criação de chaves necessárias para as notificações push falhou. A mensagem completa do erro foi: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but can improve performance and is recommended. Some shared hosts might not support it though.
       success: Não Foram Encontrados Problemas em Potencial
   forum:
