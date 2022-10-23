@@ -18,12 +18,12 @@ trait PWATrait
 {
     public static $SIZES = [48, 72, 96, 144, 196, 256, 512];
 
-    protected function buildManifest()
+    protected function buildManifest(): array
     {
-        /** @var SettingsRepositoryInterface */
+        /** @var SettingsRepositoryInterface $settings */
         $settings = resolve(SettingsRepositoryInterface::class);
 
-        /** @var UrlGenerator */
+        /** @var UrlGenerator $url */
         $url = resolve(UrlGenerator::class);
 
         $basePath = rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
@@ -35,10 +35,14 @@ trait PWATrait
             'scope'            => $basePath,
             'dir'              => 'auto',
             'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'background_color' => $settings->get('askvortsov-pwa.backgroundColor', '#ffffff'),
             'display'          => 'standalone',
             'icons'            => [],
         ];
+
+        $backgroundColor = $settings->get('askvortsov-pwa.backgroundColor');
+        if($backgroundColor){
+            $manifest['background_color'] = $backgroundColor;
+        }
 
         if ($settings->get('askvortsov-pwa.forcePortrait')) {
             $manifest['orientation'] = 'portrait';
