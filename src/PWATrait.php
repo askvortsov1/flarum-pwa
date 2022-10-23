@@ -40,7 +40,7 @@ trait PWATrait
         ];
 
         $backgroundColor = $settings->get('askvortsov-pwa.backgroundColor');
-        if($backgroundColor){
+        if ($backgroundColor) {
             $manifest['background_color'] = $backgroundColor;
         }
 
