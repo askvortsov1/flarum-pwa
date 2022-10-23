@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import extractText from 'flarum/common/utils/extractText';
 import DiscussionControls from 'flarum/forum/utils/DiscussionControls';

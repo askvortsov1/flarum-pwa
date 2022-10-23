@@ -1,3 +1,4 @@
+import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';

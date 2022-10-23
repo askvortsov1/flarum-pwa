@@ -1,4 +1,4 @@
-import Button from 'flarum/common/components/Button';
+import app from 'flarum/admin/app';
 import UploadImageButton from 'flarum/admin/components/UploadImageButton';
 
 export default class PWALogoUploadButton extends UploadImageButton {

@@ -1,3 +1,4 @@
+import app from 'flarum/admin/app';
 import PWAPage from './components/PWAPage';
 
 app.initializers.add('askvortsov/flarum-pwa', () => {

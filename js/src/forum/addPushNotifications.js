@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import NotificationGrid from 'flarum/forum/components/NotificationGrid';
 import SettingsPage from 'flarum/forum/components/SettingsPage';
