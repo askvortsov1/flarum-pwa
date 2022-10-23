@@ -57,7 +57,7 @@ export default class PWAPage extends ExtensionPage {
     }
 
     return (
-      <div className="PWAPage">
+      <div className="PWAPage ExtensionPage-settings">
         <div className="container">
           <form>
             <h2>{app.translator.trans('askvortsov-pwa.admin.pwa.heading')}</h2>
@@ -128,7 +128,7 @@ export default class PWAPage extends ExtensionPage {
                   placeholder: this.setting('theme_primary_color')(),
                   label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_label'),
                   help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text'),
-                  type: 'text',
+                  type: 'color-preview',
                 })}
               </fieldset>
               <fieldset>
@@ -137,7 +137,7 @@ export default class PWAPage extends ExtensionPage {
                   placeholder: '#aaaaaa',
                   label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_label'),
                   help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text'),
-                  type: 'text',
+                  type: 'color-preview',
                 })}
               </fieldset>
             </fieldset>
