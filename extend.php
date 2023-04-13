@@ -36,7 +36,7 @@ $metaClosure = function (Document $document) {
     $assets = resolve(Factory::class)->disk('flarum-assets');
 
     foreach (Util::$ICON_SIZES as $size) {
-        if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
+        if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
             $assetUrl = $assets->url($sizePath);
             $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
         }
@@ -72,7 +72,7 @@ return [
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
             foreach (Util::$ICON_SIZES as $size) {
-                if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
+                if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
                     $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
                 }
             }

@@ -55,14 +55,15 @@ class PushSender
         $this->url = $url;
     }
 
-    public static function canSend(string $blueprintClass) {
+    public static function canSend(string $blueprintClass)
+    {
         return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass, static::$SUPPORTED_NON_EMAIL_BLUEPRINTS);
     }
 
     public function notify(BlueprintInterface $blueprint, array $users = [])
     {
-        $this->log('[PWA PUSH] Notification Type: ' . $blueprint::getType());
-        $this->log('[PWA PUSH] Sending for users with ids: ' . json_encode(Arr::pluck($users, 'id')));
+        $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
+        $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
 
         $notifications = [];
 

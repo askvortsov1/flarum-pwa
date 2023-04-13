@@ -69,7 +69,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         $allowed = false;
         foreach (static::$push_host_allowlist as $allowed_host) {
             $host = parse_url($endpoint, PHP_URL_HOST);
-            if (fnmatch($allowed_host,$host)) {
+            if (fnmatch($allowed_host, $host)) {
                 $allowed = true;
             }
         }
@@ -92,16 +92,17 @@ class AddPushSubscriptionController extends AbstractCreateController
     }
 
     /**
-     * Taken from https://github.com/pushpad/known-push-services/blob/master/whitelist
+     * Taken from https://github.com/pushpad/known-push-services/blob/master/whitelist.
+     *
      * @var string[]
      */
     public static $push_host_allowlist = [
-        "android.googleapis.com",
-        "fcm.googleapis.com",
-        "updates.push.services.mozilla.com",
-        "updates-autopush.stage.mozaws.net",
-        "updates-autopush.dev.mozaws.net",
-        "*.notify.windows.com",
-        "*.push.apple.com"
+        'android.googleapis.com',
+        'fcm.googleapis.com',
+        'updates.push.services.mozilla.com',
+        'updates-autopush.stage.mozaws.net',
+        'updates-autopush.dev.mozaws.net',
+        '*.notify.windows.com',
+        '*.push.apple.com',
     ];
 }
