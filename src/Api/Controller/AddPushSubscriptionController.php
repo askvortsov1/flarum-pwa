@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -65,6 +66,18 @@ class AddPushSubscriptionController extends AbstractCreateController
             return $existing;
         }
 
+        $allowed = false;
+        foreach (static::$push_host_allowlist as $allowed_host) {
+            $host = parse_url($endpoint, PHP_URL_HOST);
+            if (fnmatch($allowed_host,$host)) {
+                $allowed = true;
+            }
+        }
+
+        if (!$allowed) {
+            throw new PermissionDeniedException();
+        }
+
         $subscription = new PushSubscription();
 
         $subscription->user_id = $actor->id;
@@ -77,4 +90,18 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         return $subscription;
     }
+
+    /**
+     * Taken from https://github.com/pushpad/known-push-services/blob/master/whitelist
+     * @var string[]
+     */
+    public static $push_host_allowlist = [
+        "android.googleapis.com",
+        "fcm.googleapis.com",
+        "updates.push.services.mozilla.com",
+        "updates-autopush.stage.mozaws.net",
+        "updates-autopush.dev.mozaws.net",
+        "*.notify.windows.com",
+        "*.push.apple.com"
+    ];
 }
