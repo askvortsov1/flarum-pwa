@@ -66,6 +66,14 @@ class AddPushSubscriptionController extends AbstractCreateController
             return $existing;
         }
 
+        $subscriptions = $actor->pushSubscriptions();
+        $subscriptionCount = $subscriptions->count() + 1;
+        $maxSubscriptionCount = $this->settings->get('askvortsov-pwa.userMaxSubscriptions');
+
+        if ($subscriptionCount > $maxSubscriptionCount) {
+            $subscriptions->orderBy('last_used')->take($subscriptionCount - $maxSubscriptionCount)->delete();
+        }
+
         $allowed = false;
         foreach (static::$push_host_allowlist as $allowed_host) {
             $host = parse_url($endpoint, PHP_URL_HOST);

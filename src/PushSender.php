@@ -11,6 +11,7 @@
 
 namespace Askvortsov\FlarumPWA;
 
+use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
@@ -124,6 +125,9 @@ class PushSender
             } elseif (! $report->isSuccess()) {
                 $this->log("[PWA PUSH] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}");
             } else {
+                $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
+                $subscription->last_used = Carbon::now();
+                $subscription->save();
                 $sentCounter++;
             }
         }

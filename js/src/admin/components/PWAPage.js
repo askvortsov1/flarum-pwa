@@ -149,6 +149,15 @@ export default class PWAPage extends ExtensionPage {
                   type: 'boolean',
                 })}
               </fieldset>
+              <fieldset>
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.userMaxSubscriptions',
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.user_max_subscriptions_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.other.user_max_subscriptions_text'),
+                  type: 'number',
+                  placeholder: 20,
+                })}
+              </fieldset>
             </fieldset>
 
             {this.submitButton()}
