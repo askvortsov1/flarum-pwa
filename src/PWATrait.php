@@ -16,15 +16,47 @@ use Flarum\Settings\SettingsRepositoryInterface;
 
 trait PWATrait
 {
+    /**
+     * @return string
+     */
+    protected function getBasePath()
+    {
+        /** @var UrlGenerator */
+        $url = resolve(UrlGenerator::class);
+
+        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
+    }
+
+    /**
+     * @return array<array{'src': string, 'sizes': string, 'type': string}>
+     */
+    protected function getIcons()
+    {
+        /** @var SettingsRepositoryInterface */
+        $settings = resolve(SettingsRepositoryInterface::class);
+
+        $basePath = $this->getBasePath();
+
+        $icons = [];
+        foreach (Util::$ICON_SIZES as $size) {
+            if ($settings->get("askvortsov-pwa.icon_{$size}_path")) {
+                $icons[] = [
+                    'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_{$size}_path"),
+                    'sizes' => "{$size}x{$size}",
+                    'type'  => 'image/png',
+                ];
+            }
+        }
+
+        return $icons;
+    }
+
     protected function buildManifest()
     {
         /** @var SettingsRepositoryInterface */
         $settings = resolve(SettingsRepositoryInterface::class);
 
-        /** @var UrlGenerator */
-        $url = resolve(UrlGenerator::class);
-
-        $basePath = rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
+        $basePath = $this->getBasePath();
         $manifest = [
             'name'        => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
             'description' => $settings->get('forum_description', ''),
@@ -34,7 +66,7 @@ trait PWATrait
             'dir'              => 'auto',
             'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
             'display'          => 'standalone',
-            'icons'            => [],
+            'icons'            => $this->getIcons(),
         ];
 
         if ($backgroundColor = $settings->get('askvortsov-pwa.backgroundColor')) {
@@ -48,17 +80,6 @@ trait PWATrait
         $shortName = $settings->get('askvortsov-pwa.shortName');
         if ($shortName) {
             $manifest['short_name'] = $shortName;
-        }
-
-        foreach (Util::$ICON_SIZES as $size) {
-            if ($settings->get("askvortsov-pwa.icon_{$size}_path")) {
-                $icon = [
-                    'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_{$size}_path"),
-                    'sizes' => "{$size}x{$size}",
-                    'type'  => 'image/png',
-                ];
-                $manifest['icons'][] = $icon;
-            }
         }
 
         return $manifest;

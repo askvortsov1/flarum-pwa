@@ -20,6 +20,7 @@ use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
@@ -28,6 +29,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PushSender
 {
+    use PWATrait;
+
+    /**
+     * @var Cloud
+     */
+    protected $assetsFilesystem;
+
     /**
      * @var LoggerInterface
      */
@@ -48,8 +56,9 @@ class PushSender
      */
     protected $url;
 
-    public function __construct(LoggerInterface $logger, SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
+    public function __construct(Factory $filesystemFactory, LoggerInterface $logger, SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
     {
+        $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
         $this->logger = $logger;
         $this->settings = $settings;
         $this->translator = $translator;
@@ -156,21 +165,32 @@ class PushSender
                 $content = $this->getRelevantPostContent($subject);
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
                 break;
-            case CommentPost::class:
-                $content = $subject->formatContent();
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number]);
-                break;
             case Post::class:
-                $content = '';
+                $content = $subject->type === 'comment' ? $subject->formatContent() : '';
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number]);
                 break;
         }
 
-        return [
+        $payload = [
             'title'   => $this->excerpt($this->getTitle($blueprint), 30),
             'content' => $this->excerpt($content),
             'link'    => $link,
         ];
+
+        if ($faviconPath = $this->settings->get('favicon_path')) {
+            $faviconUrl = $this->assetsFilesystem->url($faviconPath);
+
+            $payload['badge'] = $faviconUrl;
+        }
+
+        $pwaIcons = array_reverse($this->getIcons());
+
+
+        if ($largestIcon = $pwaIcons[0]) {
+            $payload['icon'] = $largestIcon['src'];
+        }
+
+        return $payload;
     }
 
     protected function excerpt($str, $maxLen = 200)

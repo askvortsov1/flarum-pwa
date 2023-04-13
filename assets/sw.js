@@ -102,16 +102,15 @@ self.addEventListener('push', function (event) {
   }
 
   if (isJSON(event.data.text())) {
+    console.log(event.data.json());
     const options = {
       body: event.data.json().content,
+      icon: event.data.json().icon,
+      badge: event.data.json().badge,
       data: {
         link: event.data.json().link
       }
     };
-
-    if (forumPayload.faviconUrl) {
-      options.icon = forumPayload.faviconUrl;
-    }
 
     const promiseChain = self.registration.showNotification(event.data.json().title, options);
 
