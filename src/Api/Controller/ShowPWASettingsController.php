@@ -13,6 +13,7 @@ namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
 use Askvortsov\FlarumPWA\PWATrait;
+use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
@@ -66,7 +67,7 @@ class ShowPWASettingsController extends AbstractShowController
 
         $logo = false;
 
-        foreach (PWATrait::$SIZES as $size) {
+        foreach (Util::$ICON_SIZES as $size) {
             if ($size >= 196 && $this->settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $logo = true;
             }
@@ -130,7 +131,7 @@ class ShowPWASettingsController extends AbstractShowController
 
         return [
             'manifest'        => $this->buildManifest(),
-            'sizes'           => PWATrait::$SIZES,
+            'sizes'           => Util::$ICON_SIZES,
             'status_messages' => $status_messages,
         ];
     }

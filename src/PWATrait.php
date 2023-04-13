@@ -16,8 +16,6 @@ use Flarum\Settings\SettingsRepositoryInterface;
 
 trait PWATrait
 {
-    public static $SIZES = [48, 72, 96, 144, 196, 256, 512];
-
     protected function buildManifest()
     {
         /** @var SettingsRepositoryInterface */
@@ -49,7 +47,7 @@ trait PWATrait
             $manifest['short_name'] = $shortName;
         }
 
-        foreach (PWATrait::$SIZES as $size) {
+        foreach (Util::$ICON_SIZES as $size) {
             if ($settings->get("askvortsov-pwa.icon_${size}_path")) {
                 $icon = [
                     'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_${size}_path"),

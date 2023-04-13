@@ -13,6 +13,8 @@ namespace Askvortsov\FlarumPWA;
 
 class Util
 {
+    public static $ICON_SIZES = [48, 72, 96, 144, 196, 256, 512];
+
     public static function url_encode($data)
     {
         return rtrim(strtr($data, ['+' => '-', '/' => '_']), '=');

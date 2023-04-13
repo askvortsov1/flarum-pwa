@@ -12,6 +12,7 @@
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
+use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
@@ -41,7 +42,7 @@ class UploadLogoController extends UploadImageController
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
         $this->size = $size;
 
-        if (!in_array($size, PWATrait::$SIZES)) {
+        if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 
