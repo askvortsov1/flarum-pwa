@@ -127,7 +127,7 @@ export default class PWAPage extends ExtensionPage {
                   placeholder: this.setting('theme_primary_color')(),
                   label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_label'),
                   help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text'),
-                  type: 'text',
+                  type: 'color-preview',
                 })}
               </fieldset>
               <fieldset>
@@ -135,7 +135,7 @@ export default class PWAPage extends ExtensionPage {
                   setting: 'askvortsov-pwa.backgroundColor',
                   label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_label'),
                   help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text'),
-                  type: 'text',
+                  type: 'color-preview',
                 })}
               </fieldset>
             </fieldset>
