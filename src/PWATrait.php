@@ -33,10 +33,13 @@ trait PWATrait
             'scope'            => $basePath,
             'dir'              => 'auto',
             'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'background_color' => $settings->get('askvortsov-pwa.backgroundColor', '#aaaaaa'),
             'display'          => 'standalone',
             'icons'            => [],
         ];
+
+        if ($backgroundColor = $settings->get('askvortsov-pwa.backgroundColor')) {
+            $manifest['background_color'] = $backgroundColor;
+        }
 
         if ($settings->get('askvortsov-pwa.forcePortrait')) {
             $manifest['orientation'] = 'portrait';
