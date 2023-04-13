@@ -46,8 +46,8 @@ class UploadLogoController extends UploadImageController
             throw new RouteNotFoundException();
         }
 
-        $this->filenamePrefix = "pwa-icon-${size}x${size}";
-        $this->filePathSettingKey = "askvortsov-pwa.icon_${size}_path";
+        $this->filenamePrefix = "pwa-icon-{$size}x{$size}";
+        $this->filePathSettingKey = "askvortsov-pwa.icon_{$size}_path";
 
         return parent::data($request, $document);
     }

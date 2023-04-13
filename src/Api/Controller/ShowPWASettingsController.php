@@ -68,7 +68,7 @@ class ShowPWASettingsController extends AbstractShowController
         $logo = false;
 
         foreach (Util::$ICON_SIZES as $size) {
-            if ($size >= 196 && $this->settings->get("askvortsov-pwa.icon_${size}_path")) {
+            if ($size >= 196 && $this->settings->get("askvortsov-pwa.icon_{$size}_path")) {
                 $logo = true;
             }
         }

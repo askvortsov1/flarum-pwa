@@ -48,10 +48,10 @@ trait PWATrait
         }
 
         foreach (Util::$ICON_SIZES as $size) {
-            if ($settings->get("askvortsov-pwa.icon_${size}_path")) {
+            if ($settings->get("askvortsov-pwa.icon_{$size}_path")) {
                 $icon = [
-                    'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_${size}_path"),
-                    'sizes' => "${size}x${size}",
+                    'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_{$size}_path"),
+                    'sizes' => "{$size}x{$size}",
                     'type'  => 'image/png',
                 ];
                 $manifest['icons'][] = $icon;

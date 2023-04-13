@@ -38,7 +38,7 @@ $metaClosure = function (Document $document) {
     foreach (Util::$ICON_SIZES as $size) {
         if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
             $assetUrl = $assets->url($sizePath);
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='${size}x$size'")." href='$assetUrl'>";
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
         }
     }
 };
@@ -73,7 +73,7 @@ return [
 
             foreach (Util::$ICON_SIZES as $size) {
                 if (($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path'))) {
-                    $attributes["pwa-icon-${size}x${size}Url"] = $assets->url($sizePath);
+                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
                 }
             }
 

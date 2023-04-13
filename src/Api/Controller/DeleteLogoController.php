@@ -12,6 +12,7 @@
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
+use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
@@ -58,7 +59,7 @@ class DeleteLogoController extends AbstractDeleteController
             throw new RouteNotFoundException();
         }
 
-        $pathKey = "askvortsov-pwa.icon_${size}_path";
+        $pathKey = "askvortsov-pwa.icon_{$size}_path";
         $path = $this->settings->get($pathKey);
 
         $this->uploadDir->delete($path);
