@@ -1,0 +1,23 @@
+name: Progressive Web App JS
+
+on: [workflow_dispatch, push, pull_request]
+
+# The reusable workflow definitions will be moved to the `flarum/framework` repo soon.
+# This will break your current script.
+# When this happens, run `flarum-cli audit infra --fix` to update your infrastructure.
+
+jobs:
+  run:
+    uses: flarum/.github/.github/workflows/REUSABLE_frontend.yml@main
+    with:
+      enable_bundlewatch: false
+      enable_prettier: true
+      enable_typescript: false
+
+      frontend_directory: ./js
+      backend_directory: .
+      js_package_manager: npm
+      main_git_branch: master
+
+    secrets:
+      bundlewatch_github_token: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}

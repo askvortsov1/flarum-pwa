@@ -1,44 +1,61 @@
 {
-  "name": "askvortsov/flarum-pwa",
-  "description": "Turn your flarum site into a progressive web app!",
-  "keywords": [
-    "flarum"
-  ],
-  "type": "flarum-extension",
-  "license": "MIT",
-  "support": {
-    "issues": "https://github.com/askvortsov1/flarum-pwa/issues",
-    "source": "https://github.com/askvortsov1/flarum-pwa",
-    "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
-  },
-  "require": {
-    "flarum/core": "^1.0.0",
-    "minishlink/web-push": "^6.0"
-  },
-  "suggest": {
-    "ext-gmp": "This can improve push notification performance."
-  },
-  "authors": [
-    {
-      "name": "Alexander Skvortsov",
-      "email": "askvortsov@flarum.org",
-      "role": "Developer"
+    "name": "askvortsov/flarum-pwa",
+    "description": "Turn your flarum site into a progressive web app!",
+    "keywords": [
+        "flarum"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/askvortsov1/flarum-pwa/issues",
+        "source": "https://github.com/askvortsov1/flarum-pwa",
+        "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
+    },
+    "require": {
+        "flarum/core": "^1.0.0",
+        "minishlink/web-push": "^6.0"
+    },
+    "suggest": {
+        "ext-gmp": "This can improve push notification performance."
+    },
+    "authors": [
+        {
+            "name": "Alexander Skvortsov",
+            "email": "askvortsov@flarum.org",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Askvortsov\\FlarumPWA\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Progressive Web App",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-mobile-alt",
+                "backgroundColor": "#6932D1",
+                "color": "#fff"
+            }
+        },
+        "flarum-cli": {
+            "modules": {
+                "admin": true,
+                "forum": true,
+                "js": true,
+                "jsCommon": false,
+                "css": false,
+                "gitConf": true,
+                "githubActions": true,
+                "prettier": true,
+                "typescript": false,
+                "bundlewatch": false,
+                "backendTesting": false,
+                "editorConfig": true,
+                "styleci": true
+            }
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Askvortsov\\FlarumPWA\\": "src/"
-    }
-  },
-  "extra": {
-    "flarum-extension": {
-      "title": "Progressive Web App",
-      "category": "feature",
-      "icon": {
-        "name": "fas fa-mobile-alt",
-        "backgroundColor": "#6932D1",
-        "color": "#fff"
-      }
-    }
-  }
 }
