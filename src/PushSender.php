@@ -185,7 +185,6 @@ class PushSender
 
         $pwaIcons = array_reverse($this->getIcons());
 
-
         if ($largestIcon = $pwaIcons[0]) {
             $payload['icon'] = $largestIcon['src'];
         }
