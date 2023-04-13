@@ -191,7 +191,7 @@ export default class PWAPage extends ExtensionPage {
   }
 
   saveSettings(e) {
-    const hex = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
+    const hex = /^(#[0-9a-f]{3}([0-9a-f]{3})?)?$/i;
 
     if (!hex.test(this.setting('askvortsov-pwa.backgroundColor')())) {
       alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
