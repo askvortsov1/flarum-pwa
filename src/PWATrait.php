@@ -35,7 +35,7 @@ trait PWATrait
             'scope'            => $basePath,
             'dir'              => 'auto',
             'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'background_color' => $settings->get('askvortsov-pwa.backgroundColor', '#ffffff'),
+            'background_color' => $settings->get('askvortsov-pwa.backgroundColor', '#aaaaaa'),
             'display'          => 'standalone',
             'icons'            => [],
         ];
