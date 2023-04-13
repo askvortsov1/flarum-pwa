@@ -11,17 +11,14 @@
 
 namespace Askvortsov\FlarumPWA;
 
-use Askvortsov\FlarumPWA\Job\SendPushNotificationsJob;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
-use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
-use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Support\Arr;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
