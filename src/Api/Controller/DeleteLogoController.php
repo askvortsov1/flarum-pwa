@@ -55,7 +55,7 @@ class DeleteLogoController extends AbstractDeleteController
 
         $size = Arr::get($request->getQueryParams(), 'size');
 
-        if (!in_array($size, Util::$ICON_SIZES)) {
+        if (! in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 

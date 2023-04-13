@@ -73,14 +73,14 @@ class ShowPWASettingsController extends AbstractShowController
             }
         }
 
-        if (!isset($this->buildManifest()['name'])) {
+        if (! isset($this->buildManifest()['name'])) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_name'),
             ];
         }
 
-        if (!$logo) {
+        if (! $logo) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_logo'),
@@ -101,21 +101,21 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
-        if (!function_exists('gmp_init')) {
+        if (! function_exists('gmp_init')) {
             $status_messages[] = [
                 'type'    => 'warning',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.suggest_gmp'),
             ];
         }
 
-        if (!$this->settings->get('askvortsov-pwa.vapid.private') || !$this->settings->get('askvortsov-pwa.vapid.public')) {
+        if (! $this->settings->get('askvortsov-pwa.vapid.private') || ! $this->settings->get('askvortsov-pwa.vapid.public')) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.no_vapid_keys'),
             ];
         }
 
-        if (!$this->settings->get('askvortsov-pwa.vapid.success', true)) {
+        if (! $this->settings->get('askvortsov-pwa.vapid.success', true)) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('askvortsov-pwa.admin.status.key_gen_failed', ['error' => $this->settings->get('askvortsov-pwa.vapid.error', '')]),

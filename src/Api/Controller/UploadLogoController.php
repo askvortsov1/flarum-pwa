@@ -42,7 +42,7 @@ class UploadLogoController extends UploadImageController
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
         $this->size = $size;
 
-        if (!in_array($size, Util::$ICON_SIZES)) {
+        if (! in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 

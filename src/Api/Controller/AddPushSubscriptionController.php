@@ -57,7 +57,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         $data = Arr::get($request->getParsedBody(), 'subscription', []);
 
-        if (!($endpoint = Arr::get($data, 'endpoint'))) {
+        if (! ($endpoint = Arr::get($data, 'endpoint'))) {
             throw new InvalidParameterException('Endpoint must be provided');
         }
 
@@ -74,7 +74,7 @@ class AddPushSubscriptionController extends AbstractCreateController
             }
         }
 
-        if (!$allowed) {
+        if (! $allowed) {
             throw new PermissionDeniedException();
         }
 
