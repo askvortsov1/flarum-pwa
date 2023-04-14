@@ -26,7 +26,7 @@ trait PWATrait
         /** @var UrlGenerator */
         $url = resolve(UrlGenerator::class);
 
-        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/') . '/' ?: '/';
+        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
     }
 
     /**
