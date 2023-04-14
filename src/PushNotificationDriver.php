@@ -16,6 +16,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Queue\Queue;
+use Illuminate\Support\Arr;
 
 class PushNotificationDriver implements NotificationDriverInterface
 {
@@ -56,6 +57,8 @@ class PushNotificationDriver implements NotificationDriverInterface
             return $user->getPreference(User::getNotificationPreferenceKey($blueprint->getType(), 'push'));
         });
 
-        $this->queue->push(new SendPushNotificationsJob($blueprint, $users));
+        $userIds = Arr::pluck($users, 'id');
+
+        $this->queue->push(new SendPushNotificationsJob($blueprint, $userIds));
     }
 }

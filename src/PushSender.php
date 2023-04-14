@@ -70,8 +70,10 @@ class PushSender
         return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass, static::$SUPPORTED_NON_EMAIL_BLUEPRINTS);
     }
 
-    public function notify(BlueprintInterface $blueprint, array $users = [])
+    public function notify(BlueprintInterface $blueprint, array $userIds = [])
     {
+        $users = User::whereIn('id', $userIds)->get()->all();
+
         $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
         $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
 

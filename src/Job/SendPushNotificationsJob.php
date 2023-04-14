@@ -24,18 +24,18 @@ class SendPushNotificationsJob extends AbstractJob
     private $blueprint;
 
     /**
-     * @var User[]
+     * @var int[]
      */
-    private $recipients;
+    private $recipientIds;
 
-    public function __construct(BlueprintInterface $blueprint, array $recipients = [])
+    public function __construct(BlueprintInterface $blueprint, array $recipientIds = [])
     {
         $this->blueprint = $blueprint;
-        $this->recipients = $recipients;
+        $this->recipientIds = $recipientIds;
     }
 
     public function handle(PushSender $pushSender)
     {
-        $pushSender->notify($this->blueprint, $this->recipients);
+        $pushSender->notify($this->blueprint, $this->recipientIds);
     }
 }
