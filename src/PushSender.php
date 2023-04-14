@@ -178,15 +178,15 @@ class PushSender
         ];
 
         if ($faviconPath = $this->settings->get('favicon_path')) {
-            $faviconUrl = $this->assetsFilesystem->url($faviconPath);
-
-            $payload['badge'] = $faviconUrl;
+            $payload['badge'] = $this->assetsFilesystem->url($faviconPath);
         }
 
         $pwaIcons = array_reverse($this->getIcons());
 
         if ($largestIcon = $pwaIcons[0]) {
             $payload['icon'] = $largestIcon['src'];
+        } elseif ($logoPath = $this->settings->get('logo_path')) {
+            $payload['icon'] = $this->assetsFilesystem->url($logoPath);
         }
 
         return $payload;
