@@ -13,6 +13,8 @@ namespace Askvortsov\FlarumPWA;
 
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Contracts\Filesystem\Cloud;
+use Illuminate\Contracts\Filesystem\Factory;
 
 trait PWATrait
 {
@@ -24,7 +26,7 @@ trait PWATrait
         /** @var UrlGenerator */
         $url = resolve(UrlGenerator::class);
 
-        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
+        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/') . '/' ?: '/';
     }
 
     /**
@@ -32,16 +34,16 @@ trait PWATrait
      */
     protected function getIcons()
     {
+        /** @var Cloud */
+        $assetsFilesystem = resolve(Factory::class)->disk('flarum-assets');
         /** @var SettingsRepositoryInterface */
         $settings = resolve(SettingsRepositoryInterface::class);
 
-        $basePath = $this->getBasePath();
-
         $icons = [];
         foreach (Util::$ICON_SIZES as $size) {
-            if ($settings->get("askvortsov-pwa.icon_{$size}_path")) {
+            if ($path = $settings->get("askvortsov-pwa.icon_{$size}_path")) {
                 $icons[] = [
-                    'src'   => $basePath.'assets/'.$settings->get("askvortsov-pwa.icon_{$size}_path"),
+                    'src'   => $assetsFilesystem->url($path),
                     'sizes' => "{$size}x{$size}",
                     'type'  => 'image/png',
                 ];
