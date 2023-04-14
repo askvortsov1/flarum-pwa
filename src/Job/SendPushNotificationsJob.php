@@ -14,7 +14,6 @@ namespace Askvortsov\FlarumPWA\Job;
 use Askvortsov\FlarumPWA\PushSender;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Queue\AbstractJob;
-use Flarum\User\User;
 
 class SendPushNotificationsJob extends AbstractJob
 {
