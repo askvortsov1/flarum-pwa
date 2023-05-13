@@ -24,7 +24,6 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
@@ -37,7 +36,7 @@ class PushSender
 {
     use PWATrait;
 
-    protected Cloud|Filesystem $assetsFilesystem;
+    protected Cloud $assetsFilesystem;
 
     protected LoggerInterface $logger;
 
@@ -160,14 +159,19 @@ class PushSender
 
         switch ($subjectModel) {
             case User::class:
+                /** @var User $subject */
                 $link = $this->url->to('forum')->route('user', ['username' => $subject->display_name]);
                 break;
             case Discussion::class:
+                /** @var Discussion $subject */
                 $content = $this->getRelevantPostContent($subject);
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
                 break;
             case Post::class:
-                $content = $subject->type === 'comment' ? $subject->formatContent() : '';
+                /** @var Post $subject */
+                if ($subject instanceof CommentPost) {
+                    $content = $subject->formatContent();
+                }
                 $link = $this->url->to('forum')->route('discussion',
                     ['id' => $subject->discussion_id, 'near' => $subject->number]);
                 break;
@@ -185,8 +189,8 @@ class PushSender
 
         $pwaIcons = array_reverse($this->getIcons());
 
-        if ($largestIcon = $pwaIcons[0]) {
-            $payload['icon'] = $largestIcon['src'];
+        if (!empty($pwaIcons)) {
+            $payload['icon'] = $pwaIcons[0]['src'];
         } elseif ($logoPath = $this->settings->get('logo_path')) {
             $payload['icon'] = $this->assetsFilesystem->url($logoPath);
         }

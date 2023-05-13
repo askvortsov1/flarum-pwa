@@ -11,11 +11,23 @@
 
 namespace Askvortsov\FlarumPWA;
 
+use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $endpoint
+ * @property string $vapid_public_key
+ * @property string $keys
+ * @property Carbon $expires_at
+ * @property Carbon $last_used
+ *
+ * @property User|null $user
+ */
 class PushSubscription extends AbstractModel
 {
     use ScopeVisibilityTrait;

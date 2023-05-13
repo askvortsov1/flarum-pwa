@@ -44,7 +44,7 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
 
         try {
             $keys = VAPID::createVapidKeys();
-        } catch (RuntimeException $e) {
+        } catch (ErrorException $e) {
             $this->settings->set('askvortsov-pwa.vapid.success', false);
             $this->settings->set('askvortsov-pwa.vapid.error', $e->getMessage());
 
