@@ -12,8 +12,11 @@
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
 use Askvortsov\FlarumPWA\PushSubscription;
+use ErrorException;
+use Exception;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Exception\PermissionDeniedException;
 use Laminas\Diactoros\Response\JsonResponse;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;
@@ -23,14 +26,8 @@ use RuntimeException;
 
 class ResetVAPIDKeysController implements RequestHandlerInterface
 {
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
+    protected SettingsRepositoryInterface $settings;
 
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
     public function __construct(SettingsRepositoryInterface $settings)
     {
         $this->settings = $settings;
@@ -38,6 +35,8 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
 
     /**
      * {@inheritdoc}
+     * @throws PermissionDeniedException|ErrorException
+     * @throws Exception
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -45,11 +44,11 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
 
         try {
             $keys = VAPID::createVapidKeys();
-        } catch (RuntimeException $e) {
+        } catch (ErrorException $e) {
             $this->settings->set('askvortsov-pwa.vapid.success', false);
             $this->settings->set('askvortsov-pwa.vapid.error', $e->getMessage());
 
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         $this->settings->set('askvortsov-pwa.vapid.success', true);

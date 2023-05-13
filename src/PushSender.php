@@ -12,6 +12,8 @@
 namespace Askvortsov\FlarumPWA;
 
 use Carbon\Carbon;
+use ErrorException;
+use Exception;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
@@ -20,44 +22,37 @@ use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
+use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PushSender
 {
     use PWATrait;
 
-    /**
-     * @var Cloud
-     */
-    protected $assetsFilesystem;
+    protected Cloud $assetsFilesystem;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
+    protected SettingsRepositoryInterface $settings;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /**
-     * @var UrlGenerator
-     */
-    protected $url;
+    protected UrlGenerator $url;
 
-    public function __construct(Factory $filesystemFactory, LoggerInterface $logger, SettingsRepositoryInterface $settings, TranslatorInterface $translator, UrlGenerator $url)
-    {
+    public function __construct(
+        Factory $filesystemFactory,
+        LoggerInterface $logger,
+        SettingsRepositoryInterface $settings,
+        TranslatorInterface $translator,
+        UrlGenerator $url
+    ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
         $this->logger = $logger;
         $this->settings = $settings;
@@ -65,12 +60,20 @@ class PushSender
         $this->url = $url;
     }
 
-    public static function canSend(string $blueprintClass)
+    /**
+     * @throws ReflectionException
+     */
+    public static function canSend(string $blueprintClass): bool
     {
-        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass, static::$SUPPORTED_NON_EMAIL_BLUEPRINTS);
+        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass,
+                static::$SUPPORTED_NON_EMAIL_BLUEPRINTS);
     }
 
-    public function notify(BlueprintInterface $blueprint, array $userIds = [])
+    /**
+     * @throws ErrorException
+     * @throws Exception
+     */
+    public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
         $users = User::whereIn('id', $userIds)->get()->all();
 
@@ -89,8 +92,8 @@ class PushSender
             foreach ($subscriptions as $subscription) {
                 $notifications[] = [
                     'subscription' => Subscription::create([
-                        'endpoint'        => $subscription->endpoint,
-                        'keys'            => json_decode($subscription->keys, true),
+                        'endpoint' => $subscription->endpoint,
+                        'keys' => json_decode($subscription->keys, true),
                     ]),
                     'payload' => $payload,
                 ];
@@ -99,8 +102,8 @@ class PushSender
 
         $auth = [
             'VAPID' => [
-                'subject'    => $this->url->to('forum')->base(),
-                'publicKey'  => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
+                'subject' => $this->url->to('forum')->base(),
+                'publicKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
                 'privateKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.private')),
             ],
         ];
@@ -146,37 +149,38 @@ class PushSender
         $this->log("[PWA PUSH] Sent $sentCounter notifications successfully.\n\n");
     }
 
-    protected function getPayload(BlueprintInterface $blueprint)
+    protected function getPayload(BlueprintInterface $blueprint): array
     {
         $content = '';
         $link = $this->url->to('forum')->base();
 
         $subject = $blueprint->getSubject();
-        $subjectModel = $blueprint->getSubjectModel();
-
-        if (in_array($blueprint->getType(), ['newPost', 'byobuPrivateDiscussionReplied'])) {
-            $subject = $blueprint->post;
-            $subjectModel = CommentPost::class;
-        }
+        $subjectModel = $blueprint::getSubjectModel();
 
         switch ($subjectModel) {
             case User::class:
-                $link = $this->url->to('forum')->route('user', ['username' =>  $subject->display_name]);
+                /** @var User $subject */
+                $link = $this->url->to('forum')->route('user', ['username' => $subject->display_name]);
                 break;
             case Discussion::class:
+                /** @var Discussion $subject */
                 $content = $this->getRelevantPostContent($subject);
                 $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
                 break;
             case Post::class:
-                $content = $subject->type === 'comment' ? $subject->formatContent() : '';
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->discussion_id, 'near' => $subject->number]);
+                /** @var Post $subject */
+                if ($subject instanceof CommentPost) {
+                    $content = $subject->formatContent();
+                }
+                $link = $this->url->to('forum')->route('discussion',
+                    ['id' => $subject->discussion_id, 'near' => $subject->number]);
                 break;
         }
 
         $payload = [
-            'title'   => $this->excerpt($this->getTitle($blueprint), 30),
+            'title' => $this->excerpt($this->getTitle($blueprint), 30),
             'content' => $this->excerpt($content),
-            'link'    => $link,
+            'link' => $link,
         ];
 
         if ($faviconPath = $this->settings->get('favicon_path')) {
@@ -185,8 +189,8 @@ class PushSender
 
         $pwaIcons = array_reverse($this->getIcons());
 
-        if ($largestIcon = $pwaIcons[0]) {
-            $payload['icon'] = $largestIcon['src'];
+        if (!empty($pwaIcons)) {
+            $payload['icon'] = $pwaIcons[0]['src'];
         } elseif ($logoPath = $this->settings->get('logo_path')) {
             $payload['icon'] = $this->assetsFilesystem->url($logoPath);
         }
@@ -194,7 +198,7 @@ class PushSender
         return $payload;
     }
 
-    protected function excerpt($str, $maxLen = 200)
+    protected function excerpt(string $str, int $maxLen = 200): string
     {
         $str = strip_tags($str);
         if (mb_strlen($str) > $maxLen) {
@@ -205,7 +209,7 @@ class PushSender
         return $str;
     }
 
-    protected function getRelevantPostContent($discussion)
+    protected function getRelevantPostContent($discussion): string
     {
         $relevantPost = $discussion->mostRelevantPost ?: $discussion->firstPost ?: $discussion->comments->first();
 
@@ -216,31 +220,30 @@ class PushSender
         return $relevantPost->formatContent();
     }
 
-    protected function getTitle($blueprint)
+    protected function getTitle(BlueprintInterface $blueprint): string
     {
-        if (is_subclass_of($blueprint, MailableInterface::class)) {
+        if ($blueprint instanceof MailableInterface) {
             return $blueprint->getEmailSubject($this->translator);
         } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
-            switch ($blueprint->getType()) {
-                case 'postLiked':
-                    return $this->translator->trans(
-                        'flarum-likes.forum.notifications.post_liked_text',
-                        ['username' => $blueprint->getFromUser()->getDisplayNameAttribute()]
-                    );
+            if ($blueprint->getType() == 'postLiked') {
+                return $this->translator->trans(
+                    'flarum-likes.forum.notifications.post_liked_text',
+                    ['username' => $blueprint->getFromUser()->getDisplayNameAttribute()]
+                );
             }
         }
 
         return '';
     }
 
-    protected function log($message)
+    protected function log(string $message): void
     {
         if ($this->settings->get('askvortsov-pwa.debug', false)) {
             $this->logger->info($message);
         }
     }
 
-    public static $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
+    public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
         "Flarum\Likes\Notification\PostLikedBlueprint",
         "Flarum\Notification\DiscussionRenamedBlueprint",
     ];

@@ -21,31 +21,31 @@ trait PWATrait
     /**
      * @return string
      */
-    protected function getBasePath()
+    protected function getBasePath(): string
     {
-        /** @var UrlGenerator */
+        /** @var UrlGenerator $url */
         $url = resolve(UrlGenerator::class);
 
-        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH), '/').'/' ?: '/';
+        return rtrim(parse_url($url->to('forum')->base(), PHP_URL_PATH) ?? '/', '/') . '/';
     }
 
     /**
      * @return array<array{'src': string, 'sizes': string, 'type': string}>
      */
-    protected function getIcons()
+    protected function getIcons(): array
     {
-        /** @var Cloud */
+        /** @var Cloud $assetsFilesystem */
         $assetsFilesystem = resolve(Factory::class)->disk('flarum-assets');
-        /** @var SettingsRepositoryInterface */
+        /** @var SettingsRepositoryInterface $settings */
         $settings = resolve(SettingsRepositoryInterface::class);
 
         $icons = [];
         foreach (Util::$ICON_SIZES as $size) {
             if ($path = $settings->get("askvortsov-pwa.icon_{$size}_path")) {
                 $icons[] = [
-                    'src'   => $assetsFilesystem->url($path),
+                    'src' => $assetsFilesystem->url($path),
                     'sizes' => "{$size}x{$size}",
-                    'type'  => 'image/png',
+                    'type' => 'image/png',
                 ];
             }
         }
@@ -53,22 +53,22 @@ trait PWATrait
         return $icons;
     }
 
-    protected function buildManifest()
+    protected function buildManifest(): array
     {
-        /** @var SettingsRepositoryInterface */
+        /** @var SettingsRepositoryInterface $settings */
         $settings = resolve(SettingsRepositoryInterface::class);
 
         $basePath = $this->getBasePath();
         $manifest = [
-            'name'        => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
+            'name' => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
             'description' => $settings->get('forum_description', ''),
             //"categories" => $settings->get('askvortsov-pwa.categories', []),
-            'start_url'        => $basePath,
-            'scope'            => $basePath,
-            'dir'              => 'auto',
-            'theme_color'      => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'display'          => 'standalone',
-            'icons'            => $this->getIcons(),
+            'start_url' => $basePath,
+            'scope' => $basePath,
+            'dir' => 'auto',
+            'theme_color' => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
+            'display' => 'standalone',
+            'icons' => $this->getIcons(),
         ];
 
         if ($backgroundColor = $settings->get('askvortsov-pwa.backgroundColor')) {

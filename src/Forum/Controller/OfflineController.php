@@ -24,15 +24,9 @@ class OfflineController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    /**
-     * @var Filesystem
-     */
-    protected $assetDir;
+    protected Filesystem $assetDir;
 
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
+    protected ViewFactory $viewFactory;
 
     public function __construct(FilesystemFactory $filesystemFactory, ViewFactory $viewFactory)
     {

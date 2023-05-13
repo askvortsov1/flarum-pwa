@@ -18,6 +18,7 @@ use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
 
@@ -33,12 +34,13 @@ $metaClosure = function (Document $document) {
     $document->head[] = "<meta id='apple-style' name='apple-mobile-web-app-status-bar-style' content='default'>";
     $document->head[] = "<meta id='apple-title' name='apple-mobile-web-app-title' content='$appName'>";
 
+    /** @var Cloud $assets */
     $assets = resolve(Factory::class)->disk('flarum-assets');
 
     foreach (Util::$ICON_SIZES as $size) {
-        if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
+        if ($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path')) {
             $assetUrl = $assets->url($sizePath);
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' " . ($size === 48 ? '' : "sizes='{$size}x$size'") . " href='$assetUrl'>";
         }
     }
 };
@@ -57,22 +59,23 @@ return [
         ->get('/offline', 'askvortsov-pwa.offline', ForumController\OfflineController::class),
 
     (new Extend\Frontend('forum'))
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less')
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/resources/less/forum.less')
         ->content($metaClosure),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__.'/js/dist/admin.js')
-        ->css(__DIR__.'/resources/less/admin.less')
+        ->js(__DIR__ . '/js/dist/admin.js')
+        ->css(__DIR__ . '/resources/less/admin.less')
         ->content($metaClosure),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
         ->attributes(function ($serializer, $model, $attributes) {
             $settings = resolve(SettingsRepositoryInterface::class);
+            /** @var Cloud $assets */
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
             foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
+                if ($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path')) {
                     $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
                 }
             }
@@ -80,12 +83,10 @@ return [
             return $attributes;
         }),
 
-    new Extend\Locales(__DIR__.'/resources/locale'),
+    new Extend\Locales(__DIR__ . '/resources/locale'),
 
     (new Extend\Model(User::class))
-        ->relationship('pushSubscriptions', function ($model) {
-            return $model->hasMany(PushSubscription::class, 'user_id');
-        }),
+        ->hasMany('pushSubscriptions', PushSubscription::class, 'user_id'),
 
     (new Extend\Settings())
         ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', [Util::class, 'url_encode'])
@@ -95,5 +96,5 @@ return [
         ->driver('push', PushNotificationDriver::class),
 
     (new Extend\View())
-        ->namespace('askvortsov-pwa', __DIR__.'/views'),
+        ->namespace('askvortsov-pwa', __DIR__ . '/views'),
 ];

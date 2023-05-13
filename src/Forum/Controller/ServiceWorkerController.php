@@ -13,6 +13,7 @@ namespace Askvortsov\FlarumPWA\Forum\Controller;
 
 use Askvortsov\FlarumPWA\PWATrait;
 use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Laminas\Diactoros\Response\TextResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -23,20 +24,18 @@ class ServiceWorkerController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    /**
-     * @var Filesystem
-     */
-    protected $assetDir;
+    protected Filesystem $assetDir;
 
     public function __construct(Factory $filesystemFactory)
     {
         $this->assetDir = $filesystemFactory->disk('flarum-assets');
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $response = new TextResponse($this->assetDir->get('extensions/askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
-
-        return $response;
+        return new TextResponse($this->assetDir->get('extensions/askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
     }
 }

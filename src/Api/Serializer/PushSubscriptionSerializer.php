@@ -11,8 +11,11 @@
 
 namespace Askvortsov\FlarumPWA\Api\Serializer;
 
+use Askvortsov\FlarumPWA\PushSubscription;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
+use InvalidArgumentException;
+use Tobscure\JsonApi\Relationship;
 
 class PushSubscriptionSerializer extends AbstractSerializer
 {
@@ -24,21 +27,22 @@ class PushSubscriptionSerializer extends AbstractSerializer
     /**
      * {@inheritdoc}
      */
-    protected function getDefaultAttributes($subscription)
+    protected function getDefaultAttributes($subscription): array
     {
+        if (! ($subscription instanceof PushSubscription)) {
+            throw new InvalidArgumentException(
+                get_class($this).' can only serialize instances of '.PushSubscription::class
+            );
+        }
+
         return [
-            'endpoint'                 => $subscription->endpoint,
-            'vapidPublicKey'           => $subscription->vapid_public_key,
-            'expiresAt'                => $this->formatDate($subscription->expires_at),
+            'endpoint' => $subscription->endpoint,
+            'vapidPublicKey' => $subscription->vapid_public_key,
+            'expiresAt' => $this->formatDate($subscription->expires_at),
         ];
     }
 
-    /**
-     * @param $username_request
-     *
-     * @return \Tobscure\JsonApi\Relationship
-     */
-    protected function user($subscription)
+    protected function user($subscription): Relationship
     {
         return $this->hasOne($subscription, BasicUserSerializer::class);
     }

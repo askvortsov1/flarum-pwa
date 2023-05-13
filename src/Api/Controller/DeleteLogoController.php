@@ -17,6 +17,7 @@ use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -27,19 +28,10 @@ class DeleteLogoController extends AbstractDeleteController
 {
     use PWATrait;
 
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
+    protected SettingsRepositoryInterface $settings;
 
-    /**
-     * @var Filesystem
-     */
-    protected $uploadDir;
+    protected Filesystem $uploadDir;
 
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
     public function __construct(SettingsRepositoryInterface $settings, Factory $filesystemFactory)
     {
         $this->settings = $settings;
@@ -48,8 +40,9 @@ class DeleteLogoController extends AbstractDeleteController
 
     /**
      * {@inheritdoc}
+     * @throws PermissionDeniedException|RouteNotFoundException
      */
-    protected function delete(ServerRequestInterface $request)
+    protected function delete(ServerRequestInterface $request): EmptyResponse
     {
         RequestUtil::getActor($request)->assertAdmin();
 

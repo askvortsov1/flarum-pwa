@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,11 +38,8 @@ class AddPushSubscriptionController extends AbstractCreateController
         'user',
     ];
 
-    protected $settings;
+    protected SettingsRepositoryInterface $settings;
 
-    /**
-     * @param SettingsRepositoryInterface $settings
-     */
     public function __construct(SettingsRepositoryInterface $settings)
     {
         $this->settings = $settings;
@@ -49,6 +47,8 @@ class AddPushSubscriptionController extends AbstractCreateController
 
     /**
      * {@inheritdoc}
+     * @throws NotAuthenticatedException
+     * @throws InvalidParameterException|PermissionDeniedException
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
@@ -104,7 +104,7 @@ class AddPushSubscriptionController extends AbstractCreateController
      *
      * @var string[]
      */
-    public static $push_host_allowlist = [
+    public static array $push_host_allowlist = [
         'android.googleapis.com',
         'fcm.googleapis.com',
         'updates.push.services.mozilla.com',

@@ -17,13 +17,11 @@ use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Support\Arr;
+use ReflectionException;
 
 class PushNotificationDriver implements NotificationDriverInterface
 {
-    /**
-     * @var Queue
-     */
-    protected $queue;
+    protected Queue $queue;
 
     public function __construct(Queue $queue)
     {
@@ -32,6 +30,7 @@ class PushNotificationDriver implements NotificationDriverInterface
 
     /**
      * {@inheritDoc}
+     * @throws ReflectionException
      */
     public function registerType(string $blueprintClass, array $enabled): void
     {
@@ -46,10 +45,11 @@ class PushNotificationDriver implements NotificationDriverInterface
 
     /**
      * {@inheritDoc}
+     * @throws ReflectionException
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (! PushSender::canSend(get_class($blueprint))) {
+        if (!PushSender::canSend(get_class($blueprint))) {
             return;
         }
 
