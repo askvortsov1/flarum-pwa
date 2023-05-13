@@ -218,7 +218,7 @@ class PushSender
 
     protected function getTitle(BlueprintInterface $blueprint): string
     {
-        if (is_subclass_of($blueprint, MailableInterface::class)) {
+        if ($blueprint instanceof MailableInterface) {
             return $blueprint->getEmailSubject($this->translator);
         } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
             if ($blueprint->getType() == 'postLiked') {
