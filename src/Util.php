@@ -17,6 +17,10 @@ class Util
 
     public static function url_encode($data)
     {
+        if (empty($data)) {
+            return '';
+        }
+
         return rtrim(strtr($data, ['+' => '-', '/' => '_']), '=');
     }
 }
