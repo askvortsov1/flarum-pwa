@@ -156,12 +156,7 @@ class PushSender
         $link = $this->url->to('forum')->base();
 
         $subject = $blueprint->getSubject();
-        $subjectModel = $blueprint->getSubjectModel();
-
-        if (in_array($blueprint->getType(), ['newPost', 'byobuPrivateDiscussionReplied'])) {
-            $subject = $blueprint->post;
-            $subjectModel = CommentPost::class;
-        }
+        $subjectModel = $blueprint::getSubjectModel();
 
         switch ($subjectModel) {
             case User::class:
