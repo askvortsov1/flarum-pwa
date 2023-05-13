@@ -11,6 +11,7 @@
 
 namespace Askvortsov\FlarumPWA;
 
+use Base64Url\Base64Url;
 use Carbon\Carbon;
 use ErrorException;
 use Exception;
@@ -110,8 +111,16 @@ class PushSender
             ],
         ];
 
+
+        // Safari web push seems to require that topic strings be a multiple of 4.
+        // https://stackoverflow.com/questions/75685856/what-is-the-cause-of-badwebpushtopic-from-https-web-push-apple-com
+        // As suggested, we Base64Url::encode, pad with 0s up to at least 32, and then trim down to exactly 32.
+        $safariTopicLen = 32;
+        $typeAndId = $blueprint->getType().strval($blueprint->getSubject()->id ?? -1);
+        $topic = substr(str_pad(Base64Url::encode($typeAndId), $safariTopicLen, "0"), 0, $safariTopicLen);
+
         $options = [
-            'topic' => $blueprint->getType(),
+            'topic' => $topic
         ];
 
         $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");

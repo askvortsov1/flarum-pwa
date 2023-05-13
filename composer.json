@@ -13,7 +13,8 @@
     },
     "require": {
         "flarum/core": "^1.7",
-        "minishlink/web-push": "^7.0"
+        "minishlink/web-push": "^7.0",
+        "spomky-labs/base64url" : "^2.0"
     },
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
