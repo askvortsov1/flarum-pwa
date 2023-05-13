@@ -12,20 +12,18 @@
 namespace Askvortsov\FlarumPWA\Job;
 
 use Askvortsov\FlarumPWA\PushSender;
+use ErrorException;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Queue\AbstractJob;
 
 class SendPushNotificationsJob extends AbstractJob
 {
-    /**
-     * @var BlueprintInterface
-     */
-    private $blueprint;
+    private BlueprintInterface $blueprint;
 
     /**
      * @var int[]
      */
-    private $recipientIds;
+    private array $recipientIds;
 
     public function __construct(BlueprintInterface $blueprint, array $recipientIds = [])
     {
@@ -33,7 +31,10 @@ class SendPushNotificationsJob extends AbstractJob
         $this->recipientIds = $recipientIds;
     }
 
-    public function handle(PushSender $pushSender)
+    /**
+     * @throws ErrorException
+     */
+    public function handle(PushSender $pushSender): void
     {
         $pushSender->notify($this->blueprint, $this->recipientIds);
     }

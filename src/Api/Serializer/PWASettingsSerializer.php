@@ -28,16 +28,16 @@ class PWASettingsSerializer extends AbstractSerializer
      *
      * @throws InvalidArgumentException
      */
-    protected function getDefaultAttributes($settings)
+    protected function getDefaultAttributes($settings): array
     {
         return [
-            'manifest'        => $settings['manifest'],
-            'sizes'           => $settings['sizes'],
+            'manifest' => $settings['manifest'],
+            'sizes' => $settings['sizes'],
             'status_messages' => $settings['status_messages'],
         ];
     }
 
-    public function getId($model)
+    public function getId(mixed $model): string
     {
         return 'global';
     }

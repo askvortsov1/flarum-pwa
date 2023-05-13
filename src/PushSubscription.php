@@ -14,6 +14,7 @@ namespace Askvortsov\FlarumPWA;
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PushSubscription extends AbstractModel
 {
@@ -26,10 +27,7 @@ class PushSubscription extends AbstractModel
      */
     protected $dates = ['expires_at'];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

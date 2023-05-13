@@ -16,6 +16,7 @@ use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
+use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Support\Arr;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -27,13 +28,11 @@ class UploadLogoController extends UploadImageController
 {
     use PWATrait;
 
-    /**
-     * @var string
-     */
-    protected $size;
+    protected int $size;
 
     /**
      * {@inheritdoc}
+     * @throws PermissionDeniedException|RouteNotFoundException
      */
     public function data(ServerRequestInterface $request, Document $document)
     {
