@@ -49,7 +49,7 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (!PushSender::canSend(get_class($blueprint))) {
+        if (! PushSender::canSend(get_class($blueprint))) {
             return;
         }
 

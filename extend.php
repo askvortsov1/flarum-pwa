@@ -38,9 +38,9 @@ $metaClosure = function (Document $document) {
     $assets = resolve(Factory::class)->disk('flarum-assets');
 
     foreach (Util::$ICON_SIZES as $size) {
-        if ($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path')) {
+        if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
             $assetUrl = $assets->url($sizePath);
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' " . ($size === 48 ? '' : "sizes='{$size}x$size'") . " href='$assetUrl'>";
+            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
         }
     }
 };
@@ -59,13 +59,13 @@ return [
         ->get('/offline', 'askvortsov-pwa.offline', ForumController\OfflineController::class),
 
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . '/js/dist/forum.js')
-        ->css(__DIR__ . '/resources/less/forum.less')
+        ->js(__DIR__.'/js/dist/forum.js')
+        ->css(__DIR__.'/resources/less/forum.less')
         ->content($metaClosure),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__ . '/js/dist/admin.js')
-        ->css(__DIR__ . '/resources/less/admin.less')
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
@@ -75,7 +75,7 @@ return [
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
             foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('askvortsov-pwa.icon_' . strval($size) . '_path')) {
+                if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
                     $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
                 }
             }
@@ -83,7 +83,7 @@ return [
             return $attributes;
         }),
 
-    new Extend\Locales(__DIR__ . '/resources/locale'),
+    new Extend\Locales(__DIR__.'/resources/locale'),
 
     (new Extend\Model(User::class))
         ->hasMany('pushSubscriptions', PushSubscription::class, 'user_id'),
@@ -96,5 +96,5 @@ return [
         ->driver('push', PushNotificationDriver::class),
 
     (new Extend\View())
-        ->namespace('askvortsov-pwa', __DIR__ . '/views'),
+        ->namespace('askvortsov-pwa', __DIR__.'/views'),
 ];

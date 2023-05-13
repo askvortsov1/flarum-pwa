@@ -65,8 +65,10 @@ class PushSender
      */
     public static function canSend(string $blueprintClass): bool
     {
-        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array($blueprintClass,
-                static::$SUPPORTED_NON_EMAIL_BLUEPRINTS);
+        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array(
+            $blueprintClass,
+            static::$SUPPORTED_NON_EMAIL_BLUEPRINTS
+        );
     }
 
     /**
@@ -172,8 +174,10 @@ class PushSender
                 if ($subject instanceof CommentPost) {
                     $content = $subject->formatContent();
                 }
-                $link = $this->url->to('forum')->route('discussion',
-                    ['id' => $subject->discussion_id, 'near' => $subject->number]);
+                $link = $this->url->to('forum')->route(
+                    'discussion',
+                    ['id' => $subject->discussion_id, 'near' => $subject->number]
+                );
                 break;
         }
 
@@ -189,7 +193,7 @@ class PushSender
 
         $pwaIcons = array_reverse($this->getIcons());
 
-        if (!empty($pwaIcons)) {
+        if (! empty($pwaIcons)) {
             $payload['icon'] = $pwaIcons[0]['src'];
         } elseif ($logoPath = $this->settings->get('logo_path')) {
             $payload['icon'] = $this->assetsFilesystem->url($logoPath);
