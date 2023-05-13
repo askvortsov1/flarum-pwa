@@ -158,6 +158,14 @@ export default class PWAPage extends ExtensionPage {
                   placeholder: 20,
                 })}
               </fieldset>
+              <fieldset>
+                {this.buildSettingComponent({
+                  setting: 'askvortsov-pwa.pushNotifPreferenceDefaultToEmail',
+                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
+                  help: app.translator.trans('askvortsov-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
+                  type: 'bool',
+                })}
+              </fieldset>
             </fieldset>
 
             {this.submitButton()}

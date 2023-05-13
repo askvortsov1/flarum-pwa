@@ -14,6 +14,7 @@ namespace Askvortsov\FlarumPWA;
 use Askvortsov\FlarumPWA\Job\SendPushNotificationsJob;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Support\Arr;
@@ -22,10 +23,12 @@ use ReflectionException;
 class PushNotificationDriver implements NotificationDriverInterface
 {
     protected Queue $queue;
+    protected SettingsRepositoryInterface $settings;
 
-    public function __construct(Queue $queue)
+    public function __construct(Queue $queue, SettingsRepositoryInterface $settings)
     {
         $this->queue = $queue;
+        $this->settings = $settings;
     }
 
     /**
@@ -34,11 +37,13 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function registerType(string $blueprintClass, array $enabled): void
     {
+        $defaultPrefToEmail = $this->settings->get('askvortsov-pwa.pushNotifPreferenceDefaultToEmail');
+
         if (PushSender::canSend($blueprintClass)) {
             User::registerPreference(
                 User::getNotificationPreferenceKey($blueprintClass::getType(), 'push'),
                 'boolval',
-                in_array('email', $enabled)
+                $defaultPrefToEmail && in_array('email', $enabled)
             );
         }
     }

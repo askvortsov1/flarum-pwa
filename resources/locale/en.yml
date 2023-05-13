@@ -28,6 +28,8 @@ askvortsov-pwa:
       other:
         heading: Other
         force_portrait_text: Force portait orientation?
+        push_notif_preference_default_to_email_label: Default Push Preferences to Email?
+        push_notif_preference_default_to_email_text: If true, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If false, users will have push notifications disabled by default.
         user_max_subscriptions_label: Max Push Subscriptions Per User
         user_max_subscriptions_text: How many push subscriptions should each user be able to have at a time? When a user receives a push notification, each subscription will result in an API call. Each subscription typically corresponds to a browser the user has used.
       heading: Progressive Web App Configuration

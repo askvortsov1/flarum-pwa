@@ -90,6 +90,7 @@ return [
 
     (new Extend\Settings())
         ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', [Util::class, 'url_encode'])
+        ->default('askvortsov-pwa.pushNotifPreferenceDefaultToEmail', true)
         ->default('askvortsov-pwa.userMaxSubscriptions', 20),
 
     (new Extend\Notification())
