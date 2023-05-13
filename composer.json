@@ -57,5 +57,15 @@
                 "styleci": true
             }
         }
+    },
+    "require-dev": {
+        "flarum/phpstan": "^1.0"
+    },
+    "scripts": {
+        "analyse:phpstan": "phpstan analyse",
+        "clear-cache:phpstan": "phpstan clear-result-cache"
+    },
+    "scripts-descriptions": {
+        "analyse:phpstan": "Run static analysis"
     }
 }

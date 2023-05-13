@@ -1,11 +1,12 @@
 name: Progressive Web App PHP
 
-on: [workflow_dispatch, push, pull_request]
+on: [ workflow_dispatch, push, pull_request ]
 
 jobs:
   run:
     uses: flarum/framework/.github/workflows/REUSABLE_backend.yml@main
     with:
       enable_backend_testing: false
+      enable_phpstan: true
 
       backend_directory: .
