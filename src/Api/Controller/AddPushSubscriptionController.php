@@ -20,6 +20,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Exception\InvalidParameterException;
@@ -74,13 +75,8 @@ class AddPushSubscriptionController extends AbstractCreateController
             $subscriptions->orderBy('last_used')->take($subscriptionCount - $maxSubscriptionCount)->delete();
         }
 
-        $allowed = false;
-        foreach (static::$push_host_allowlist as $allowed_host) {
-            $host = parse_url($endpoint, PHP_URL_HOST);
-            if (fnmatch($allowed_host, $host)) {
-                $allowed = true;
-            }
-        }
+        $host = parse_url($endpoint, PHP_URL_HOST);
+        $allowed = Str::endsWith($host, static::$push_host_allowlist);
 
         if (! $allowed) {
             throw new PermissionDeniedException();
@@ -110,7 +106,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         'updates.push.services.mozilla.com',
         'updates-autopush.stage.mozaws.net',
         'updates-autopush.dev.mozaws.net',
-        '*.notify.windows.com',
-        '*.push.apple.com',
+        'notify.windows.com',
+        'push.apple.com',
     ];
 }
