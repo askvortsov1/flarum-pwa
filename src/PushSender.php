@@ -94,7 +94,7 @@ class PushSender
 
         foreach ($users as $user) {
             // check permissions
-            if ($opOnlyIsEnable && !$user->can('canViewPosts', $blueprint)) {
+            if ($opOnlyIsEnable && ! $user->can('canViewPosts', $blueprint)) {
                 continue;
             }
 
