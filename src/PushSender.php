@@ -89,7 +89,15 @@ class PushSender
 
         $sendingCounter = 0;
 
+        // ext visible-to-op-only
+        $opOnlyIsEnable = resolve('flarum.extensions')->isEnabled('imdong-visible-to-op-only');
+
         foreach ($users as $user) {
+            // check permissions
+            if ($opOnlyIsEnable && !$user->can('canViewPosts', $blueprint)) {
+                continue;
+            }
+
             $subscriptions = $user->pushSubscriptions;
             $sendingCounter += $subscriptions->count();
             foreach ($subscriptions as $subscription) {
