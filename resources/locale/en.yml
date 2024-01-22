@@ -32,6 +32,12 @@ askvortsov-pwa:
         push_notif_preference_default_to_email_text: If true, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If false, users will have push notifications disabled by default.
         user_max_subscriptions_label: Max Push Subscriptions Per User
         user_max_subscriptions_text: How many push subscriptions should each user be able to have at a time? When a user receives a push notification, each subscription will result in an API call. Each subscription typically corresponds to a browser the user has used.
+        windowControlsOverlay_label: Open Window Controls Overlay?
+        windowControlsOverlay_text: |
+          If true, users will able to enable Window Controls Overlay to create an immersive, native-like experience. Window Controls Overlay enables or not depends on user's preference and browser's compatibility. You also should be sure you've done something to match this feature.
+
+          See also: <compatibilitylink>The compatibility of Window Controls Overlay</compatibilitylink> & <learnlink>About Window Controls Overlay in Microsoft Learn</learnlink>
+ 
       heading: Progressive Web App Configuration
       text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
       status_check_heading: Status Check
