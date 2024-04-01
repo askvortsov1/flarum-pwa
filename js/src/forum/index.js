@@ -6,6 +6,7 @@ import LinkButton from 'flarum/common/components/LinkButton';
 import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
+import {registerFirebaseNotifications} from "./registerPushNotificationEvents";
 
 app.initializers.add('askvortsov/flarum-pwa', () => {
   const isInStandaloneMode = () =>
@@ -58,19 +59,5 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
 
   addShareButtons();
   addPushNotifications();
-
-  window.addEventListener('push-notification', (event) => {
-    if (event && event.detail){
-      alert(JSON.stringify(event.detail));
-    }
-  });
-
-  // @ts-ignore
-  window.addEventListener('push-token', (event) => {
-    if (event && event.detail){
-      alert(JSON.stringify(event.detail));
-    }
-  });
+  registerFirebaseNotifications()
 });
-
-
