@@ -58,4 +58,19 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
 
   addShareButtons();
   addPushNotifications();
+
+  window.addEventListener('push-notification', (event) => {
+    if (event && event.detail){
+      alert(JSON.stringify(event.detail));
+    }
+  });
+
+  // @ts-ignore
+  window.addEventListener('push-token', (event) => {
+    if (event && event.detail){
+      alert(JSON.stringify(event.detail));
+    }
+  });
 });
+
+
