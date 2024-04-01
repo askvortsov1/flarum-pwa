@@ -8,7 +8,6 @@ import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
 import { registerFirebaseNotifications } from './registerPushNotificationEvents';
 
-
 app.initializers.add('askvortsov/flarum-pwa', () => {
   const isInStandaloneMode = () =>
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');

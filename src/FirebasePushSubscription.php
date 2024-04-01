@@ -28,6 +28,10 @@ class FirebasePushSubscription extends AbstractModel
 
     protected $table = 'firebase_push_subscriptions';
 
+    protected $fillable = [
+        'token', 'user_id',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

@@ -1,26 +1,27 @@
-const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 function generateString(length) {
   let result = ' ';
   const charactersLength = characters.length;
-  for ( let i = 0; i < length; i++ ) {
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
 
   return result;
 }
 
-
 export const registerFirebaseNotifications = () => {
-  app.request({
-    method: "POST",
-    url: app.forum.attribute('apiUrl') + "/pwa/firebase-push-subscriptions",
-    body: {
-      token: generateString(16),
-    }
-  }).then((response) => {
-    console.error(response.data)
-  })
+  app
+    .request({
+      method: 'POST',
+      url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
+      body: {
+        token: generateString(16),
+      },
+    })
+    .then((response) => {
+      console.error(response.data);
+    });
 
   window.addEventListener('push-notification', (event) => {
     if (event && event.detail) {
