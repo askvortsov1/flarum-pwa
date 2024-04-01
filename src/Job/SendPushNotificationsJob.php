@@ -11,6 +11,7 @@
 
 namespace Askvortsov\FlarumPWA\Job;
 
+use Askvortsov\FlarumPWA\FirebasePushSender;
 use Askvortsov\FlarumPWA\PushSender;
 use ErrorException;
 use Flarum\Notification\Blueprint\BlueprintInterface;
@@ -34,8 +35,9 @@ class SendPushNotificationsJob extends AbstractJob
     /**
      * @throws ErrorException
      */
-    public function handle(PushSender $pushSender): void
+    public function handle(PushSender $native, FirebasePushSender $firebase): void
     {
-        $pushSender->notify($this->blueprint, $this->recipientIds);
+        $native->notify($this->blueprint, $this->recipientIds);
+        $firebase->notify($this->blueprint, $this->recipientIds);
     }
 }

@@ -19,8 +19,7 @@ export const registerFirebaseNotifications = () => {
         token: generateString(16),
       },
     })
-    .then((response) => {
-    });
+    .then((response) => {});
 
   window.addEventListener('push-notification', (event) => {
     if (event && event.detail) {
