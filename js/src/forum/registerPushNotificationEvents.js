@@ -10,7 +10,14 @@ function generateString(length) {
   return result;
 }
 
+// const isUsingIOSWebview  = () => window.webkit?.messageHandlers !== undefined
+const isUsingIOSWebview  = () => true
+
 export const registerFirebaseNotifications = () => {
+  if (! isUsingIOSWebview()) {
+    return
+  }
+
   app
     .request({
       method: 'POST',
@@ -19,7 +26,6 @@ export const registerFirebaseNotifications = () => {
         token: generateString(16),
       },
     })
-    .then((response) => {});
 
   window.addEventListener('push-notification', (event) => {
     if (event && event.detail) {
