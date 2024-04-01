@@ -20,7 +20,6 @@ export const registerFirebaseNotifications = () => {
       },
     })
     .then((response) => {
-      console.error(response.data);
     });
 
   window.addEventListener('push-notification', (event) => {
