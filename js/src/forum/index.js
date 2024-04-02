@@ -6,7 +6,7 @@ import LinkButton from 'flarum/common/components/LinkButton';
 import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
-import { registerFirebaseNotifications } from './registerPushNotificationEvents';
+import { registerFirebaseNotifications } from './registerFirebaseNotifications';
 
 app.initializers.add('askvortsov/flarum-pwa', () => {
   const isInStandaloneMode = () =>

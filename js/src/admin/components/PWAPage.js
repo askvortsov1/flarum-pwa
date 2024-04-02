@@ -180,16 +180,13 @@ export default class PWAPage extends ExtensionPage {
               </fieldset>
             </fieldset>
 
-            <div>
-              If has firebase auth, show a note that the auth is registered.
-            </div>
+            <div>If has firebase auth, show a note that the auth is registered.</div>
 
             {this.submitButton()}
 
             <fieldset>
               <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')}</legend>
-              <div
-                className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')}</div>
+              <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')}</div>
               {this.sizes.map((size) => {
                 return (
                   <fieldset class="logoFieldset">

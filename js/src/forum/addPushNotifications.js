@@ -7,6 +7,9 @@ import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
 import icon from 'flarum/common/helpers/icon';
 
+const usingAppleWebview = () => true;
+// const usingAppleWebview = () => window.webkit?.messageHanders !== undefined
+
 const subscribeUser = (save) => {
   return app.sw.pushManager
     .subscribe({
@@ -98,6 +101,31 @@ export default () => {
 
   extend(SettingsPage.prototype, 'notificationsItems', function (items) {
     if (!pushConfigured()) return;
+
+    if (usingAppleWebview()) {
+      items.add(
+        'firebase-push-optin-default',
+        Alert.component(
+          {
+            itemClassName: 'pwa-setting-alert',
+            dismissible: false,
+            controls: [
+              Button.component(
+                {
+                  className: 'Button Button--link',
+                  onclick: () => {
+                    window.webkit.messageHandlers['push-permission-request'].postMessage('push-permission-request');
+                  },
+                },
+                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button')
+              ),
+            ],
+          },
+          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
+        ),
+        10
+      );
+    }
 
     if (!('Notification' in window)) {
       items.add(
