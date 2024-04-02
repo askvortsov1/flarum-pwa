@@ -7,9 +7,6 @@ import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
 import icon from 'flarum/common/helpers/icon';
 
-const usingAppleWebview = () => true;
-// const usingAppleWebview = () => window.webkit?.messageHanders !== undefined
-
 const subscribeUser = (save) => {
   return app.sw.pushManager
     .subscribe({
@@ -42,6 +39,10 @@ const pushEnabled = () => {
   return false;
 };
 
+const usingAppleWebview = () => window.webkit && window.webkit.messageHandlers;
+
+const supportsBrowserNotifications = () => 'Notification' in window;
+
 export const refreshSubscription = async (sw) => {
   if (!app.cache.pwaRefreshed && 'Notification' in window && window.Notification.permission === 'granted' && pushEnabled())
     try {
@@ -57,6 +58,35 @@ export const refreshSubscription = async (sw) => {
 
 const pushConfigured = () => {
   return app.forum.attribute('vapidPublicKey');
+};
+
+// notDetermined | denied | authorized | ephemeral | provisional | unknown
+let firebasePushNotificationState = 'unknown';
+
+const requestFirebasePushNotificationPermission = (event) => {
+  if (event.detail !== 'granted') {
+    return;
+  }
+
+  firebasePushNotificationState = 'granted';
+
+  window.webkit.messageHandlers['push-token'].postMessage('push-token');
+};
+
+const saveFirebasePushToken = (event) => {
+  app.request({
+    method: 'POST',
+    url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
+    body: {
+      token: event.detail,
+    },
+  });
+};
+
+const checkFirebasePushState = (event) => {
+  firebasePushNotificationState = event.detail;
+
+  m.redraw();
 };
 
 export default () => {
@@ -100,34 +130,11 @@ export default () => {
   });
 
   extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+    if (usingAppleWebview()) return;
+
     if (!pushConfigured()) return;
 
-    if (usingAppleWebview()) {
-      items.add(
-        'firebase-push-optin-default',
-        Alert.component(
-          {
-            itemClassName: 'pwa-setting-alert',
-            dismissible: false,
-            controls: [
-              Button.component(
-                {
-                  className: 'Button Button--link',
-                  onclick: () => {
-                    window.webkit.messageHandlers['push-permission-request'].postMessage('push-permission-request');
-                  },
-                },
-                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button')
-              ),
-            ],
-          },
-          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
-        ),
-        10
-      );
-    }
-
-    if (!('Notification' in window)) {
+    if (!supportsBrowserNotifications()) {
       items.add(
         'push-no-browser-support',
         Alert.component(
@@ -201,39 +208,50 @@ export default () => {
     }
   });
 
-  const requestFirebasePushNotificationPermission = (event) => {
-    if (event.detail !== 'granted') {
-      return;
+  extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+    if (!usingAppleWebview()) return;
+
+    if (firebasePushNotificationState !== 'authorized') {
+      items.add(
+        'firebase-push-optin-default',
+        Alert.component(
+          {
+            itemClassName: 'pwa-setting-alert',
+            dismissible: false,
+            controls: [
+              Button.component(
+                {
+                  className: 'Button Button--link',
+                  onclick: () => {
+                    window.webkit.messageHandlers['push-permission-request'].postMessage('push-permission-request');
+                  },
+                },
+                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button') + firebasePushNotificationState
+              ),
+            ],
+          },
+          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
+        ),
+        10
+      );
     }
-
-    window.webkit.messageHandlers['push-token'].postMessage('push-token');
-  };
-
-  const saveFirebasePushToken = (event) => {
-    app.request({
-      method: 'POST',
-      url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
-      body: {
-        token: event.detail,
-      },
-    });
-  };
+  });
 
   extend(SettingsPage.prototype, 'oncreate', function () {
-    if (!usingAppleWebview()) {
-      return;
-    }
+    if (usingAppleWebview()) {
+      window.webkit.messageHandlers['push-permission-state'].postMessage('push-permission-state');
 
-    window.addEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-    window.addEventListener('push-token', saveFirebasePushToken);
+      window.addEventListener('push-permission-request', requestFirebasePushNotificationPermission);
+      window.addEventListener('push-permission-state', checkFirebasePushState);
+      window.addEventListener('push-token', saveFirebasePushToken);
+    }
   });
 
   extend(SettingsPage.prototype, 'onremove', function () {
-    if (!usingAppleWebview()) {
-      return;
+    if (usingAppleWebview()) {
+      window.removeEventListener('push-permission-request', requestFirebasePushNotificationPermission);
+      window.removeEventListener('push-permission-state', checkFirebasePushState);
+      window.removeEventListener('push-token', saveFirebasePushToken);
     }
-
-    window.removeEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-    window.removeEventListener('push-token', saveFirebasePushToken);
   });
 };
