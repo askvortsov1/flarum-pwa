@@ -201,31 +201,31 @@ export default () => {
     }
   });
 
+  const requestFirebasePushNotificationPermission = (event) => {
+    if (event.detail !== 'granted') {
+      return;
+    }
+
+    window.webkit.messageHandlers['push-token'].postMessage('push-token');
+  };
+
+  const saveFirebasePushToken = (event) => {
+    app.request({
+      method: 'POST',
+      url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
+      body: {
+        token: event.detail,
+      },
+    });
+  };
+
   extend(SettingsPage.prototype, 'oncreate', function () {
     if (!usingAppleWebview()) {
       return;
     }
 
-    // app.request({
-    //   method: 'POST',
-    //   url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
-    //   body: {
-    //     token: event.detail,
-    //   },
-    // });
-
-    // This only gives the state "granted"
-    window.addEventListener('push-permission-request', (event) => {
-      if (event.detail !== 'granted') {
-        return;
-      }
-
-      window.webkit.messageHandlers['push-token'].postMessage('push-token');
-    });
-
-    window.addEventListener('push-token', (event) => {
-      alert('push-token' + event.detail);
-    });
+    window.addEventListener('push-permission-request', requestFirebasePushNotificationPermission);
+    window.addEventListener('push-token', saveFirebasePushToken);
   });
 
   extend(SettingsPage.prototype, 'onremove', function () {
@@ -233,6 +233,7 @@ export default () => {
       return;
     }
 
-    console.error('settings page on remove');
+    window.removeEventListener('push-permission-request', requestFirebasePushNotificationPermission);
+    window.removeEventListener('push-token', saveFirebasePushToken);
   });
 };
