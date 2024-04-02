@@ -14,15 +14,21 @@ namespace Askvortsov\FlarumPWA;
 use Flarum\User\User;
 use Flarum\Notification\MailableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
+use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class FirebasePushSender
 {
-    public function __construct()
+    private Messaging $messaging;
+
+    public function __construct(Messaging $messaging)
     {
+        $this->messaging = $messaging;
     }
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function canSend(string $blueprintClass): bool
     {
@@ -34,7 +40,24 @@ class FirebasePushSender
 
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        $users = User::whereIn('id', $userIds)->get()->all();
+        // $users = User::whereIn('id', $userIds)->get()->all();
+        //
+        // FirebasePushSubscription::whereIn('user_id', $userIds)->get();
+
+
+        $this->messaging->send(
+            $this->newMessage()
+        );
+    }
+
+    private function newMessage(): CloudMessage
+    {
+        return CloudMessage::new()->withNotification(
+            Notification::fromArray([
+                'title' => 'Notification Title',
+                'body' => 'Notification Body',
+            ])
+        );
     }
 
     public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [

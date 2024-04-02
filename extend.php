@@ -59,6 +59,7 @@ return [
         ->get('/sw', 'askvortsov-pwa.sw', ForumController\ServiceWorkerController::class)
         ->get('/offline', 'askvortsov-pwa.offline', ForumController\OfflineController::class),
 
+
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__.'/resources/less/forum.less')
@@ -99,4 +100,8 @@ return [
 
     (new Extend\View())
         ->namespace('askvortsov-pwa', __DIR__.'/views'),
+
+
+    (new Extend\ServiceProvider())
+        ->register(FlarumPWAServiceProvider::class),
 ];

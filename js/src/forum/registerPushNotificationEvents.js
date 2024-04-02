@@ -10,33 +10,24 @@ function generateString(length) {
   return result;
 }
 
-// const isUsingIOSWebview  = () => window.webkit?.messageHandlers !== undefined
-const isUsingIOSWebview  = () => true
-
 export const registerFirebaseNotifications = () => {
-  if (! isUsingIOSWebview()) {
-    return
-  }
-
-  app
-    .request({
-      method: 'POST',
-      url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
-      body: {
-        token: generateString(16),
-      },
-    })
-
   window.addEventListener('push-notification', (event) => {
     if (event && event.detail) {
       // I don't think we need this since it's going to show up as a push notification
     }
   });
 
-  // @ts-ignore
   window.addEventListener('push-token', (event) => {
     if (event && event.detail) {
-      // Send the push token to the API
+      alert(event.detail);
+
+      app.request({
+        method: 'POST',
+        url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
+        body: {
+          token: generateString(16),
+        },
+      });
     }
   });
 };
