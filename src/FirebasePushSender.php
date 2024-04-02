@@ -64,7 +64,7 @@ class FirebasePushSender
             ->withNotification(
                 Notification::fromArray([
                     'title' => $this->getTitle($blueprint),
-                    'body' => $this->getBody($blueprint),
+                    'body' => strip_tags($this->getBody($blueprint)),
                 ])
             );
     }
