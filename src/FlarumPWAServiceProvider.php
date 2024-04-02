@@ -10,7 +10,7 @@ class FlarumPWAServiceProvider extends AbstractServiceProvider
 {
     public function register()
     {
-        $this->container->resolving(FirebaseMessagingContract::class, function ($container) {
+        $this->container->bind(FirebaseMessagingContract::class, function ($container) {
             return (new FirebaseFactory)->createMessaging();
         });
     }
