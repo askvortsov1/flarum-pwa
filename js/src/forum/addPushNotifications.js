@@ -214,12 +214,17 @@ export default () => {
     //   },
     // });
 
+    // This only gives the state "granted"
     window.addEventListener('push-permission-request', (event) => {
-      alert('push-permission-request' + event.detail);
+      if (event.detail !== 'granted') {
+        return;
+      }
+
+      window.webkit.messageHandlers['push-token'].postMessage('push-token');
     });
 
-    window.addEventListener('push-permission-state', (event) => {
-      alert('push-permission-state' + event.detail);
+    window.addEventListener('push-token', (event) => {
+      alert('push-token' + event.detail);
     });
   });
 
