@@ -200,4 +200,34 @@ export default () => {
       );
     }
   });
+
+  extend(SettingsPage.prototype, 'oncreate', function () {
+    if (!usingAppleWebview()) {
+      return;
+    }
+
+    // app.request({
+    //   method: 'POST',
+    //   url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
+    //   body: {
+    //     token: event.detail,
+    //   },
+    // });
+
+    window.addEventListener('push-permission-request', (event) => {
+      alert('push-permission-request' + event.detail);
+    });
+
+    window.addEventListener('push-permission-state', (event) => {
+      alert('push-permission-state' + event.detail);
+    });
+  });
+
+  extend(SettingsPage.prototype, 'onremove', function () {
+    if (!usingAppleWebview()) {
+      return;
+    }
+
+    console.error('settings page on remove');
+  });
 };
