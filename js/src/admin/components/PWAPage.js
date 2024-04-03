@@ -4,6 +4,7 @@ import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 
 import PWALogoUploadButton from './PWALogoUploadButton';
+import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
 export default class PWAPage extends ExtensionPage {
   oninit(vnode) {
@@ -168,20 +169,6 @@ export default class PWAPage extends ExtensionPage {
               </fieldset>
             </fieldset>
 
-            <fieldset>
-              <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase.heading')}</legend>
-                {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.firebaseAuthorization',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.firebase.authorization_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.firebase.authorization_text'),
-                  type: 'file',
-                })}
-              </fieldset>
-            </fieldset>
-
-            <div>If has firebase auth, show a note that the auth is registered.</div>
-
             {this.submitButton()}
 
             <fieldset>
@@ -197,6 +184,8 @@ export default class PWAPage extends ExtensionPage {
               })}
             </fieldset>
           </form>
+
+          <PWAUploadFirebaseConfigForm />
         </div>
       </div>
     );

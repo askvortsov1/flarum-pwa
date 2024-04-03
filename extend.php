@@ -15,6 +15,7 @@ use Askvortsov\FlarumPWA\Api\Controller as ApiController;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
+use Flarum\Foundation\Paths;
 use Flarum\Frontend\Document;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -52,6 +53,7 @@ return [
         ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
         ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class)
         ->post('/pwa/firebase-push-subscriptions', 'askvortsov-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
+        ->post('/pwa/firebase-config', 'askvortsov-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
         ->post('/reset_vapid', 'askvortsov-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
@@ -101,7 +103,13 @@ return [
     (new Extend\View())
         ->namespace('askvortsov-pwa', __DIR__.'/views'),
 
-
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),
+
+    (new Extend\Filesystem())
+        ->disk('flarum-pwa-storage', function (Paths $paths) {
+            return [
+                'root' => "{$paths->storage}/firebase",
+            ];
+        })
 ];
