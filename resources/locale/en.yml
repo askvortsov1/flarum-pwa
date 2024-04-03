@@ -25,6 +25,10 @@ askvortsov-pwa:
         reset_vapid_text: This will regenerate VAPID keys, and delete any existing subscriptions using the current VAPID keys.
         reset_vapid_confirm: Resetting VAPID keys will remove any subscriptions using the existing keys, so users won't receive any notifications until the next time they visit your site. This should only be done when setting up push notifications for the first time, or if push notifications aren't working at all and there's a warning about missing VAPID keys above.
         reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. Reload the page to see an updated status check report.
+      firebase_config:
+        heading: Firebase
+        help_text: To add support for push notifications when publishing your app in the app store with PWA builder, you need to use Firebase to add push notifications to your application. Please generate your Firebase Service Config and upload it here.
+        upload_successful: Your firebase config has been uploaded successfully
       other:
         heading: Other
         force_portrait_text: Force portait orientation?

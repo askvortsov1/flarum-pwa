@@ -5,7 +5,6 @@ namespace Askvortsov\FlarumPWA;
 use Flarum\Foundation\AbstractServiceProvider;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Kreait\Firebase\Contract\Messaging as FirebaseMessagingContract;
 use Kreait\Firebase\Factory as FirebaseFactory;

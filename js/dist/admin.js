@@ -282,9 +282,9 @@ var PWAUploadFirebaseConfigForm = /*#__PURE__*/function (_Component) {
       action: "/pwa/firebase-config",
       method: "POST",
       onsubmit: this.updateFirebaseConfig.bind(this)
-    }, m("fieldset", null, m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.firebase-config.heading')), m("div", {
+    }, m("fieldset", null, m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.heading')), m("div", {
       className: "helpText"
-    }, app.translator.trans('askvortsov-pwa.firebase-config.help_text')), m("input", {
+    }, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')), m("input", {
       type: "file",
       onchange: this.handleFileChange.bind(this)
     })), m("button", {
@@ -303,7 +303,9 @@ var PWAUploadFirebaseConfigForm = /*#__PURE__*/function (_Component) {
       url: app.forum.attribute('apiUrl') + '/pwa/firebase-config',
       body: body
     }).then(function (response) {
-      alert('nice');
+      app.alerts.show({
+        type: 'success'
+      }, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_successful'));
     });
   };
   return PWAUploadFirebaseConfigForm;

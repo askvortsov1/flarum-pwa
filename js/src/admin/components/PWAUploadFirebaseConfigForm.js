@@ -13,8 +13,8 @@ export default class PWAUploadFirebaseConfigForm extends Component {
         <form action="/pwa/firebase-config" method="POST" onsubmit={this.updateFirebaseConfig.bind(this)}>
           <fieldset>
             <fieldset>
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase-config.heading')}</legend>
-              <div className="helpText">{app.translator.trans('askvortsov-pwa.firebase-config.help_text')}</div>
+              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.heading')}</legend>
+              <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')}</div>
 
               <input type="file" onchange={this.handleFileChange.bind(this)} />
             </fieldset>
@@ -43,7 +43,12 @@ export default class PWAUploadFirebaseConfigForm extends Component {
         body: body,
       })
       .then((response) => {
-        alert('nice');
+        app.alerts.show(
+          {
+            type: 'success',
+          },
+          app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_successful')
+        );
       });
   }
 }
