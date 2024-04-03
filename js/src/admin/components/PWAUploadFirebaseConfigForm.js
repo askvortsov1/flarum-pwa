@@ -1,12 +1,6 @@
 import Component from 'flarum/common/Component';
 
 export default class PWAUploadFirebaseConfigForm extends Component {
-  oninit(vnode) {
-    super.oninit(vnode);
-
-    this.file = null;
-  }
-
   view(vnode) {
     return (
       <>
@@ -16,25 +10,21 @@ export default class PWAUploadFirebaseConfigForm extends Component {
               <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.heading')}</legend>
               <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')}</div>
 
-              <input type="file" onchange={this.handleFileChange.bind(this)} />
-            </fieldset>
+              <button type="button" className="Button" onclick={() => document.querySelector('#flarum-pwa-upload-button').click()}>
+                {app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_file')}
+              </button>
 
-            <button type="submit">SUBMIT</button>
+              <input id="flarum-pwa-upload-button" type="file" onchange={this.updateFirebaseConfig.bind(this)} style={{ opacity: 0 }} />
+            </fieldset>
           </fieldset>
         </form>
       </>
     );
   }
 
-  handleFileChange(event) {
-    this.file = event.target.files[0];
-  }
-
   updateFirebaseConfig(event) {
-    event.preventDefault();
-
     const body = new FormData();
-    body.append('file', this.file);
+    body.append('file', event.target.files[0]);
 
     app
       .request({

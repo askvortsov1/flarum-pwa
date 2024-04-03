@@ -273,10 +273,6 @@ var PWAUploadFirebaseConfigForm = /*#__PURE__*/function (_Component) {
     return _Component.apply(this, arguments) || this;
   }
   var _proto = PWAUploadFirebaseConfigForm.prototype;
-  _proto.oninit = function oninit(vnode) {
-    _Component.prototype.oninit.call(this, vnode);
-    this.file = null;
-  };
   _proto.view = function view(vnode) {
     return m('[', null, m("form", {
       action: "/pwa/firebase-config",
@@ -284,20 +280,24 @@ var PWAUploadFirebaseConfigForm = /*#__PURE__*/function (_Component) {
       onsubmit: this.updateFirebaseConfig.bind(this)
     }, m("fieldset", null, m("fieldset", null, m("legend", null, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.heading')), m("div", {
       className: "helpText"
-    }, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')), m("input", {
+    }, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')), m("button", {
+      type: "button",
+      className: "Button",
+      onclick: function onclick() {
+        return document.querySelector('#flarum-pwa-upload-button').click();
+      }
+    }, app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_file')), m("input", {
+      id: "flarum-pwa-upload-button",
       type: "file",
-      onchange: this.handleFileChange.bind(this)
-    })), m("button", {
-      type: "submit"
-    }, "SUBMIT"))));
-  };
-  _proto.handleFileChange = function handleFileChange(event) {
-    this.file = event.target.files[0];
+      onchange: this.updateFirebaseConfig.bind(this),
+      style: {
+        opacity: 0
+      }
+    })))));
   };
   _proto.updateFirebaseConfig = function updateFirebaseConfig(event) {
-    event.preventDefault();
     var body = new FormData();
-    body.append('file', this.file);
+    body.append('file', event.target.files[0]);
     app.request({
       method: 'POST',
       url: app.forum.attribute('apiUrl') + '/pwa/firebase-config',

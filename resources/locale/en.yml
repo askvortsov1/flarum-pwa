@@ -29,6 +29,7 @@ askvortsov-pwa:
         heading: Firebase
         help_text: To add support for push notifications when publishing your app in the app store with PWA builder, you need to use Firebase to add push notifications to your application. Please generate your Firebase Service Config and upload it here.
         upload_successful: Your firebase config has been uploaded successfully
+        upload_file: Upload file
       other:
         heading: Other
         force_portrait_text: Force portait orientation?
