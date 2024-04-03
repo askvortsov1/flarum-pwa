@@ -15,7 +15,6 @@ use Askvortsov\FlarumPWA\Api\Controller as ApiController;
 use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
-use Flarum\Foundation\Paths;
 use Flarum\Frontend\Document;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -105,11 +104,4 @@ return [
 
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),
-
-    (new Extend\Filesystem())
-        ->disk('flarum-pwa-storage', function (Paths $paths) {
-            return [
-                'root' => "{$paths->storage}/flarum-pwa",
-            ];
-        })
 ];

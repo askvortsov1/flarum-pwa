@@ -31,21 +31,13 @@ class AddFirebaseConfigController extends AbstractCreateController
     public $serializer = FirebasePushSubscriptionSerializer::class;
 
     /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
      * @var SettingsRepositoryInterface
      */
     private $settings;
 
-    public function __construct(
-        SettingsRepositoryInterface $settings,
-        FilesystemFactory $factory
-    ) {
+    public function __construct(SettingsRepositoryInterface $settings)
+    {
         $this->settings = $settings;
-        $this->filesystem = $factory->disk('flarum-pwa-storage');
     }
 
     /**
@@ -62,14 +54,9 @@ class AddFirebaseConfigController extends AbstractCreateController
         /** @var \Laminas\Diactoros\UploadedFile $config */
         $config = $files['file'];
 
-        $this->filesystem->put(
-            'firebase-service-config.json',
-            $config->getStream()->getContents(),
-        );
-
         $this->settings->set(
-            'askvortsov-pwa.firebaseConfigPath',
-            'firebase-service-config.json',
+            'askvortsov-pwa.firebaseConfig',
+            $config->getStream()->getContents(),
         );
     }
 }
