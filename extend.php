@@ -109,7 +109,7 @@ return [
     (new Extend\Filesystem())
         ->disk('flarum-pwa-storage', function (Paths $paths) {
             return [
-                'root' => "{$paths->storage}/firebase",
+                'root' => "{$paths->storage}/flarum-pwa",
             ];
         })
 ];

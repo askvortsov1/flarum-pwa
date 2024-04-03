@@ -45,7 +45,7 @@ class AddFirebaseConfigController extends AbstractCreateController
         FilesystemFactory $factory
     ) {
         $this->settings = $settings;
-        $this->filesystem = $factory->disk('firebase-pwa-storage');
+        $this->filesystem = $factory->disk('flarum-pwa-storage');
     }
 
     /**
@@ -59,11 +59,17 @@ class AddFirebaseConfigController extends AbstractCreateController
 
         $files = $request->getUploadedFiles();
 
-        dd($this->filesystem);
-
         /** @var \Laminas\Diactoros\UploadedFile $config */
         $config = $files['file'];
 
-        dd($config->getStream()->getContents());
+        $this->filesystem->put(
+            'firebase-service-config.json',
+            $config->getStream()->getContents(),
+        );
+
+        $this->settings->set(
+            'askvortsov-pwa.firebaseConfigPath',
+            'firebase-service-config.json',
+        );
     }
 }
