@@ -1,12 +1,5 @@
 <?php
 
-namespace Askvortsov\FlarumPWA;
-
-use Flarum\Foundation\AbstractServiceProvider;
-use Flarum\Settings\SettingsRepositoryInterface;
-use Kreait\Firebase\Contract\Messaging as FirebaseMessagingContract;
-use Kreait\Firebase\Factory as FirebaseFactory;
-
 /*
  * This file is part of askvortsov/flarum-pwa
  *
@@ -15,6 +8,13 @@ use Kreait\Firebase\Factory as FirebaseFactory;
  *  For detailed copyright and license information, please view the
  *  LICENSE file that was distributed with this source code.
  */
+namespace Askvortsov\FlarumPWA;
+
+use Flarum\Foundation\AbstractServiceProvider;
+use Flarum\Settings\SettingsRepositoryInterface;
+use Kreait\Firebase\Contract\Messaging as FirebaseMessagingContract;
+use Kreait\Firebase\Factory as FirebaseFactory;
+
 class FlarumPWAServiceProvider extends AbstractServiceProvider
 {
     public function register()

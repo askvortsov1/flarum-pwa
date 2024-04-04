@@ -12,8 +12,8 @@
 namespace Askvortsov\FlarumPWA;
 
 use Flarum\Discussion\Discussion;
-use Flarum\Notification\MailableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
+use Flarum\Notification\MailableInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Kreait\Firebase\Contract\Messaging;
