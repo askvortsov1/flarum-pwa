@@ -11,12 +11,11 @@
 
 namespace Askvortsov\FlarumPWA;
 
-use Flarum\User\User;
 use Flarum\Discussion\Discussion;
-use Flarum\Post\CommentPost;
-use Flarum\Post\Post;
 use Flarum\Notification\MailableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
+use Flarum\Post\CommentPost;
+use Flarum\Post\Post;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
@@ -31,8 +30,7 @@ class FirebasePushSender
     public function __construct(
         Messaging $messaging,
         TranslatorInterface $translator,
-    )
-    {
+    ) {
         $this->messaging = $messaging;
         $this->translator = $translator;
     }
