@@ -83,7 +83,7 @@ const saveFirebasePushToken = (event) => {
   });
 };
 
-const checkFirebasePushState = (event) => {
+const syncFirebasePushState = (event) => {
   firebasePushNotificationState = event.detail;
 
   m.redraw();
@@ -242,7 +242,7 @@ export default () => {
       window.webkit.messageHandlers['push-permission-state'].postMessage('push-permission-state');
 
       window.addEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-      window.addEventListener('push-permission-state', checkFirebasePushState);
+      window.addEventListener('push-permission-state', syncFirebasePushState);
       window.addEventListener('push-token', saveFirebasePushToken);
     }
   });
@@ -250,7 +250,7 @@ export default () => {
   extend(SettingsPage.prototype, 'onremove', function () {
     if (usingAppleWebview()) {
       window.removeEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-      window.removeEventListener('push-permission-state', checkFirebasePushState);
+      window.removeEventListener('push-permission-state', syncFirebasePushState);
       window.removeEventListener('push-token', saveFirebasePushToken);
     }
   });
