@@ -2,6 +2,7 @@
 
 namespace Askvortsov\FlarumPWA;
 
+use Flarum\User\User;
 use ReflectionClass;
 use Flarum\Discussion\Discussion;
 use Flarum\Notification\MailableInterface;
@@ -43,6 +44,7 @@ class NotificationBuilder
         return new NotificationMessage(
             $this->getTitle($blueprint),
             $this->getBody($blueprint),
+            $this->getUrl($blueprint),
         );
     }
 
@@ -93,5 +95,32 @@ class NotificationBuilder
         }
 
         return $relevantPost->formatContent();
+    }
+
+    protected function getUrl(BlueprintInterface $blueprint): string
+    {
+        $link = $this->url->to('forum')->base();
+
+        $subject = $blueprint->getSubject();
+
+        switch ($blueprint::getSubjectModel()) {
+            case User::class:
+                /** @var User $subject */
+                return $this->url->to('forum')->route('user', ['username' => $subject->display_name]);
+
+            case Discussion::class:
+                /** @var Discussion $subject */
+                return $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
+
+            case Post::class:
+                /** @var Post $subject */
+                return $this->url->to('forum')->route(
+                    'discussion',
+                    ['id' => $subject->discussion_id, 'near' => $subject->number]
+                );
+
+            default:
+                return $this->url->to('forum')->base();
+        }
     }
 }
