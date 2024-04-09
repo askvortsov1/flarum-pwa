@@ -25,14 +25,14 @@ class FirebasePushSender
 {
     private Messaging $messaging;
 
-    protected TranslatorInterface $translator;
+    protected NotificationBuilder $notifications;
 
     public function __construct(
         Messaging $messaging,
-        TranslatorInterface $translator,
+        NotificationBuilder $notifications,
     ) {
         $this->messaging = $messaging;
-        $this->translator = $translator;
+        $this->notifications = $notifications;
     }
 
     /**
@@ -50,70 +50,30 @@ class FirebasePushSender
     {
         FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($blueprint) {
             $this->messaging->send(
-                $this->newMessage($subscription, $blueprint)
+                $this->newFirebaseCloudMessage($subscription, $blueprint)
             );
         });
     }
 
-    private function newMessage(FirebasePushSubscription $subscription, BlueprintInterface $blueprint): CloudMessage
+    private function newFirebaseCloudMessage(FirebasePushSubscription $subscription, BlueprintInterface $blueprint): CloudMessage
     {
+        [$title, $body] = $this->newNotificationMessage($blueprint);
+
         return CloudMessage::new()
             ->withTarget('token', $subscription->token)
             ->withNotification(
                 Notification::fromArray([
-                    'title' => $this->getTitle($blueprint),
-                    'body' => strip_tags($this->getBody($blueprint)),
+                    'title' => $title,
+                    'body' => strip_tags($body),
                 ])
             );
     }
 
-    private function getBody(BlueprintInterface $blueprint)
+    private function newNotificationMessage(BlueprintInterface $blueprint): array
     {
-        $content = '';
+        $message = $this->notifications->build($blueprint);
 
-        $subject = $blueprint->getSubject();
-
-        switch ($blueprint::getSubjectModel()) {
-            case Discussion::class:
-                /** @var Discussion $subject */
-                $content = $this->getRelevantPostContent($subject);
-                break;
-            case Post::class:
-                /** @var Post $subject */
-                if ($subject instanceof CommentPost) {
-                    $content = $subject->formatContent();
-                }
-                break;
-        }
-
-        return $content;
-    }
-
-    protected function getRelevantPostContent($discussion): string
-    {
-        $relevantPost = $discussion->mostRelevantPost ?: $discussion->firstPost ?: $discussion->comments->first();
-
-        if ($relevantPost === null) {
-            return '';
-        }
-
-        return $relevantPost->formatContent();
-    }
-
-    protected function getTitle(BlueprintInterface $blueprint): string
-    {
-        if ($blueprint instanceof MailableInterface) {
-            return $blueprint->getEmailSubject($this->translator);
-        } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
-            if ($blueprint->getType() == 'postLiked') {
-                return $this->translator->trans(
-                    'flarum-likes.forum.notifications.post_liked_text',
-                    ['username' => $blueprint->getFromUser()->getDisplayNameAttribute()]
-                );
-            }
-        }
-
-        return '';
+        return [$message->title(), $message->body()];
     }
 
     public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
