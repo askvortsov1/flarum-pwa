@@ -6,6 +6,7 @@ import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
 import icon from 'flarum/common/helpers/icon';
+import { usingAppleWebview, requestPushPermissions, requestPushPermissionState, requestPushToken, usePWABuilder } from './use-pwa-builder';
 
 const subscribeUser = (save) => {
   return app.sw.pushManager
@@ -39,8 +40,6 @@ const pushEnabled = () => {
   return false;
 };
 
-const usingAppleWebview = () => window.webkit && window.webkit.messageHandlers;
-
 const supportsBrowserNotifications = () => 'Notification' in window;
 
 export const refreshSubscription = async (sw) => {
@@ -60,34 +59,8 @@ const pushConfigured = () => {
   return app.forum.attribute('vapidPublicKey');
 };
 
-// notDetermined | denied | authorized | ephemeral | provisional | unknown
-let firebasePushNotificationState = 'unknown';
-
-const requestFirebasePushNotificationPermission = (event) => {
-  if (event.detail !== 'granted') {
-    return;
-  }
-
-  firebasePushNotificationState = 'granted';
-
-  window.webkit.messageHandlers['push-token'].postMessage('push-token');
-};
-
-const saveFirebasePushToken = (event) => {
-  app.request({
-    method: 'POST',
-    url: app.forum.attribute('apiUrl') + '/pwa/firebase-push-subscriptions',
-    body: {
-      token: event.detail,
-    },
-  });
-};
-
-const syncFirebasePushState = (event) => {
-  firebasePushNotificationState = event.detail;
-
-  m.redraw();
-};
+let { registerFirebasePushNotificationListeners, removeFirebasePushNotificationListeners, firebasePushNotificationState, hasFirebasePushState } =
+  usePWABuilder();
 
 export default () => {
   extend(Page.prototype, 'oncreate', () => {
@@ -211,7 +184,7 @@ export default () => {
   extend(SettingsPage.prototype, 'notificationsItems', function (items) {
     if (!usingAppleWebview()) return;
 
-    if (firebasePushNotificationState !== 'authorized') {
+    if (!hasFirebasePushState('authorized')) {
       items.add(
         'firebase-push-optin-default',
         Alert.component(
@@ -222,11 +195,9 @@ export default () => {
               Button.component(
                 {
                   className: 'Button Button--link',
-                  onclick: () => {
-                    window.webkit.messageHandlers['push-permission-request'].postMessage('push-permission-request');
-                  },
+                  onclick: () => requestPushPermissions(),
                 },
-                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button') + firebasePushNotificationState
+                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button')
               ),
             ],
           },
@@ -238,20 +209,10 @@ export default () => {
   });
 
   extend(SettingsPage.prototype, 'oncreate', function () {
-    if (usingAppleWebview()) {
-      window.webkit.messageHandlers['push-permission-state'].postMessage('push-permission-state');
-
-      window.addEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-      window.addEventListener('push-permission-state', syncFirebasePushState);
-      window.addEventListener('push-token', saveFirebasePushToken);
-    }
+    registerFirebasePushNotificationListeners();
   });
 
   extend(SettingsPage.prototype, 'onremove', function () {
-    if (usingAppleWebview()) {
-      window.removeEventListener('push-permission-request', requestFirebasePushNotificationPermission);
-      window.removeEventListener('push-permission-state', syncFirebasePushState);
-      window.removeEventListener('push-token', saveFirebasePushToken);
-    }
+    removeFirebasePushNotificationListeners();
   });
 };
