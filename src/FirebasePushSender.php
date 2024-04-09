@@ -11,15 +11,10 @@
 
 namespace Askvortsov\FlarumPWA;
 
-use Flarum\Discussion\Discussion;
 use Flarum\Notification\Blueprint\BlueprintInterface;
-use Flarum\Notification\MailableInterface;
-use Flarum\Post\CommentPost;
-use Flarum\Post\Post;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FirebasePushSender
 {

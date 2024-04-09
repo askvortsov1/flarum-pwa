@@ -15,12 +15,8 @@ use Base64Url\Base64Url;
 use Carbon\Carbon;
 use ErrorException;
 use Exception;
-use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
-use Flarum\Notification\MailableInterface;
-use Flarum\Post\CommentPost;
-use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Filesystem\Cloud;
@@ -30,8 +26,6 @@ use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
-use ReflectionException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PushSender
 {
@@ -43,8 +37,6 @@ class PushSender
 
     protected SettingsRepositoryInterface $settings;
 
-    protected TranslatorInterface $translator;
-
     protected UrlGenerator $url;
 
     protected NotificationBuilder $notifications;
@@ -53,27 +45,14 @@ class PushSender
         Factory $filesystemFactory,
         LoggerInterface $logger,
         SettingsRepositoryInterface $settings,
-        TranslatorInterface $translator,
         UrlGenerator $url,
         NotificationBuilder $notifications,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
         $this->logger = $logger;
         $this->settings = $settings;
-        $this->translator = $translator;
         $this->url = $url;
         $this->notifications = $notifications;
-    }
-
-    /**
-     * @throws ReflectionException
-     */
-    public static function canSend(string $blueprintClass): bool
-    {
-        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array(
-            $blueprintClass,
-            static::$SUPPORTED_NON_EMAIL_BLUEPRINTS
-        );
     }
 
     /**
@@ -165,12 +144,6 @@ class PushSender
 
     protected function getPayload(BlueprintInterface $blueprint): array
     {
-        $content = '';
-        $link = $this->url->to('forum')->base();
-
-        $subject = $blueprint->getSubject();
-        $subjectModel = $blueprint::getSubjectModel();
-
         $message = $this->notifications->build($blueprint);
 
         $payload = [
@@ -194,16 +167,10 @@ class PushSender
         return $payload;
     }
 
-
     protected function log(string $message): void
     {
         if ($this->settings->get('askvortsov-pwa.debug', false)) {
             $this->logger->info($message);
         }
     }
-
-    public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
-        "Flarum\Likes\Notification\PostLikedBlueprint",
-        "Flarum\Notification\DiscussionRenamedBlueprint",
-    ];
 }

@@ -1,16 +1,25 @@
 <?php
 
+/*
+ * This file is part of askvortsov/flarum-pwa
+ *
+ *  Copyright (c) 2021 Alexander Skvortsov.
+ *
+ *  For detailed copyright and license information, please view the
+ *  LICENSE file that was distributed with this source code.
+ */
+
 namespace Askvortsov\FlarumPWA;
 
-use Flarum\User\User;
-use ReflectionClass;
 use Flarum\Discussion\Discussion;
+use Flarum\Http\UrlGenerator;
+use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
-use Flarum\Notification\Blueprint\BlueprintInterface;
+use Flarum\User\User;
+use ReflectionClass;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Flarum\Http\UrlGenerator;
 
 class NotificationBuilder
 {
