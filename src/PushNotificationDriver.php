@@ -24,11 +24,16 @@ class PushNotificationDriver implements NotificationDriverInterface
 {
     protected Queue $queue;
     protected SettingsRepositoryInterface $settings;
+    protected NotificationBuilder $notifications;
 
-    public function __construct(Queue $queue, SettingsRepositoryInterface $settings)
-    {
+    public function __construct(
+        Queue $queue,
+        SettingsRepositoryInterface $settings,
+        NotificationBuilder $notifications,
+    ) {
         $this->queue = $queue;
         $this->settings = $settings;
+        $this->notifications = $notifications;
     }
 
     /**
@@ -54,7 +59,7 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (! PushSender::canSend(get_class($blueprint))) {
+        if (! $this->notifications->supports($blueprint)) {
             return;
         }
 
