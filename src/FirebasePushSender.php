@@ -35,17 +35,6 @@ class FirebasePushSender
         $this->notifications = $notifications;
     }
 
-    /**
-     * @throws \ReflectionException
-     */
-    public static function canSend(string $blueprintClass): bool
-    {
-        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array(
-            $blueprintClass,
-            static::$SUPPORTED_NON_EMAIL_BLUEPRINTS
-        );
-    }
-
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
         FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($blueprint) {
@@ -57,27 +46,15 @@ class FirebasePushSender
 
     private function newFirebaseCloudMessage(FirebasePushSubscription $subscription, BlueprintInterface $blueprint): CloudMessage
     {
-        [$title, $body] = $this->newNotificationMessage($blueprint);
+        $message = $this->notifications->build($blueprint);
 
         return CloudMessage::new()
             ->withTarget('token', $subscription->token)
             ->withNotification(
                 Notification::fromArray([
-                    'title' => $title,
-                    'body' => strip_tags($body),
+                    'title' => $message->title(),
+                    'body' => strip_tags($message->body()),
                 ])
             );
     }
-
-    private function newNotificationMessage(BlueprintInterface $blueprint): array
-    {
-        $message = $this->notifications->build($blueprint);
-
-        return [$message->title(), $message->body()];
-    }
-
-    public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
-        "Flarum\Likes\Notification\PostLikedBlueprint",
-        "Flarum\Notification\DiscussionRenamedBlueprint",
-    ];
 }

@@ -4,11 +4,11 @@ namespace Askvortsov\FlarumPWA;
 
 class NotificationMessage
 {
-    public string $title;
+    protected string $title;
 
-    public string $body;
+    protected string $body;
 
-    public ?string $url = null;
+    protected ?string $url = null;
 
     public function __construct(
         string $title,
