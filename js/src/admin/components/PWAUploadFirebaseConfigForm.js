@@ -8,9 +8,16 @@ export default class PWAUploadFirebaseConfigForm extends Component {
           <fieldset>
             <fieldset>
               <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.heading')}</legend>
-              <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')}</div>
+              <div className="helpText">
+                <span>{app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.help_text')}</span>
 
-              <button type="button" className="Button" onclick={() => document.querySelector('#flarum-pwa-upload-button').click()}>
+                <a href="https://docs.pwabuilder.com/#/builder/app-store?id=push-notifications" target="_blank">
+                  {app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.see_documentation_here')}
+                </a>
+              </div>
+
+              <button type="button" className="Button"
+                      onclick={() => document.querySelector('#flarum-pwa-upload-button').click()}>
                 {app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_file')}
               </button>
 
