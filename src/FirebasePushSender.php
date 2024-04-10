@@ -16,7 +16,6 @@ use Illuminate\Container\Container;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
-use Kreait\Firebase\Contract\Messaging as FirebaseMessagingContract;
 use Psr\Log\LoggerInterface;
 
 class FirebasePushSender
@@ -44,9 +43,10 @@ class FirebasePushSender
             // control on when and where to log the error. Having it passed on the constructor will mean
             // we'll have to throw an exception and log the error for the user in the exception handler
             // rather than directly in the class that consumes the contract.
-            $messaging = $this->container->make(FirebaseMessagingContract::class);
+            $messaging = $this->container->make(Messaging::class);
         } catch (FirebaseConfigInvalid) {
             $this->logger->error('Firebase config invalid');
+
             return;
         }
 
