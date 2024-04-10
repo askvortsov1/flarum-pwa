@@ -40,12 +40,10 @@ class NotificationBuilder
         $this->url = $url;
     }
 
-    public function supports(BlueprintInterface $blueprint): bool
+    public function supports(string $blueprintClass): bool
     {
-        $class = get_class($blueprint);
-
-        return (new ReflectionClass($class))->implementsInterface(MailableInterface::class)
-            || in_array($class, self::SUPPORTED_NON_EMAIL_BLUEPRINTS);
+        return (new ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class)
+            || in_array($blueprintClass, self::SUPPORTED_NON_EMAIL_BLUEPRINTS);
     }
 
     public function build(BlueprintInterface $blueprint): NotificationMessage

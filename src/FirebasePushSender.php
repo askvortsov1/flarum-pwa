@@ -12,28 +12,46 @@
 namespace Askvortsov\FlarumPWA;
 
 use Flarum\Notification\Blueprint\BlueprintInterface;
+use Illuminate\Container\Container;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Contract\Messaging as FirebaseMessagingContract;
+use Psr\Log\LoggerInterface;
 
 class FirebasePushSender
 {
-    private Messaging $messaging;
+    protected Container $container;
 
     protected NotificationBuilder $notifications;
 
+    protected LoggerInterface $logger;
+
     public function __construct(
-        Messaging $messaging,
+        Container $container,
         NotificationBuilder $notifications,
+        LoggerInterface $logger,
     ) {
-        $this->messaging = $messaging;
+        $this->container = $container;
         $this->notifications = $notifications;
+        $this->logger = $logger;
     }
 
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($blueprint) {
-            $this->messaging->send(
+        try {
+            // We're using the container to resolve the FirebaseMessagingContract here so we have more
+            // control on when and where to log the error. Having it passed on the constructor will mean
+            // we'll have to throw an exception and log the error for the user in the exception handler
+            // rather than directly in the class that consumes the contract.
+            $messaging = $this->container->make(FirebaseMessagingContract::class);
+        } catch (FirebaseConfigInvalid) {
+            $this->logger->error('Firebase config invalid');
+            return;
+        }
+
+        FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
+            $messaging->send(
                 $this->newFirebaseCloudMessage($subscription, $blueprint)
             );
         });

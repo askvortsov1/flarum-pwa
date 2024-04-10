@@ -44,7 +44,7 @@ class PushNotificationDriver implements NotificationDriverInterface
     {
         $defaultPrefToEmail = $this->settings->get('askvortsov-pwa.pushNotifPreferenceDefaultToEmail');
 
-        if (PushSender::canSend($blueprintClass)) {
+        if ($this->notifications->supports($blueprintClass)) {
             User::registerPreference(
                 User::getNotificationPreferenceKey($blueprintClass::getType(), 'push'),
                 'boolval',
@@ -59,7 +59,7 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (! $this->notifications->supports($blueprint)) {
+        if (! $this->notifications->supports(get_class($blueprint))) {
             return;
         }
 
