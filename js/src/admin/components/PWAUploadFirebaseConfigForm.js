@@ -16,8 +16,7 @@ export default class PWAUploadFirebaseConfigForm extends Component {
                 </a>
               </div>
 
-              <button type="button" className="Button"
-                      onclick={() => document.querySelector('#flarum-pwa-upload-button').click()}>
+              <button type="button" className="Button" onclick={() => document.querySelector('#flarum-pwa-upload-button').click()}>
                 {app.translator.trans('askvortsov-pwa.admin.pwa.firebase_config.upload_file')}
               </button>
 
