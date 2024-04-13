@@ -15,12 +15,8 @@ use Base64Url\Base64Url;
 use Carbon\Carbon;
 use ErrorException;
 use Exception;
-use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
-use Flarum\Notification\MailableInterface;
-use Flarum\Post\CommentPost;
-use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\Filesystem\Cloud;
@@ -30,8 +26,6 @@ use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
-use ReflectionException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PushSender
 {
@@ -43,33 +37,22 @@ class PushSender
 
     protected SettingsRepositoryInterface $settings;
 
-    protected TranslatorInterface $translator;
-
     protected UrlGenerator $url;
+
+    protected NotificationBuilder $notifications;
 
     public function __construct(
         Factory $filesystemFactory,
         LoggerInterface $logger,
         SettingsRepositoryInterface $settings,
-        TranslatorInterface $translator,
-        UrlGenerator $url
+        UrlGenerator $url,
+        NotificationBuilder $notifications,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
         $this->logger = $logger;
         $this->settings = $settings;
-        $this->translator = $translator;
         $this->url = $url;
-    }
-
-    /**
-     * @throws ReflectionException
-     */
-    public static function canSend(string $blueprintClass): bool
-    {
-        return (new \ReflectionClass($blueprintClass))->implementsInterface(MailableInterface::class) || in_array(
-            $blueprintClass,
-            static::$SUPPORTED_NON_EMAIL_BLUEPRINTS
-        );
+        $this->notifications = $notifications;
     }
 
     /**
@@ -161,38 +144,12 @@ class PushSender
 
     protected function getPayload(BlueprintInterface $blueprint): array
     {
-        $content = '';
-        $link = $this->url->to('forum')->base();
-
-        $subject = $blueprint->getSubject();
-        $subjectModel = $blueprint::getSubjectModel();
-
-        switch ($subjectModel) {
-            case User::class:
-                /** @var User $subject */
-                $link = $this->url->to('forum')->route('user', ['username' => $subject->display_name]);
-                break;
-            case Discussion::class:
-                /** @var Discussion $subject */
-                $content = $this->getRelevantPostContent($subject);
-                $link = $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
-                break;
-            case Post::class:
-                /** @var Post $subject */
-                if ($subject instanceof CommentPost) {
-                    $content = $subject->formatContent();
-                }
-                $link = $this->url->to('forum')->route(
-                    'discussion',
-                    ['id' => $subject->discussion_id, 'near' => $subject->number]
-                );
-                break;
-        }
+        $message = $this->notifications->build($blueprint);
 
         $payload = [
-            'title' => $this->excerpt($this->getTitle($blueprint), 30),
-            'content' => $this->excerpt($content),
-            'link' => $link,
+            'title' => $message->title(),
+            'content' => $message->body(),
+            'link' => $message->url(),
         ];
 
         if ($faviconPath = $this->settings->get('favicon_path')) {
@@ -210,53 +167,10 @@ class PushSender
         return $payload;
     }
 
-    protected function excerpt(string $str, int $maxLen = 200): string
-    {
-        $str = strip_tags($str);
-        if (mb_strlen($str) > $maxLen) {
-            $str = mb_substr($str, 0, $maxLen);
-            $str .= '...';
-        }
-
-        return $str;
-    }
-
-    protected function getRelevantPostContent($discussion): string
-    {
-        $relevantPost = $discussion->mostRelevantPost ?: $discussion->firstPost ?: $discussion->comments->first();
-
-        if ($relevantPost === null) {
-            return '';
-        }
-
-        return $relevantPost->formatContent();
-    }
-
-    protected function getTitle(BlueprintInterface $blueprint): string
-    {
-        if ($blueprint instanceof MailableInterface) {
-            return $blueprint->getEmailSubject($this->translator);
-        } elseif (in_array(get_class($blueprint), static::$SUPPORTED_NON_EMAIL_BLUEPRINTS)) {
-            if ($blueprint->getType() == 'postLiked') {
-                return $this->translator->trans(
-                    'flarum-likes.forum.notifications.post_liked_text',
-                    ['username' => $blueprint->getFromUser()->getDisplayNameAttribute()]
-                );
-            }
-        }
-
-        return '';
-    }
-
     protected function log(string $message): void
     {
         if ($this->settings->get('askvortsov-pwa.debug', false)) {
             $this->logger->info($message);
         }
     }
-
-    public static array $SUPPORTED_NON_EMAIL_BLUEPRINTS = [
-        "Flarum\Likes\Notification\PostLikedBlueprint",
-        "Flarum\Notification\DiscussionRenamedBlueprint",
-    ];
 }

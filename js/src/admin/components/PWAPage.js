@@ -4,6 +4,7 @@ import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 
 import PWALogoUploadButton from './PWALogoUploadButton';
+import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
 export default class PWAPage extends ExtensionPage {
   oninit(vnode) {
@@ -183,6 +184,8 @@ export default class PWAPage extends ExtensionPage {
               })}
             </fieldset>
           </form>
+
+          <PWAUploadFirebaseConfigForm />
         </div>
       </div>
     );

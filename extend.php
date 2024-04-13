@@ -51,6 +51,8 @@ return [
         ->delete('/pwa/logo/{size}', 'askvortsov-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
         ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class)
+        ->post('/pwa/firebase-push-subscriptions', 'askvortsov-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
+        ->post('/pwa/firebase-config', 'askvortsov-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
         ->post('/reset_vapid', 'askvortsov-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
@@ -98,4 +100,7 @@ return [
 
     (new Extend\View())
         ->namespace('askvortsov-pwa', __DIR__.'/views'),
+
+    (new Extend\ServiceProvider())
+        ->register(FlarumPWAServiceProvider::class),
 ];
