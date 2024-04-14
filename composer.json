@@ -14,7 +14,8 @@
     "require": {
         "flarum/core": "^1.7",
         "minishlink/web-push": "^7.0",
-        "spomky-labs/base64url" : "^2.0"
+        "spomky-labs/base64url" : "^2.0",
+        "kreait/firebase-php": "^7.9"
     },
     "suggest": {
         "ext-gmp": "This can improve push notification performance."

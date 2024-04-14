@@ -6,6 +6,7 @@ import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
 import icon from 'flarum/common/helpers/icon';
+import { usingAppleWebview, requestPushPermissions, requestPushPermissionState, requestPushToken, usePWABuilder } from './use-pwa-builder';
 
 const subscribeUser = (save) => {
   return app.sw.pushManager
@@ -39,6 +40,8 @@ const pushEnabled = () => {
   return false;
 };
 
+const supportsBrowserNotifications = () => 'Notification' in window;
+
 export const refreshSubscription = async (sw) => {
   if (!app.cache.pwaRefreshed && 'Notification' in window && window.Notification.permission === 'granted' && pushEnabled())
     try {
@@ -55,6 +58,9 @@ export const refreshSubscription = async (sw) => {
 const pushConfigured = () => {
   return app.forum.attribute('vapidPublicKey');
 };
+
+let { registerFirebasePushNotificationListeners, removeFirebasePushNotificationListeners, firebasePushNotificationState, hasFirebasePushState } =
+  usePWABuilder();
 
 export default () => {
   extend(Page.prototype, 'oncreate', () => {
@@ -97,9 +103,11 @@ export default () => {
   });
 
   extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+    if (usingAppleWebview()) return;
+
     if (!pushConfigured()) return;
 
-    if (!('Notification' in window)) {
+    if (!supportsBrowserNotifications()) {
       items.add(
         'push-no-browser-support',
         Alert.component(
@@ -171,5 +179,40 @@ export default () => {
         10
       );
     }
+  });
+
+  extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+    if (!usingAppleWebview()) return;
+
+    if (!hasFirebasePushState('authorized')) {
+      items.add(
+        'firebase-push-optin-default',
+        Alert.component(
+          {
+            itemClassName: 'pwa-setting-alert',
+            dismissible: false,
+            controls: [
+              Button.component(
+                {
+                  className: 'Button Button--link',
+                  onclick: () => requestPushPermissions(),
+                },
+                app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default_button')
+              ),
+            ],
+          },
+          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
+        ),
+        10
+      );
+    }
+  });
+
+  extend(SettingsPage.prototype, 'oncreate', function () {
+    registerFirebasePushNotificationListeners();
+  });
+
+  extend(SettingsPage.prototype, 'onremove', function () {
+    removeFirebasePushNotificationListeners();
   });
 };
