@@ -40,7 +40,7 @@ askvortsov-pwa:
         user_max_subscriptions_text: How many push subscriptions should each user be able to have at a time? When a user receives a push notification, each subscription will result in an API call. Each subscription typically corresponds to a browser the user has used.
         window_controls_overlay_label: Enable Window Controls Overlay?
         window_controls_overlay_text: |
-          If true, users will able to enable Window Controls Overlay to create an immersive, native-like experience. Window Controls Overlay enables or not depends on user's preference and browser's compatibility. You also should be sure you've done something to match this feature.
+          If true, users will be able to get an more immersive, native-like experience by hiding the native titlebar. Window Controls Overlay enables or not depends on user's preference and browser's compatibility. You must customize your titlebar by adding some CSS/JS after enabled, or the controls will overlay some elements of your forum's top navbar and the window almost can't drag, resulting a bad experience.
 
           See also: <compatibilitylink>The compatibility of Window Controls Overlay</compatibilitylink> & <learnlink>About Window Controls Overlay in Microsoft Learn</learnlink>
  
