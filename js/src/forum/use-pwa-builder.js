@@ -65,9 +65,10 @@ export const usePWABuilder = () => {
   const hasFirebasePushState = (state) => state === permissionState;
 
   function registerFirebasePushNotificationListeners() {
-    if (usingAppleWebview()) {
+    if (!usingAppleWebview()) {
       return;
     }
+
     requestPushPermissionState();
 
     window.addEventListener(PushPermissionRequest, handlePushPermissionRequest);
