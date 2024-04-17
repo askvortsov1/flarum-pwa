@@ -84,6 +84,11 @@ trait PWATrait
             $manifest['short_name'] = $shortName;
         }
 
+        $displayOverride = $settings->get('askvortsov-pwa.windowControlsOverlay');
+        if ($displayOverride) {
+            $manifest['display_override'] = ['window-controls-overlay'];
+        }
+
         return $manifest;
     }
 }
