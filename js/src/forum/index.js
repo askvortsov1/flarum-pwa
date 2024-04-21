@@ -6,6 +6,7 @@ import LinkButton from 'flarum/common/components/LinkButton';
 import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import addShareButtons from './addShareButtons';
 import addPushNotifications, { refreshSubscription } from './addPushNotifications';
+import addNetworkAndInstallAlerts, { updateAlert } from './addNetworkAndInstallAlerts';
 
 app.initializers.add('askvortsov/flarum-pwa', () => {
   const isInStandaloneMode = () =>
@@ -23,6 +24,7 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
       (await dbPromise).put('keyval', app.forum.data.attributes, 'flarum.forumPayload');
 
       if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener("controllerchange", updateAlert);        
         navigator.serviceWorker
           .register(basePath + '/sw', {
             scope: basePath + '/',
@@ -36,7 +38,20 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
       }
     };
 
+    const clearAppBadge = async () => {
+      const dbPromise = openDB('keyval-store', 1, {
+        upgrade(db) {
+          db.createObjectStore('keyval');
+        },
+      });
+      (await dbPromise).put('keyval', 0, 'Badges');
+      if ('clearAppBadge' in navigator) {
+        navigator.clearAppBadge();
+      };
+    }
+
     registerSW();
+    clearAppBadge();
   });
 
   extend(SessionDropdown.prototype, 'items', (items) => {
@@ -58,4 +73,5 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
 
   addShareButtons();
   addPushNotifications();
+  addNetworkAndInstallAlerts();
 });

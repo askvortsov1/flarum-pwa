@@ -49,6 +49,11 @@ self.addEventListener("install", function (event) {
   }
 
   receiveInfo();
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(clients.claim());
 });
 
 // If any fetch fails, it will show the offline page.
@@ -103,6 +108,13 @@ self.addEventListener('push', function (event) {
 
   if (isJSON(event.data.text())) {
     console.log(event.data.json());
+
+    if ('clearAppBadge' in navigator) {
+      const Badges = await idbKeyval.get('Badges') + 1;
+      await idbKeyval.set('Badges', Badges);
+      navigator.setAppBadge(Badges);
+    }
+
     const options = {
       body: event.data.json().content,
       icon: event.data.json().icon,
