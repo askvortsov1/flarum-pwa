@@ -11,13 +11,11 @@
 
 namespace Askvortsov\FlarumPWA\Job;
 
-use Askvortsov\FlarumPWA\FirebaseConfigInvalid;
 use Askvortsov\FlarumPWA\FirebasePushSender;
 use Askvortsov\FlarumPWA\PushSender;
 use ErrorException;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Queue\AbstractJob;
-use Flarum\Settings\SettingsRepositoryInterface;
 
 class SendPushNotificationsJob extends AbstractJob
 {
