@@ -61,16 +61,18 @@ class FirebasePushSender
             $this->logger->error('Firebase config invalid');
 
             return;
-        } catch (AuthenticationError) {
-            $this->logger->error('Auth error from APNS or Web Push Service');
-        } catch (NotFound) {
-            // Remove the device from the database
         }
 
         FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
-            $messaging->send(
-                $this->newFirebaseCloudMessage($subscription, $blueprint)
-            );
+            try {
+                $messaging->send(
+                    $this->newFirebaseCloudMessage($subscription, $blueprint)
+                );
+            } catch (AuthenticationError) {
+                $this->logger->error('Auth error from APNS or Web Push Service');
+            } catch (NotFound) {
+                // Remove the device from the database
+            }
         });
     }
 
