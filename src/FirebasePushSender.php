@@ -15,6 +15,8 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Container\Container;
 use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Exception\Messaging\AuthenticationError;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use Psr\Log\LoggerInterface;
@@ -59,6 +61,10 @@ class FirebasePushSender
             $this->logger->error('Firebase config invalid');
 
             return;
+        } catch (AuthenticationError) {
+            $this->logger->error('Auth error from APNS or Web Push Service');
+        } catch (NotFound) {
+            // Remove the device from the database
         }
 
         FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
