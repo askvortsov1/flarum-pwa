@@ -96,10 +96,8 @@ class FirebasePushSender
             return false;
         }
 
-        try {
-            return (bool) json_encode($config);
-        } catch (\Throwable) {
-            return false;
-        }
+        json_decode($config);
+
+        return json_last_error() === JSON_ERROR_NONE;
     }
 }
