@@ -172,8 +172,13 @@ export default class PWAPage extends ExtensionPage {
                   setting: 'askvortsov-pwa.windowControlsOverlay',
                   label: app.translator.trans('askvortsov-pwa.admin.pwa.other.window_controls_overlay_label'),
                   help: app.translator.trans('askvortsov-pwa.admin.pwa.other.window_controls_overlay_text', {
-                    compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1"/>,
-                    learnlink: <a href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay" tabindex="-1"/>
+                    compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
+                    learnlink: (
+                      <a
+                        href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
+                        tabindex="-1"
+                      />
+                    ),
                   }),
                   type: 'bool',
                 })}
