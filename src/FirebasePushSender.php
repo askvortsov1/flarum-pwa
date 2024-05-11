@@ -71,7 +71,8 @@ class FirebasePushSender
             } catch (AuthenticationError) {
                 $this->logger->error('Auth error from APNS or Web Push Service');
             } catch (NotFound) {
-                // Remove the device from the database
+                $this->logger->info("Removing expired token {$subscription->token}...");
+                $subscription->delete();
             }
         });
     }
