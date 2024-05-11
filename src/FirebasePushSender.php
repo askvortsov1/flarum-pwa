@@ -65,13 +65,12 @@ class FirebasePushSender
 
         FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
             try {
-                $messaging->send(
-                    $this->newFirebaseCloudMessage($subscription, $blueprint)
-                );
-            } catch (AuthenticationError) {
-                $this->logger->error('Auth error from APNS or Web Push Service');
+                $messaging->send($this->newFirebaseCloudMessage($subscription, $blueprint));
+            } catch (AuthenticationError $e) {
+                $this->logger->error($e->getMessage());
             } catch (NotFound) {
                 $this->logger->info("Removing expired token {$subscription->token}...");
+
                 $subscription->delete();
             }
         });
