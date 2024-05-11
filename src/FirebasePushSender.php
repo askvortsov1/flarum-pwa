@@ -86,10 +86,6 @@ class FirebasePushSender
     {
         $config = $this->settings->get('askvortsov-pwa.firebaseConfig');
 
-        $this->logger->info('----- FIREBASE CONFIG ------');
-        $this->logger->info($config);
-        $this->logger->info('----- FIREBASE CONFIG ------');
-
         if (! $config) {
             return false;
         }
