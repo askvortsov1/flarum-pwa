@@ -69,8 +69,6 @@ class FirebasePushSender
             } catch (AuthenticationError $e) {
                 $this->logger->error($e->getMessage());
             } catch (NotFound) {
-                $this->logger->info("Removing expired token {$subscription->token}...");
-
                 $subscription->delete();
             }
         });
