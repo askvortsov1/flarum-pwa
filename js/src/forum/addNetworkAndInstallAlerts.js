@@ -1,6 +1,6 @@
 import { extend } from 'flarum/common/extend';
 import Page from 'flarum/common/components/Page';
-import usingAppleWebview from './use-pwa-builder';
+import { usingAppleWebview } from './use-pwa-builder';
 
 export default () => {
     extend(Page.prototype, 'oninit', () => {
