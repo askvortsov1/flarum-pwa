@@ -29,6 +29,7 @@ $offlineVar = 'const offlineFallbackPage = "' . $offlinePath . '";' . PHP_EOL;
 class ServiceWorkerController implements RequestHandlerInterface
 {
     use PWATrait;
+    use Askvortsov\FlarumPWA\Forum\Controller;
 
     protected Filesystem $assetDir;
 
