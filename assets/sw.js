@@ -1,5 +1,8 @@
 importScripts('assets/extensions/askvortsov-pwa/idb.js');
 
+const image = /^(https?):\/\/[^\s/$.?#].[^\s]*\.(gif|jpg|jpeg|tiff|png|svg|webp)$/;
+const keyFile = /^(https?):\/\/[^\s/$.?#].[^\s]*\.(js|css)$/;
+
 const dbPromise = idb.openDB('keyval-store', 1, {
   upgrade(db) {
     db.createObjectStore('keyval');
@@ -24,19 +27,45 @@ const idbKeyval = {
   },
 };
 
-const CACHE = "pwa-page";
+const imgDBPromise = idb.openDB('images-store', 1, {
+  upgrade(db) {
+    db.createObjectStore('images');
+  },
+});
+
+const imgStore = {
+  async get(key) {
+    return (await imgDBPromise).get('images', key);
+  },
+  async set(key, val) {
+    return (await imgDBPromise).put('images', val, key);
+  },
+  async delete(key) {
+    return (await imgDBPromise).delete('images', key);
+  },
+  async clear() {
+    return (await imgDBPromise).clear('images');
+  },
+  async keys() {
+    return (await imgDBPromise).getAllKeys('images');
+  },
+};
+
+const pageCACHE = "pwa-page";
+const keyFilesCache = "key-files";
 
 const forumPayload = {};
 
 // Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
-const offlineFallbackPage = "offline";
+// Code below is deprecated. Set automatically by ServiceWorkerController.php
+// const offlineFallbackPage = "offline";
 
 // Install stage sets up the offline page in the cache and opens a new cache
 self.addEventListener("install", function (event) {
   console.log("[PWA] Install event processing...");
 
   event.waitUntil(
-    caches.open(CACHE).then(function (cache) {
+    caches.open(pageCACHE).then(function (cache) {
       console.log("[PWA] Cached offline page during install.");
 
       return cache.add(offlineFallbackPage);
@@ -49,12 +78,56 @@ self.addEventListener("install", function (event) {
   }
 
   receiveInfo();
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(clients.claim());
 });
 
 // If any fetch fails, it will show the offline page.
 self.addEventListener("fetch", function (event) {
+  if (image.test(event.request.url)) {
+    imgStore.get(event.request.url).then(res => {
+      if (!res) {
+        const fetchResponse = await fetch(event.request);
+        imgStore.set(event.request.url, fetchResponse.clone());
+        return fetchResponse;
+      }
+
+      return res;
+    }).then(res => {
+      event.respondWith(res);
+    }).catch(error => {
+      throw error;
+    });
+    return;
+  }
+  if (keyFile.test(event.request.url)) {
+    const cache = await caches.open(keyFilesCache);
+    cache.match(event.request).then(res => {
+      if (
+        forumPayload.debug && forumPayload.clockworkEnabled
+      ) {
+        return fetch(event.request);
+      }
+      if (!res) {
+        const fetchResponse = await fetch(event.request);
+        cache.put(event.request, fetchResponse.clone());
+        return fetchResponse;
+      }
+
+      return res;
+    }).then(res => {
+      event.respondWith(res);
+    }).catch(error => {
+      throw error;
+    });
+    return;
+  };
   event.respondWith(
-    caches.match(event.request).then(res => {
+
+    (await caches.open(keyFilesCache)).match(event.request).then(res => {
       if (
         event.request.method !== 'GET' ||
         forumPayload.debug && forumPayload.clockworkEnabled ||
@@ -73,7 +146,7 @@ self.addEventListener("fetch", function (event) {
         throw error;
       }
 
-      return caches.open(CACHE).then(function (cache) {
+      return caches.open(pageCACHE).then(function (cache) {
         return cache.match(offlineFallbackPage);
       });
     })
@@ -85,7 +158,7 @@ self.addEventListener("refreshOffline", function () {
   const offlinePageRequest = new Request(offlineFallbackPage);
 
   return fetch(offlineFallbackPage).then(function (response) {
-    return caches.open(CACHE).then(function (cache) {
+    return caches.open(pageCACHE).then(function (cache) {
       console.log("[PWA] Offline page updated from refreshOffline event: " + response.url);
       return cache.put(offlinePageRequest, response);
     });
@@ -103,6 +176,13 @@ self.addEventListener('push', function (event) {
 
   if (isJSON(event.data.text())) {
     console.log(event.data.json());
+
+    if ('clearAppBadge' in navigator) {
+      const Badges = await idbKeyval.get('Badges') + 1;
+      await idbKeyval.set('Badges', Badges);
+      navigator.setAppBadge(Badges);
+    }
+
     const options = {
       body: event.data.json().content,
       icon: event.data.json().icon,

@@ -40,10 +40,16 @@ askvortsov-pwa:
         user_max_subscriptions_text: How many push subscriptions should each user be able to have at a time? When a user receives a push notification, each subscription will result in an API call. Each subscription typically corresponds to a browser the user has used.
         window_controls_overlay_label: Enable Window Controls Overlay?
         window_controls_overlay_text: |
-          If true, users will be able to get an more immersive, native-like experience by hiding the native titlebar. Window Controls Overlay enables or not depends on user's preference and browser's compatibility. You must customize your titlebar by adding some CSS/JS after enabled, or the controls will overlay some elements of your forum's top navbar and the window almost can't drag, resulting a bad experience.
+          If true, users will able to enable Window Controls Overlay to create an immersive, native-like experience. Window Controls Overlay enables or not depends on user's preference and browser's compatibility. You also should be sure you've done something to match this feature.
 
           See also: <compatibilitylink>The compatibility of Window Controls Overlay</compatibilitylink> & <learnlink>About Window Controls Overlay in Microsoft Learn</learnlink>
- 
+
+        custom_offline_page_label: Custom Offline Page
+        custom_offline_page_text: Provide your custom offline page by setting the path here. If empty, we'll use the default one. 
+        sw_kill_switch_label: Kill switch for Service Worker
+        sw_kill_switch_text: Service Worker is used for resources caching, push notifications and providing the offline page. If you don't need the Service Worker, or planning to disable this extension, please enable this switch to disable Service Worker. Leave it on for several days so that the Service Worker can be disabled on users' device.
+        install_alert_label: Install alert
+        install_alert_text: We can show an alert for users when your forum is installable on their browser. On supported browsers, they can even finish installing by clicking this alert.
       heading: Progressive Web App Configuration
       text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, this means that users have an 'Add to Homescreen' option for your site. We provide some status checks, however, the best way to test this is to try and install it (search on google for instructions on how to install progressive web apps). Also, please keep in mind that 'install this PWA' popups are controlled by browsers, and cannot be triggered by developers/admins/programs. I recommend including instructions for how to install a PWA in your site's documentation.
       status_check_heading: Status Check
@@ -71,6 +77,23 @@ askvortsov-pwa:
     alerts:
       optin: You have push notifications enabled, but have not configured this device.
       optin_button: Configure
+      online: Network connection is restored.
+      offline: Network connection is lost.
+      refresh: "Update available. This app will refresh {countdown, plural, =0 {now} one {in 1 second} other {in {countdown} seconds}}."
+      refresh_button: Refresh Now
+      install: You can install it as an app to get better experience.
+      install_button: Install
+      install_on_safari: You can add it to Home Screen/Dock to get better experience.
+      install_on_safari_learn_more: Learn More
+      install_on_safari_learn_more_text: |
+        When you add this app to Home Screen (iPhone & iPad)/Dock (Mac), it'll display as a standalone app. Besides, You'll get extra features that can enhance the app experience, such as badge and notification (if available).
+
+        In order to add it to Home Screen/Dock, click the Share button in the Safari toolbar, then choose Add to Home Screen/Dock.
+
+        If you don't see Add to Home Screen, you can add it. Scroll down to the bottom of the list, tap Edit Actions, then tap Add to Home Screen.
+
+        If you don't see Add to Dock, the Safari may doesn't support it. It requires macOS Sonoma or later.
+
     discussion_controls:
       share_button: Share
     post_controls:
