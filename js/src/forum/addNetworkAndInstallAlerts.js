@@ -1,5 +1,6 @@
 import { extend } from 'flarum/common/extend';
 import Page from 'flarum/common/components/Page';
+import usingAppleWebview from './use-pwa-builder';
 
 export default () => {
     extend(Page.prototype, 'oninit', () => {
@@ -27,6 +28,7 @@ export default () => {
         });
 
         if (
+             app.forum.attribute("installAlerts") &&
             !localStorage.getItem('askvortov-pwa.install-alert.dismissed')
         ) window.addEventListener("beforeinstallprompt", function(e) {
             e.preventDefault();
@@ -51,8 +53,10 @@ export default () => {
         });
 
         if (
+             app.forum.attribute("installAlerts") &&
             !localStorage.getItem('askvortov-pwa.install-alert.dismissed') &&
-             navigator.standalone === false
+             navigator.standalone === false &&
+            !usingAppleWebview()
         ) app.alerts.show(
             {
                 controls: [

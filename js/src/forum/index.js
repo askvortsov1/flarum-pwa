@@ -1,5 +1,5 @@
 import { extend } from 'flarum/common/extend';
-import { openDB } from 'idb';
+import { openDB, deleteDB } from 'idb';
 
 import Page from 'flarum/common/components/Page';
 import LinkButton from 'flarum/common/components/LinkButton';
@@ -30,11 +30,32 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
             scope: basePath + '/',
           })
           .then((sw) => {
-            navigator.serviceWorker.ready.then(() => {
+            navigator.serviceWorker.ready.then(async () => {
+              if (app.forum.attribute("swKillSwitch")) {
+                sw.unregister();
+                deleteDB('images-store');
+                caches.delete('pwa-page');
+                caches.delete("key-files");
+                sw.pushManager.getSubscription().then((s) => s ? s.unsubscribe() : null);
+                return;
+              }
               app.sw = sw;
               refreshSubscription(sw);
             });
           });
+      }
+
+      if (!app.forum.attribute("swKillSwitch")) {
+        const imgDB = await openDB('images-store', 1, {
+          upgrade(db) {
+            db.createObjectStore('images');
+          }
+        });
+        const lastDBDate = imgDB.get('images', 'date');
+        if (!lastDBDate || parseInt(new Date() - lastDBDate) / 1000 / 60 / 60 / 24 > 30) {
+          await imgDB.clear('images');
+          await imgDB.put('images', 'date', new Date());
+        };
       }
     };
 

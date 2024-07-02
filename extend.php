@@ -92,6 +92,8 @@ return [
 
     (new Extend\Settings())
         ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', [Util::class, 'url_encode'])
+        ->serializeToForum('installAlerts','askvortsov-pwa.installAlerts')
+        ->serializeToForum('swKillSwitch','askvortsov-pwa.swKillSwitch')
         ->default('askvortsov-pwa.pushNotifPreferenceDefaultToEmail', true)
         ->default('askvortsov-pwa.userMaxSubscriptions', 20),
 
