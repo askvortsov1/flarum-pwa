@@ -21,15 +21,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 
-$settings = resolve(SettingsRepositoryInterface::class);
-$offlinePath = $settings->get('askvortsov-pwa.customOfflinePage', 'offline');
-$timestamp = '// Generated on ' . date("Y-m-d H:i:s") . PHP_EOL;
-$offlineVar = 'const offlineFallbackPage = "' . $offlinePath . '";' . PHP_EOL;
 
 class ServiceWorkerController implements RequestHandlerInterface
 {
     use PWATrait;
-    use Askvortsov\FlarumPWA\Forum\Controller;
 
     protected Filesystem $assetDir;
 
@@ -43,6 +38,11 @@ class ServiceWorkerController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $settings = resolve(SettingsRepositoryInterface::class);
+        $offlinePath = $settings->get('askvortsov-pwa.customOfflinePage', 'offline');
+        $timestamp = '// Generated on ' . date("Y-m-d H:i:s") . PHP_EOL;
+        $offlineVar = 'const offlineFallbackPage = "' . $offlinePath . '";' . PHP_EOL;
+        
         return new TextResponse($timestamp . $offlineVar . $this->assetDir->get('extensions/askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
     }
 }
