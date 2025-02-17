@@ -34,10 +34,7 @@ class PushSubscription extends AbstractModel
 
     protected $table = 'push_subscriptions';
 
-    /**
-     * {@inheritdoc}
-     */
-    protected $dates = ['expires_at'];
+    protected $casts = ['expires_at' => 'datetime'];
 
     public function user(): BelongsTo
     {

@@ -23,24 +23,8 @@ use Psr\Log\LoggerInterface;
 
 class FirebasePushSender
 {
-    protected Container $container;
-
-    protected NotificationBuilder $notifications;
-
-    protected LoggerInterface $logger;
-
-    protected SettingsRepositoryInterface $settings;
-
-    public function __construct(
-        Container $container,
-        NotificationBuilder $notifications,
-        LoggerInterface $logger,
-        SettingsRepositoryInterface $settings,
-    ) {
-        $this->container = $container;
-        $this->notifications = $notifications;
-        $this->logger = $logger;
-        $this->settings = $settings;
+    public function __construct(protected Container $container, protected NotificationBuilder $notifications, protected LoggerInterface $logger, protected SettingsRepositoryInterface $settings)
+    {
     }
 
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
@@ -63,7 +47,7 @@ class FirebasePushSender
             return;
         }
 
-        FirebasePushSubscription::whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
+        FirebasePushSubscription::query()->whereIn('user_id', $userIds)->each(function (FirebasePushSubscription $subscription) use ($messaging, $blueprint) {
             try {
                 $messaging->send($this->newFirebaseCloudMessage($subscription, $blueprint));
             } catch (AuthenticationError $e) {

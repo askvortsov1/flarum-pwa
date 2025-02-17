@@ -1,43 +1,23 @@
 <?php
 
-/*
- * This file is part of askvortsov/flarum-pwa
- *
- *  Copyright (c) 2021 Alexander Skvortsov.
- *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
- */
-
 namespace Askvortsov\FlarumPWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
 use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\RequestUtil;
-use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Support\Arr;
-use Intervention\Image\Image;
-use Intervention\Image\ImageManager;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Tobscure\JsonApi\Document;
+use Intervention\Image\Interfaces\EncodedImageInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 class UploadLogoController extends UploadImageController
 {
-    use PWATrait;
-
     protected int $size;
 
-    /**
-     * {@inheritdoc}
-     * @throws PermissionDeniedException|RouteNotFoundException
-     */
-    public function data(ServerRequestInterface $request, Document $document)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        RequestUtil::getActor($request)->assertAdmin();
-
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
         $this->size = $size;
 
@@ -48,13 +28,13 @@ class UploadLogoController extends UploadImageController
         $this->filenamePrefix = "pwa-icon-{$size}x{$size}";
         $this->filePathSettingKey = "askvortsov-pwa.icon_{$size}_path";
 
-        return parent::data($request, $document);
+        return parent::handle($request);
     }
 
-    protected function makeImage(UploadedFileInterface $file): Image
+    protected function makeImage(UploadedFileInterface $file): EncodedImageInterface|StreamInterface
     {
-        $manager = new ImageManager();
-
-        return $manager->make($file->getStream())->resize($this->size, $this->size)->encode('png');
+        return $this->imageManager->read($file->getStream()->getMetadata('uri'))
+            ->scale(height: $this->size)
+            ->toPng();
     }
 }

@@ -26,12 +26,9 @@ class OfflineController implements RequestHandlerInterface
 
     protected Filesystem $assetDir;
 
-    protected ViewFactory $viewFactory;
-
-    public function __construct(FilesystemFactory $filesystemFactory, ViewFactory $viewFactory)
+    public function __construct(FilesystemFactory $filesystemFactory, protected ViewFactory $viewFactory)
     {
         $this->assetDir = $filesystemFactory->disk('flarum-assets');
-        $this->viewFactory = $viewFactory;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

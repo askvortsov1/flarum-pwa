@@ -19,17 +19,8 @@ use Flarum\Queue\AbstractJob;
 
 class SendPushNotificationsJob extends AbstractJob
 {
-    private BlueprintInterface $blueprint;
-
-    /**
-     * @var int[]
-     */
-    private array $recipientIds;
-
-    public function __construct(BlueprintInterface $blueprint, array $recipientIds = [])
+    public function __construct(private BlueprintInterface $blueprint, private array $recipientIds = [])
     {
-        $this->blueprint = $blueprint;
-        $this->recipientIds = $recipientIds;
     }
 
     /**

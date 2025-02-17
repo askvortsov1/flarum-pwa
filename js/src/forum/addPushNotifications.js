@@ -1,11 +1,9 @@
 import { extend } from 'flarum/common/extend';
-import NotificationGrid from 'flarum/forum/components/NotificationGrid';
-import SettingsPage from 'flarum/forum/components/SettingsPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import { usingAppleWebview, requestPushPermissions, requestPushPermissionState, requestPushToken, usePWABuilder } from './use-pwa-builder';
 
 const subscribeUser = (save) => {
@@ -92,7 +90,7 @@ export default () => {
     }
   });
 
-  extend(NotificationGrid.prototype, 'notificationMethods', function (items) {
+  extend('flarum/forum/components/NotificationGrid', 'notificationMethods', function (items) {
     if (!pushConfigured()) return;
 
     items.add('push', {
@@ -102,7 +100,7 @@ export default () => {
     });
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items) {
     if (usingAppleWebview()) return;
 
     if (!pushConfigured()) return;
@@ -119,7 +117,7 @@ export default () => {
               </a>,
             ],
           },
-          [icon('fas fa-exclamation-triangle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.no_browser_support')]
+          [<Icon name="fas fa-exclamation-triangle" />, app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.no_browser_support')]
         ),
         10
       );
@@ -153,7 +151,7 @@ export default () => {
               ),
             ],
           },
-          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
+          [<Icon name="fas fa-exclamation-circle" />, app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
         ),
         10
       );
@@ -174,14 +172,14 @@ export default () => {
               </a>,
             ],
           },
-          [icon('fas fa-exclamation-triangle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_denied')]
+          [<Icon name="fas fa-exclamation-triangle" />, app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_denied')]
         ),
         10
       );
     }
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items) {
     if (!usingAppleWebview()) return;
 
     if (!hasFirebasePushState('authorized')) {
@@ -201,18 +199,18 @@ export default () => {
               ),
             ],
           },
-          [icon('fas fa-exclamation-circle'), app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
+          [<Icon name="fas fa-exclamation-circle" />, app.translator.trans('askvortsov-pwa.forum.settings.pwa_notifications.access_default')]
         ),
         10
       );
     }
   });
 
-  extend(SettingsPage.prototype, 'oncreate', function () {
+  extend('flarum/forum/components/SettingsPage', 'oncreate', function () {
     registerFirebasePushNotificationListeners();
   });
 
-  extend(SettingsPage.prototype, 'onremove', function () {
+  extend('flarum/forum/components/SettingsPage', 'onremove', function () {
     removeFirebasePushNotificationListeners();
   });
 };

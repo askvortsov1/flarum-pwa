@@ -11,9 +11,19 @@
 
 namespace Askvortsov\FlarumPWA;
 
-use Askvortsov\FlarumPWA\Api\Controller as ApiController;
-use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
-use Flarum\Api\Serializer\ForumSerializer;
+use Askvortsov\FlarumPWA\Api\Controller\UploadLogoController;
+use Askvortsov\FlarumPWA\Api\Resource\FirebasePushSubscriptionResource;
+use Askvortsov\FlarumPWA\Api\Resource\PushSubscriptionResource;
+use Askvortsov\FlarumPWA\Api\Resource\PWASettingsResource;
+use Askvortsov\FlarumPWA\Event\CreateOrUpdateFirebasePushSubscriptionEvent;
+use Askvortsov\FlarumPWA\Event\CreatePushSubscriptionEvent;
+use Askvortsov\FlarumPWA\Event\DeleteLastSubscriptionEvent;
+use Askvortsov\FlarumPWA\Event\SetVapidKeyEvent;
+use Askvortsov\FlarumPWA\Event\UserSubscriptionCounterEvent;
+use Askvortsov\FlarumPWA\Forum\Controller\OfflineController;
+use Askvortsov\FlarumPWA\Forum\Controller\ServiceWorkerController;
+use Askvortsov\FlarumPWA\Forum\Controller\WebManifestController;
+use Askvortsov\FlarumPWA\Listener\CreateOrUpdateFirebasePushSubscriptionListener;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -21,6 +31,8 @@ use Flarum\User\User;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
+use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Schema;
 
 $metaClosure = function (Document $document) {
     $forumApiDocument = $document->getForumApiDocument();
@@ -45,45 +57,46 @@ $metaClosure = function (Document $document) {
     }
 };
 
+function icon_attr_arr() : array {
+    $settings = resolve(SettingsRepositoryInterface::class);
+    $assets = resolve(Factory::class)->disk('flarum-assets');
+    $icon_attr = [];
+    foreach (Util::$ICON_SIZES as $size) {
+        if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
+            $icon_attr = array_merge($icon_attr, [Schema\Str::make("pwa-icon-{$size}x{$size}Url")->get( fn()=>$assets->url($sizePath) )]);
+        }
+    }
+
+    return $icon_attr;
+};
+
 return [
-    (new Extend\Routes('api'))
-        ->get('/pwa/settings', 'askvortsov-pwa.settings', ApiController\ShowPWASettingsController::class)
-        ->delete('/pwa/logo/{size}', 'askvortsov-pwa.size_delete', ApiController\DeleteLogoController::class)
-        ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class)
-        ->post('/pwa/firebase-push-subscriptions', 'askvortsov-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
-        ->post('/pwa/firebase-config', 'askvortsov-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
-        ->post('/reset_vapid', 'askvortsov-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
-
-    (new Extend\Routes('forum'))
-        ->get('/webmanifest', 'askvortsov-pwa.webmanifest', ForumController\WebManifestController::class)
-        ->get('/sw', 'askvortsov-pwa.sw', ForumController\ServiceWorkerController::class)
-        ->get('/offline', 'askvortsov-pwa.offline', ForumController\OfflineController::class),
-
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__.'/resources/less/forum.less')
         ->content($metaClosure),
-
+    
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
-    (new Extend\ApiSerializer(ForumSerializer::class))
-        ->attributes(function ($serializer, $model, $attributes) {
-            $settings = resolve(SettingsRepositoryInterface::class);
-            /** @var Cloud $assets */
-            $assets = resolve(Factory::class)->disk('flarum-assets');
+    new Extend\ApiResource(FirebasePushSubscriptionResource::class),
+    new Extend\ApiResource(PushSubscriptionResource::class),
+    new Extend\ApiResource(PWASettingsResource::class),
 
-            foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
-                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
-                }
-            }
+    (new Extend\Routes('api'))
+        ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', UploadLogoController::class),
+    
+    (new Extend\Routes('forum'))
+        ->get('/webmanifest', 'askvortsov-pwa.webmanifest', WebManifestController::class)
+        ->get('/sw', 'askvortsov-pwa.sw', ServiceWorkerController::class)
+        ->get('/offline', 'askvortsov-pwa.offline', OfflineController::class),
 
-            return $attributes;
-        }),
+    (new Extend\ApiResource(ForumResource::class))
+        ->fields(fn () => [
+            ...icon_attr_arr()
+        ]),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
@@ -103,4 +116,11 @@ return [
 
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),
+    
+    (new Extend\Event())
+        ->listen(CreateOrUpdateFirebasePushSubscriptionEvent::class, CreateOrUpdateFirebasePushSubscriptionListener::class)
+        ->listen(UserSubscriptionCounterEvent::class, Listener\UserSubscriptionCounterListener::class)
+        ->listen(DeleteLastSubscriptionEvent::class, Listener\DeleteLastSubscriptionListener::class)
+        ->listen(CreatePushSubscriptionEvent::class, Listener\CreatePushSubscriptionListener::class)
+        ->listen(SetVapidKeyEvent::class, Listener\SetVapidKeyListener::class),
 ];
