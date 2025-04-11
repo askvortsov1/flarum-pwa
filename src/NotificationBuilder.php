@@ -79,6 +79,10 @@ class NotificationBuilder
 
         switch ($blueprint::getSubjectModel()) {
             case Discussion::class:
+                if ($blueprint->getType() === 'newPost') {
+                    $content = $blueprint->post->formatContent();
+                    break;
+                }
                 /** @var Discussion $subject */
                 $content = $this->getRelevantPostContent($subject);
                 break;
@@ -110,6 +114,8 @@ class NotificationBuilder
 
         $subject = $blueprint->getSubject();
 
+        $data = $blueprint->getData();
+
         switch ($blueprint::getSubjectModel()) {
             case User::class:
                 /** @var User $subject */
@@ -117,7 +123,13 @@ class NotificationBuilder
 
             case Discussion::class:
                 /** @var Discussion $subject */
-                return $this->url->to('forum')->route('discussion', ['id' => $subject->id]);
+                $params = ['id' => $subject->id];
+
+                if (array_key_exists('postNumber', $data)) {
+                    $params['near'] = $data['postNumber'];
+                }
+
+                return $this->url->to('forum')->route('discussion', $params);
 
             case Post::class:
                 /** @var Post $subject */
