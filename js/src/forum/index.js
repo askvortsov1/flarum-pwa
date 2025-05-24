@@ -5,7 +5,7 @@ import Page from 'flarum/common/components/Page';
 import LinkButton from 'flarum/common/components/LinkButton';
 import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import addShareButtons from './addShareButtons';
-import addPushNotifications, { refreshSubscription } from './addPushNotifications';
+import addPushNotifications, { refreshSubscription, dealWithNewPush } from './addPushNotifications';
 
 app.initializers.add('askvortsov/flarum-pwa', () => {
   const isInStandaloneMode = () =>
@@ -31,6 +31,7 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
             navigator.serviceWorker.ready.then(() => {
               app.sw = sw;
               refreshSubscription(sw);
+              dealWithNewPush();
             });
           });
       }

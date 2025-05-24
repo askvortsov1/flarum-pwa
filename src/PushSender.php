@@ -68,13 +68,16 @@ class PushSender
 
         $notifications = [];
 
-        $payload = json_encode($this->getPayload($blueprint));
+        // $payload = json_encode($this->getPayload($blueprint));
+        $basePayload = $this->getPayload($blueprint);
 
         $sendingCounter = 0;
 
         foreach ($users as $user) {
             $subscriptions = $user->pushSubscriptions;
             $sendingCounter += $subscriptions->count();
+            $payload = clone $basePayload;
+            $payload['app_badge'] = $user->getNewNotificationCount();
             foreach ($subscriptions as $subscription) {
                 $notifications[] = [
                     'subscription' => Subscription::create([

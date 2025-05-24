@@ -31,6 +31,13 @@ const forumPayload = {};
 // Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
 const offlineFallbackPage = "offline";
 
+// Tell Clients that a new Push comes.
+async function alarmPushToClients() {
+  (await clients.matchAll()).forEach(function (client) {
+    client.postMessage(true);
+  });
+}
+
 // Install stage sets up the offline page in the cache and opens a new cache
 self.addEventListener("install", function (event) {
   console.log("[PWA] Install event processing...");
@@ -113,6 +120,10 @@ self.addEventListener('push', function (event) {
     };
 
     const promiseChain = self.registration.showNotification(event.data.json().title, options);
+
+    if (navigator.setAppBadge) navigator.setAppBadge(event.data.json()['app_badge']);
+
+    alarmPushToClients();
 
     event.waitUntil(promiseChain);
   } else {

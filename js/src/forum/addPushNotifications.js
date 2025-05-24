@@ -55,6 +55,16 @@ export const refreshSubscription = async (sw) => {
   app.cache.pwaRefreshed = true;
 };
 
+export const dealWithNewPush = () => {
+  navigator.serviceWorker.addEventListener('message', () => {
+    // There's no need to show badge when user is visiting the forum.
+    if (navigator.clearAppBadge) navigator.clearAppBadge();
+
+    // Could we refresh the number of new notifications on the top bar?
+    app.store.find('').then(m.redraw);
+  });
+}
+
 const pushConfigured = () => {
   return app.forum.attribute('vapidPublicKey');
 };
@@ -215,4 +225,6 @@ export default () => {
   extend(SettingsPage.prototype, 'onremove', function () {
     removeFirebasePushNotificationListeners();
   });
+
+  if (navigator.clearAppBadge) navigator.clearAppBadge();
 };
