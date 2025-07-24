@@ -1,5 +1,5 @@
 includes:
-  - vendor/flarum/phpstan/extension.neon
+#  - vendor/flarum/phpstan/extension.neon
 
 parameters:
   # The level will be increased in Flarum 2.0
@@ -9,5 +9,4 @@ parameters:
     - extend.php
   excludePaths:
     - *.blade.php
-  checkMissingIterableValueType: false
-  databaseMigrationsPath: ['migrations']
+#  databaseMigrationsPath: ['migrations']

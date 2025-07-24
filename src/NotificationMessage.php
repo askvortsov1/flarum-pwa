@@ -13,20 +13,8 @@ namespace Askvortsov\FlarumPWA;
 
 class NotificationMessage
 {
-    protected string $title;
-
-    protected string $body;
-
-    protected ?string $url = null;
-
-    public function __construct(
-        string $title,
-        string $body,
-        ?string $url = null,
-    ) {
-        $this->title = $title;
-        $this->body = $body;
-        $this->url = $url;
+    public function __construct(protected string $title, protected string $body, protected ?string $url = null)
+    {
     }
 
     public function title(): string

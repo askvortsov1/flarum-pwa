@@ -33,26 +33,13 @@ class PushSender
 
     protected Cloud $assetsFilesystem;
 
-    protected LoggerInterface $logger;
-
-    protected SettingsRepositoryInterface $settings;
-
-    protected UrlGenerator $url;
-
-    protected NotificationBuilder $notifications;
-
     public function __construct(
-        Factory $filesystemFactory,
-        LoggerInterface $logger,
-        SettingsRepositoryInterface $settings,
-        UrlGenerator $url,
-        NotificationBuilder $notifications,
+        protected LoggerInterface $logger,
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected NotificationBuilder $notifications,
     ) {
-        $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
-        $this->logger = $logger;
-        $this->settings = $settings;
-        $this->url = $url;
-        $this->notifications = $notifications;
+        $this->assetsFilesystem = resolve(Factory::class)->disk('flarum-assets');
     }
 
     /**
@@ -61,7 +48,7 @@ class PushSender
      */
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        $users = User::whereIn('id', $userIds)->get()->all();
+        $users = User::query()->whereIn('id', $userIds)->get()->all();
 
         $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
         $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
@@ -128,11 +115,11 @@ class PushSender
          */
         foreach ($webPush->flush() as $report) {
             if (! $report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
-                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
+                PushSubscription::query()->where('endpoint', $report->getEndpoint())->delete();
             } elseif (! $report->isSuccess()) {
                 $this->log("[PWA PUSH] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}");
             } else {
-                $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
+                $subscription = PushSubscription::query()->where('endpoint', $report->getEndpoint())->first();
                 $subscription->last_used = Carbon::now();
                 $subscription->save();
                 $sentCounter++;

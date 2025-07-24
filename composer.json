@@ -12,10 +12,10 @@
         "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
     },
     "require": {
-        "flarum/core": "^1.7",
+        "flarum/core": "^2.0.0-beta",
         "minishlink/web-push": "^7.0",
-        "spomky-labs/base64url" : "^2.0",
-        "kreait/firebase-php": "^5.0"
+        "spomky-labs/base64url": "^2.0",
+        "kreait/firebase-php": "^7.0"
     },
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
@@ -61,7 +61,7 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "^1.0"
+        "flarum/phpstan": "^2.0.0-beta"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
@@ -69,5 +69,6 @@
     },
     "scripts-descriptions": {
         "analyse:phpstan": "Run static analysis"
-    }
+    },
+    "minimum-stability": "beta"
 }

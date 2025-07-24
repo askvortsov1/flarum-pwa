@@ -41,7 +41,8 @@ app.initializers.add('askvortsov/flarum-pwa', () => {
 
   extend(SessionDropdown.prototype, 'items', (items) => {
     if (isInStandaloneMode() && items.has('administration')) {
-      items.replace(
+      items.remove('administration');
+      items.add(
         'administration',
         LinkButton.component(
           {

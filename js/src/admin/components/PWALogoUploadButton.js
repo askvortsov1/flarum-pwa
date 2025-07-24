@@ -1,5 +1,4 @@
-import Button from 'flarum/common/components/Button';
-import UploadImageButton from 'flarum/admin/components/UploadImageButton';
+import UploadImageButton from 'flarum/common/components/UploadImageButton';
 
 export default class PWALogoUploadButton extends UploadImageButton {
   static initAttrs(attrs) {
@@ -14,20 +13,29 @@ export default class PWALogoUploadButton extends UploadImageButton {
 
     if (app.data.settings['askvortsov-pwa.icon_' + this.attrs.size + '_path']) {
       this.attrs.onclick = this.remove.bind(this);
-
-      return (
-        <div>
-          <p>
-            <img src={app.forum.attribute(this.attrs.name + 'Url')} alt="" />
-          </p>
-          <p>{super.view({ ...vnode, children: app.translator.trans('core.admin.upload_image.remove_button') })}</p>
-        </div>
-      );
+      this.attrs.value = app.data.settings['askvortsov-pwa.icon_' + this.attrs.size + '_path'];
+      this.attrs.url = app.forum.attribute(this.attrs.name + 'Url');
     } else {
       this.attrs.onclick = this.upload.bind(this);
     }
 
-    return super.view({ ...vnode, children: app.translator.trans('core.admin.upload_image.upload_button') });
+    return super.view({ ...vnode, children: app.translator.trans('core.admin.upload_image.upload_buttonx') });
+  }
+
+  remove() {
+    this.loading = true;
+    m.redraw();
+
+    app
+      .request({
+        method: 'DELETE',
+        url: this.deleteUrl(),
+      })
+      .then(this.success.bind(this), this.failure.bind(this));
+  }
+
+  deleteUrl() {
+    return app.forum.attribute('apiUrl') + '/pwa-settings/logo/' + this.attrs.size;
   }
 
   resourceUrl() {

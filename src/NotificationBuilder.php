@@ -13,31 +13,23 @@ namespace Askvortsov\FlarumPWA;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
+use Flarum\Locale\TranslatorInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use ReflectionClass;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotificationBuilder
 {
-    protected TranslatorInterface $translator;
-
-    protected UrlGenerator $url;
-
     const SUPPORTED_NON_EMAIL_BLUEPRINTS = [
         "Flarum\Likes\Notification\PostLikedBlueprint",
         "Flarum\Notification\DiscussionRenamedBlueprint",
     ];
 
-    public function __construct(
-        TranslatorInterface $translator,
-        UrlGenerator $url
-    ) {
-        $this->translator = $translator;
-        $this->url = $url;
+    public function __construct(protected TranslatorInterface $translator, protected UrlGenerator $url)
+    {
     }
 
     public function supports(string $blueprintClass): bool

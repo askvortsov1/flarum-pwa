@@ -22,18 +22,8 @@ use ReflectionException;
 
 class PushNotificationDriver implements NotificationDriverInterface
 {
-    protected Queue $queue;
-    protected SettingsRepositoryInterface $settings;
-    protected NotificationBuilder $notifications;
-
-    public function __construct(
-        Queue $queue,
-        SettingsRepositoryInterface $settings,
-        NotificationBuilder $notifications,
-    ) {
-        $this->queue = $queue;
-        $this->settings = $settings;
-        $this->notifications = $notifications;
+    public function __construct(protected Queue $queue, protected SettingsRepositoryInterface $settings, protected NotificationBuilder $notifications)
+    {
     }
 
     /**

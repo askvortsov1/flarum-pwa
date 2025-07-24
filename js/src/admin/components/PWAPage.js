@@ -24,7 +24,7 @@ export default class PWAPage extends ExtensionPage {
     app
       .request({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/pwa/settings',
+        url: app.forum.attribute('apiUrl') + '/pwa-settings',
       })
       .then((response) => {
         this.manifest = response['data']['attributes']['manifest'];
@@ -212,7 +212,7 @@ export default class PWAPage extends ExtensionPage {
       app
         .request({
           method: 'POST',
-          url: app.forum.attribute('apiUrl') + '/reset_vapid',
+          url: app.forum.attribute('apiUrl') + '/pwa-settings/reset_vapid',
         })
         .then((response) => {
           app.alerts.show(

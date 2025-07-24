@@ -35,7 +35,7 @@ export default class PWAUploadFirebaseConfigForm extends Component {
     app
       .request({
         method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/pwa/firebase-config',
+        url: app.forum.attribute('apiUrl') + '/pwa-settings/firebase-config',
         body: body,
       })
       .then((response) => {
