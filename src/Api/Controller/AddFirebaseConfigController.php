@@ -39,6 +39,18 @@ class AddFirebaseConfigController extends AbstractCreateController
     }
 
     /**
+     * Required fields for a valid Firebase service account config.
+     */
+    private const array REQUIRED_FIELDS = [
+        'type',
+        'project_id',
+        'private_key_id',
+        'private_key',
+        'client_email',
+        'client_id',
+    ];
+
+    /**
      * {@inheritdoc}
      * @throws NotAuthenticatedException
      * @throws InvalidParameterException|PermissionDeniedException
@@ -52,9 +64,43 @@ class AddFirebaseConfigController extends AbstractCreateController
         /** @var \Laminas\Diactoros\UploadedFile $config */
         $config = $files['file'];
 
+        $contents = $config->getStream()->getContents();
+        $this->validateFirebaseConfig($contents);
+
         $this->settings->set(
             'askvortsov-pwa.firebaseConfig',
-            $config->getStream()->getContents(),
+            $contents,
         );
+    }
+
+    /**
+     * Validate that the uploaded file is a valid Firebase service account config.
+     *
+     * @throws InvalidParameterException
+     */
+    private function validateFirebaseConfig(string $contents): void
+    {
+        $decoded = json_decode($contents, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidParameterException('The uploaded file is not valid JSON.');
+        }
+        if (! \is_array($decoded)) {
+            throw new InvalidParameterException('The uploaded file must contain a JSON object.');
+        }
+        if (($decoded['type'] ?? null) !== 'service_account') {
+            throw new InvalidParameterException('The uploaded file must be a Firebase service account configuration (type must be "service_account").');
+        }
+
+        $missingFields = [];
+        foreach (self::REQUIRED_FIELDS as $field) {
+            if (! isset($decoded[$field]) || $decoded[$field] === '') {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (! empty($missingFields)) {
+            throw new InvalidParameterException('The Firebase config is missing required fields: '.implode(', ', $missingFields));
+        }
     }
 }
