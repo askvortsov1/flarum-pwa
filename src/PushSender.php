@@ -19,6 +19,7 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
@@ -26,6 +27,19 @@ use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
+
+// Internet proxy
+$client = null;
+
+$proxyFile = __DIR__.'/../proxy.php';
+
+if (file_exists($proxyFile)) {
+    $proxyConfig = require $proxyFile;
+
+    $client = new Client([
+        'proxy' => $proxyConfig,
+    ]);
+}
 
 class PushSender
 {
@@ -107,7 +121,7 @@ class PushSender
 
         $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
 
-        $webPush = new WebPush($auth, $options);
+        $webPush = new WebPush($auth, $options, $client);
         $webPush->setReuseVAPIDHeaders(true);
         $webPush->setAutomaticPadding(false);
 
@@ -127,12 +141,26 @@ class PushSender
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
-            if (! $report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
-                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
-            } elseif (! $report->isSuccess()) {
-                $this->log("[PWA PUSH] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}");
-            } else {
-                $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
+            $endpoint = $report->getEndpoint();
+            $response = $report->getResponse();
+
+            if (! $report->isSuccess()) {
+                // If response exist
+                if ($response && in_array($response->getStatusCode(), [401, 403, 404, 410])) {
+                    PushSubscription::where('endpoint', $endpoint)->delete();
+                    $this->log("[PWA PUSH] Subscription removed due to status {$response->getStatusCode()} for $endpoint");
+                } else {
+                    // Cannot reach
+                    $reason = $report->getReason() ?? 'Unknown error';
+                    $this->log("[PWA PUSH] Transport-level failure for $endpoint: $reason");
+                }
+
+                continue;
+            }
+
+            // 成功情况
+            $subscription = PushSubscription::where('endpoint', $endpoint)->first();
+            if ($subscription) {
                 $subscription->last_used = Carbon::now();
                 $subscription->save();
                 $sentCounter++;

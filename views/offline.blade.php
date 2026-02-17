@@ -112,10 +112,10 @@
 <body>
     <div class="container">
         <p>
-            <strong>{{ $translator->trans('askvortsov-pwa.views.offline.header') }}</strong>
+            <strong>{!! $translator->trans('askvortsov-pwa.views.offline.header') !!}</strong>
         </p>
         <p>
-            {{ $translator->trans('askvortsov-pwa.views.offline.text') }}
+            {!! $translator->trans('askvortsov-pwa.views.offline.text') !!}
         </p>
     </div>
     <script>
@@ -124,7 +124,7 @@
             if (navigator.onLine) {
                 location.reload();
             }
-        }, 2000);
+        }, 20000);
     </script>
 </body>
 
